@@ -1,7 +1,6 @@
 use tauri::{
-    menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    Manager, Runtime, AppHandle,
+    Manager, Runtime, AppHandle, Emitter,
 };
 
 #[cfg(target_os = "macos")]

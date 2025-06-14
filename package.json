@@ -22,7 +22,7 @@
     "vite-plugin-solid": "^2.11.2",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
-    "tailwindcss": "^3.5.7",
+    "tailwindcss": "^3.4.0",
     "@kobalte/core": "^0.13.10",
     "@ark-ui/solid": "^5.1.0"
   }
