@@ -22,6 +22,7 @@ const App: Component = () => {
   const [isAlwaysOnTop, setIsAlwaysOnTop] = createSignal(false)
   const [noteTitle, setNoteTitle] = createSignal('')
   const [noteContent, setNoteContent] = createSignal('')
+  const [editorHeight, setEditorHeight] = createSignal(60) // percentage
   
   onMount(async () => {
     const currentWindow = getCurrentWindow()
@@ -122,6 +123,32 @@ const App: Component = () => {
     }
   }
 
+  const handleResizeStart = (e: MouseEvent) => {
+    e.preventDefault()
+    const startY = e.clientY
+    const startHeight = editorHeight()
+    
+    const handleResize = (e: MouseEvent) => {
+      const deltaY = e.clientY - startY
+      const containerHeight = window.innerHeight - 64 // minus header height
+      const deltaPercentage = (deltaY / containerHeight) * 100
+      const newHeight = Math.max(20, Math.min(80, startHeight + deltaPercentage))
+      setEditorHeight(newHeight)
+    }
+    
+    const handleResizeEnd = () => {
+      document.removeEventListener('mousemove', handleResize)
+      document.removeEventListener('mouseup', handleResizeEnd)
+      document.body.style.cursor = 'default'
+      document.body.style.userSelect = 'auto'
+    }
+    
+    document.addEventListener('mousemove', handleResize)
+    document.addEventListener('mouseup', handleResizeEnd)
+    document.body.style.cursor = 'ns-resize'
+    document.body.style.userSelect = 'none'
+  }
+
   
   return (
     <div class="flex flex-col h-screen bg-black/80">
@@ -158,7 +185,7 @@ const App: Component = () => {
       </div>
       
       {/* Editor Area */}
-      <div class="flex-1 flex flex-col">
+      <div class="flex flex-col" style={{ height: `${editorHeight()}%` }}>
         <div class="flex-1 flex flex-col">
           <Show 
             when={selectedNote()} 
@@ -234,8 +261,15 @@ const App: Component = () => {
         </div>
       </div>
       
+      {/* Resize Handle */}
+      <div 
+        class="h-1 bg-macos-border hover:bg-blue-500/50 cursor-ns-resize transition-colors no-drag"
+        onMouseDown={handleResizeStart}
+        title="Drag to resize editor"
+      />
+      
       {/* Bottom Notes List - nvALT Style */}
-      <div class="h-48 sidebar-glass border-t border-macos-border">
+      <div class="flex-1 sidebar-glass border-t border-macos-border">
         <div class="p-4 h-full">
           <p class="text-macos-text-secondary text-xs uppercase tracking-wider mb-3">
             Notes ({notes().length})
