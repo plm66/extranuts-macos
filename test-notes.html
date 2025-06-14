@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Extranuts Data</title>
+</head>
+<body>
+    <h1>🔍 Extranuts Notes Test</h1>
+    <button onclick="createTestNote()">Create Test Note</button>
+    <button onclick="showNotes()">Show All Notes</button>
+    <button onclick="clearNotes()">Clear All Notes</button>
+    <div id="output"></div>
+
+    <script>
+        function createTestNote() {
+            const testNote = {
+                id: 'test-' + Date.now(),
+                title: 'Test Note ' + new Date().toLocaleTimeString(),
+                content: 'This is a test note to verify data storage.',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                tags: [],
+                isPinned: false,
+                isFloating: false
+            };
+            
+            let notes = JSON.parse(localStorage.getItem('extranuts_notes') || '[]');
+            notes.push(testNote);
+            localStorage.setItem('extranuts_notes', JSON.stringify(notes));
+            
+            showNotes();
+        }
+        
+        function showNotes() {
+            const notes = localStorage.getItem('extranuts_notes');
+            const output = document.getElementById('output');
+            
+            if (notes) {
+                const parsed = JSON.parse(notes);
+                output.innerHTML = `
+                    <h3>📋 Found ${parsed.length} notes:</h3>
+                    <pre>${JSON.stringify(parsed, null, 2)}</pre>
+                `;
+            } else {
+                output.innerHTML = '<p>❌ No notes found in localStorage</p>';
+            }
+        }
+        
+        function clearNotes() {
+            localStorage.removeItem('extranuts_notes');
+            showNotes();
+        }
+        
+        // Check immediately
+        showNotes();
+    </script>
+</body>
+</html>
