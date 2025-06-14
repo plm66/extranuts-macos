@@ -94,6 +94,14 @@ const App: Component = () => {
     setSelectedNote(note)
     setNoteTitle(note.title)
     setNoteContent(note.content)
+    // Focus title field after creating note
+    setTimeout(() => {
+      const titleInput = document.querySelector('input[placeholder="Note title..."]') as HTMLInputElement
+      if (titleInput) {
+        titleInput.focus()
+        titleInput.select() // Select all text so user can immediately type
+      }
+    }, 100)
   }
 
   const saveCurrentNote = () => {
@@ -207,8 +215,22 @@ const App: Component = () => {
             }
           >
             <div class="flex-1 flex flex-col p-6">
-              {/* nvALT Style Editor - Single Textarea */}
-              <div class="flex items-center justify-end mb-4">
+              {/* Title Field */}
+              <div class="flex items-center justify-between mb-4">
+                <input
+                  type="text"
+                  value={noteTitle()}
+                  onInput={(e) => setNoteTitle(e.target.value)}
+                  onBlur={saveCurrentNote}
+                  class="flex-1 text-2xl font-semibold bg-transparent border-none outline-none text-macos-text no-drag mr-4"
+                  placeholder="Note title..."
+                  ref={(el) => {
+                    // Auto-focus title when note is selected
+                    if (el && selectedNote()) {
+                      setTimeout(() => el.focus(), 100)
+                    }
+                  }}
+                />
                 <div class="flex items-center space-x-2">
                   <button
                     onClick={() => {
@@ -238,19 +260,13 @@ const App: Component = () => {
                 </div>
               </div>
               
-              {/* Single Textarea - nvALT Style */}
+              {/* Content Editor */}
               <textarea
-                value={`${noteTitle()}\n${noteContent()}`}
-                onInput={(e) => {
-                  const lines = e.target.value.split('\n')
-                  const title = lines[0] || 'Untitled Note'
-                  const content = lines.slice(1).join('\n')
-                  setNoteTitle(title)
-                  setNoteContent(content)
-                }}
+                value={noteContent()}
+                onInput={(e) => setNoteContent(e.target.value)}
                 onBlur={saveCurrentNote}
                 class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed"
-                placeholder="Start with your title on the first line..."
+                placeholder="Start writing your note content..."
                 style={{
                   "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                   "line-height": "1.6"
