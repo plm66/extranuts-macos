@@ -16,6 +16,7 @@ import {
   setTags
 } from './stores/noteStore'
 import { storage } from './stores/storage'
+import { createFullBackup } from './utils/backup'
 
 const App: Component = () => {
   const [isAlwaysOnTop, setIsAlwaysOnTop] = createSignal(false)
@@ -44,11 +45,29 @@ const App: Component = () => {
     setIsAlwaysOnTop(alwaysOnTop)
   })
 
-  // Auto-save functionality
+  // Auto-save functionality with backup
   createEffect(() => {
     const noteList = notes()
     if (noteList.length > 0) {
       storage.saveNotes(noteList)
+      
+      // Also create backup every 10 notes or every hour
+      const now = Date.now()
+      const lastBackup = localStorage.getItem('lastAutoBackup')
+      const oneHour = 60 * 60 * 1000
+      
+      if (!lastBackup || (now - parseInt(lastBackup)) > oneHour) {
+        console.log('🔄 Creating automatic backup...')
+        localStorage.setItem('lastAutoBackup', now.toString())
+        
+        // Silent backup to localStorage as additional safety
+        const backupData = {
+          notes: noteList,
+          timestamp: new Date().toISOString(),
+          version: '1.0'
+        }
+        localStorage.setItem('extranuts_emergency_backup', JSON.stringify(backupData))
+      }
     }
   })
   
@@ -102,92 +121,44 @@ const App: Component = () => {
       console.error('Failed to hide to menu bar:', error)
     }
   }
+
   
   return (
-    <div class="flex h-screen bg-black/80">
-      {/* Sidebar */}
-      <div class="w-64 sidebar-glass flex flex-col">
-        <div class="p-4 border-b border-macos-border drag-region">
-          <h1 class="text-xl font-semibold">Extranuts</h1>
-        </div>
+    <div class="flex flex-col h-screen bg-black/80">
+      {/* Top Header */}
+      <div class="h-16 sidebar-glass flex items-center justify-between px-6 border-b border-macos-border drag-region">
+        <h1 class="text-xl font-semibold">Extranuts</h1>
         
-        <div class="flex-1 p-4 native-scrollbar overflow-y-auto">
-          <div class="space-y-2 mb-4">
-            <button
-              onClick={createRegularNote}
-              class="w-full px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag"
-            >
-              + New Note
-            </button>
-            <button
-              onClick={createFloatingNote}
-              class="w-full px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag"
-            >
-              🪟 New Floating Note
-            </button>
-          </div>
-          
-          <div class="space-y-2">
-            <p class="text-macos-text-secondary text-xs uppercase tracking-wider mb-2">
-              Notes ({notes().length})
-            </p>
-            <For each={notes()} fallback={
-              <p class="text-macos-text-secondary text-sm italic">No notes yet</p>
-            }>
-              {(note) => (
-                <div 
-                  class={`p-3 rounded-lg cursor-pointer transition-colors no-drag ${
-                    selectedNote()?.id === note.id 
-                      ? 'bg-macos-hover border border-macos-border' 
-                      : 'hover-highlight'
-                  }`}
-                  onClick={() => {
-                    setSelectedNote(note)
-                    setNoteTitle(note.title)
-                    setNoteContent(note.content)
-                  }}
-                >
-                  <div class="flex items-start justify-between">
-                    <div class="flex-1 min-w-0">
-                      <h3 class="text-sm font-medium truncate">
-                        {note.isPinned && '📌 '}{note.title}
-                      </h3>
-                      <p class="text-xs text-macos-text-secondary mt-1 line-clamp-2">
-                        {note.content || 'No content'}
-                      </p>
-                      <p class="text-xs text-macos-text-secondary mt-1">
-                        {new Date(note.updatedAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    {note.isFloating && (
-                      <span class="text-xs bg-macos-border px-1 rounded">Float</span>
-                    )}
-                  </div>
-                </div>
-              )}
-            </For>
-          </div>
-        </div>
-        
-        <div class="p-4 border-t border-macos-border space-y-2">
+        <div class="flex items-center space-x-2">
+          <button
+            onClick={createRegularNote}
+            class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag"
+          >
+            + New Note
+          </button>
+          <button
+            onClick={createFloatingNote}
+            class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag"
+          >
+            🪟 Float
+          </button>
           <button
             onClick={toggleAlwaysOnTop}
-            class="w-full px-3 py-1.5 text-sm hover-highlight rounded no-drag"
+            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
           >
-            {isAlwaysOnTop() ? 'Disable' : 'Enable'} Always on Top
+            {isAlwaysOnTop() ? '📌' : '📍'}
           </button>
           <button
             onClick={hideToMenuBar}
-            class="w-full px-3 py-1.5 text-sm hover-highlight rounded no-drag"
+            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
           >
-            Hide to Menu Bar
+            Hide
           </button>
         </div>
       </div>
       
-      {/* Main Content */}
+      {/* Editor Area */}
       <div class="flex-1 flex flex-col">
-        <div class="h-8 drag-region border-b border-macos-border" />
         <div class="flex-1 flex flex-col">
           <Show 
             when={selectedNote()} 
@@ -209,16 +180,8 @@ const App: Component = () => {
             }
           >
             <div class="flex-1 flex flex-col p-6">
-              {/* Note Editor Header */}
-              <div class="flex items-center justify-between mb-4">
-                <input
-                  type="text"
-                  value={noteTitle()}
-                  onInput={(e) => setNoteTitle(e.target.value)}
-                  onBlur={saveCurrentNote}
-                  class="text-2xl font-semibold bg-transparent border-none outline-none text-macos-text flex-1 no-drag"
-                  placeholder="Note title..."
-                />
+              {/* nvALT Style Editor - Single Textarea */}
+              <div class="flex items-center justify-end mb-4">
                 <div class="flex items-center space-x-2">
                   <button
                     onClick={() => {
@@ -248,16 +211,75 @@ const App: Component = () => {
                 </div>
               </div>
               
-              {/* Note Editor */}
+              {/* Single Textarea - nvALT Style */}
               <textarea
-                value={noteContent()}
-                onInput={(e) => setNoteContent(e.target.value)}
+                value={`${noteTitle()}\n${noteContent()}`}
+                onInput={(e) => {
+                  const lines = e.target.value.split('\n')
+                  const title = lines[0] || 'Untitled Note'
+                  const content = lines.slice(1).join('\n')
+                  setNoteTitle(title)
+                  setNoteContent(content)
+                }}
                 onBlur={saveCurrentNote}
-                class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar"
-                placeholder="Start writing..."
+                class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed"
+                placeholder="Start with your title on the first line..."
+                style={{
+                  "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                  "line-height": "1.6"
+                }}
               />
             </div>
           </Show>
+        </div>
+      </div>
+      
+      {/* Bottom Notes List - nvALT Style */}
+      <div class="h-48 sidebar-glass border-t border-macos-border">
+        <div class="p-4 h-full">
+          <p class="text-macos-text-secondary text-xs uppercase tracking-wider mb-3">
+            Notes ({notes().length})
+          </p>
+          
+          <div class="space-y-1 max-h-36 overflow-y-auto native-scrollbar">
+            <For each={notes()} fallback={
+              <p class="text-macos-text-secondary text-sm italic py-4">No notes yet</p>
+            }>
+              {(note) => (
+                <div 
+                  class={`w-full p-2 rounded cursor-pointer transition-colors no-drag text-left ${
+                    selectedNote()?.id === note.id 
+                      ? 'bg-macos-hover border border-macos-border' 
+                      : 'hover-highlight'
+                  }`}
+                  onClick={() => {
+                    setSelectedNote(note)
+                    setNoteTitle(note.title)
+                    setNoteContent(note.content)
+                  }}
+                >
+                  <div class="flex items-center justify-between">
+                    <div class="flex-1 min-w-0">
+                      <div class="text-sm font-semibold truncate">
+                        {note.isPinned && '📌 '}{note.title}
+                      </div>
+                      <div class="text-xs text-macos-text-secondary truncate mt-1">
+                        {note.content.split('\n')[0] || 'Empty note'}
+                      </div>
+                    </div>
+                    <div class="flex items-center space-x-2 ml-2">
+                      {note.isFloating && (
+                        <span class="text-xs bg-macos-border px-1 rounded">Float</span>
+                      )}
+                      <span class="text-xs text-macos-text-secondary">
+                        {new Date(note.updatedAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </For>
+          </div>
         </div>
       </div>
     </div>

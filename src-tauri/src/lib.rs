@@ -65,7 +65,7 @@ fn toggle_always_on_top(window: tauri::Window) -> Result<(), String> {
 fn show_in_menu_bar(app: AppHandle) -> Result<(), String> {
     #[cfg(target_os = "macos")]
     {
-        app.set_activation_policy(ActivationPolicy::Accessory);
+        let _ = app.set_activation_policy(ActivationPolicy::Accessory);
     }
     
     if let Some(window) = app.get_webview_window("main") {
@@ -82,7 +82,7 @@ pub fn run() {
         .setup(|app| {
             #[cfg(target_os = "macos")]
             {
-                app.set_activation_policy(ActivationPolicy::Regular);
+                let _ = app.set_activation_policy(ActivationPolicy::Regular);
             }
             
             create_tray(app.handle())?;
