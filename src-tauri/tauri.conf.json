@@ -27,7 +27,7 @@
     "trayIcon": {
       "id": "extranuts-tray",
       "iconPath": "icons/icon.png",
-      "iconAsTemplate": true,
+      "iconAsTemplate": false,
       "menuOnLeftClick": false
     }
   },
