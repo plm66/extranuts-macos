@@ -21,7 +21,6 @@ import { createFullBackup } from './utils/backup'
 import { parseWikiLinks, getAutoCompleteMatches, findWikiLinkAtCursor } from './utils/wikilinks'
 import SettingsPanel from './components/SettingsPanel'
 import ExportModal from './components/ExportModal'
-import CategoryManager from './components/CategoryManager'
 import CategorySelector from './components/CategorySelector'
 import { categoriesService } from './services/categories'
 
@@ -92,8 +91,8 @@ const App: Component = () => {
   const [noteToDelete, setNoteToDelete] = createSignal<string | null>(null)
   const [showSettings, setShowSettings] = createSignal(false)
   const [showExportModal, setShowExportModal] = createSignal(false)
-  const [showCategoryManager, setShowCategoryManager] = createSignal(false)
   const [availableCategories, setAvailableCategories] = createSignal<Array<{id: number, name: string, color: string}>>([])
+  const [searchQuery, setSearchQuery] = createSignal('')
   
   
   onMount(async () => {
@@ -379,6 +378,16 @@ const App: Component = () => {
     }
   }
 
+  const filteredNotesForDisplay = () => {
+    const query = searchQuery().toLowerCase()
+    if (!query) return notes()
+    
+    return notes().filter(note => 
+      note.title.toLowerCase().includes(query) || 
+      note.content.toLowerCase().includes(query)
+    )
+  }
+
   const insertAutoComplete = (noteTitle: string) => {
     const textarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
     if (!textarea) return
@@ -481,15 +490,6 @@ const App: Component = () => {
               icon={isAlwaysOnTop() ? "material-symbols:push-pin" : "material-symbols:push-pin-outline"} 
               class="w-4 h-4" 
             />
-          </button>
-          <button
-            onClick={() => setShowCategoryManager(true)}
-            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag flex items-center gap-1"
-            title="Manage Categories"
-          >
-            <Icon icon="material-symbols:category" class="w-4 h-4" />
-            <span class="text-xs">Categories</span>
-            <Icon icon="material-symbols:keyboard-arrow-right" class="w-3 h-3 opacity-60" />
           </button>
           <button
             onClick={() => setShowExportModal(true)}
@@ -719,13 +719,21 @@ const App: Component = () => {
       {/* Bottom Notes List - nvALT Style */}
       <div class="flex-1 sidebar-glass border-t border-macos-border">
         <div class="p-4 h-full">
-          <p class="text-macos-text-secondary text-xs uppercase tracking-wider mb-3">
-            Notes ({notes().length})
-          </p>
+          <div class="mb-3">
+            <input
+              type="text"
+              value={searchQuery()}
+              onInput={(e) => setSearchQuery(e.target.value)}
+              placeholder={`Search ${notes().length} notes...`}
+              class="w-full px-3 py-2 text-xs bg-macos-hover border border-macos-border rounded-lg outline-none focus:border-blue-500 transition-colors"
+            />
+          </div>
           
           <div class="space-y-1 max-h-36 overflow-y-auto native-scrollbar">
-            <For each={notes()} fallback={
-              <p class="text-macos-text-secondary text-sm italic py-4">No notes yet</p>
+            <For each={filteredNotesForDisplay()} fallback={
+              <p class="text-macos-text-secondary text-sm italic py-4">
+                {searchQuery() ? 'No matching notes' : 'No notes yet'}
+              </p>
             }>
               {(note) => (
                 <div 
@@ -864,11 +872,6 @@ const App: Component = () => {
         onClose={() => setShowExportModal(false)} 
       />
       
-      {/* Category Manager */}
-      <CategoryManager 
-        isOpen={showCategoryManager()} 
-        onClose={() => setShowCategoryManager(false)} 
-      />
     </div>
   )
 }
