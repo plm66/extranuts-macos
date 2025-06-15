@@ -68,6 +68,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             // Window management commands
             features::windows::create_floating_window,
+            features::windows::create_floating_note,
             features::windows::toggle_always_on_top,
             features::windows::show_in_menu_bar,
             

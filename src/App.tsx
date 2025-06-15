@@ -95,6 +95,7 @@ const App: Component = () => {
   const [showCategoryManager, setShowCategoryManager] = createSignal(false)
   const [availableCategories, setAvailableCategories] = createSignal<Array<{id: number, name: string, color: string}>>([])
   
+  
   onMount(async () => {
     console.log('App mounted, starting initialization...')
     
@@ -354,6 +355,30 @@ const App: Component = () => {
     return availableCategories().find(cat => cat.id.toString() === categoryId)
   }
 
+  const formatNoteDate = (dateString: string | Date) => {
+    const noteDate = new Date(dateString)
+    const today = new Date()
+    
+    // Check if the note is from today
+    const isToday = noteDate.toDateString() === today.toDateString()
+    
+    if (isToday) {
+      // Format as "19:16" for today's notes
+      return noteDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      })
+    } else {
+      // Format as "Sun Jun 15" for other dates (macOS style)
+      return noteDate.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      })
+    }
+  }
+
   const insertAutoComplete = (noteTitle: string) => {
     const textarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
     if (!textarea) return
@@ -445,8 +470,7 @@ const App: Component = () => {
             onClick={createFloatingNote}
             class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag flex items-center gap-2"
           >
-            <Icon icon="material-symbols:open-in-new" class="w-4 h-4" />
-            Float
+            <Icon icon="material-symbols:dynamic-feed" class="w-4 h-4" />
           </button>
           <button
             onClick={toggleAlwaysOnTop}
@@ -744,11 +768,8 @@ const App: Component = () => {
                       </div>
                     </div>
                     <div class="flex items-center space-x-2 ml-2">
-                      {note.isFloating && (
-                        <span class="text-xs bg-macos-border px-1 rounded">Float</span>
-                      )}
                       <span class="text-xs text-macos-text-secondary">
-                        {new Date(note.updatedAt).toLocaleDateString()}
+                        {formatNoteDate(note.updatedAt)}
                       </span>
                     </div>
                   </div>

@@ -23,3 +23,14 @@ pub fn show_in_menu_bar(app: AppHandle) -> Result<(), String> {
     WindowService::show_in_menu_bar(&app)
         .map_err(|e| e.message)
 }
+
+#[tauri::command]
+pub fn create_floating_note(
+    app: AppHandle,
+    note_id: i64,
+    title: String,
+    content: String,
+) -> Result<(), String> {
+    WindowService::create_floating_note(&app, note_id, title, content)
+        .map_err(|e| e.message)
+}

@@ -46,4 +46,41 @@ impl WindowService {
         
         Ok(())
     }
+    
+    pub fn create_floating_note(
+        app: &AppHandle,
+        note_id: i64,
+        title: String,
+        _content: String,
+    ) -> AppResult<()> {
+        // Create unique window label with note ID
+        let window_label = format!("floating_note_{}", note_id);
+        
+        // Create the floating window with URL parameters (simple encoding)
+        let url = format!("index.html?floating=true&noteId={}&title={}&content={}", 
+            note_id, 
+            title.replace(" ", "%20").replace("&", "%26"), 
+            "test_content" // Simplified for now
+        );
+        
+        let _window = WebviewWindowBuilder::new(
+            app, 
+            window_label, 
+            WebviewUrl::App(url.into())
+        )
+            .title(&format!("Note: {}", title))
+            .inner_size(400.0, 300.0)
+            .min_inner_size(300.0, 200.0)
+            .resizable(true)
+            .always_on_top(true)
+            .decorations(false)  // Remove window decorations for ScreenFloat-like appearance
+            .skip_taskbar(true)
+            .transparent(true)   // Enable transparency for glassmorphism effect
+            .build()
+            .map_err(|e| AppError::new("FLOATING_NOTE_CREATE_ERROR", e.to_string()))?;
+        
+        // Window will read data from URL parameters
+        
+        Ok(())
+    }
 }
