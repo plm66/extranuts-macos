@@ -79,6 +79,7 @@ impl CategoryService {
         self.create_category(CreateCategoryRequest {
             name: preset.name.clone(),
             color: preset.color.clone(),
+            parent_id: None,
         })
     }
 }

@@ -15,6 +15,8 @@ export const CategoryManager: Component<CategoryManagerProps> = (props) => {
   const [showCreateForm, setShowCreateForm] = createSignal(false)
   const [selectedParent, setSelectedParent] = createSignal<number | null>(null)
   const [error, setError] = createSignal('')
+  const [renamingCategoryId, setRenamingCategoryId] = createSignal<number | null>(null)
+  const [tempName, setTempName] = createSignal('')
 
   // Form state
   const [formName, setFormName] = createSignal('')
@@ -125,6 +127,37 @@ export const CategoryManager: Component<CategoryManagerProps> = (props) => {
     resetForm()
   }
 
+  const startRenaming = (category: Category) => {
+    setRenamingCategoryId(category.id!)
+    setTempName(category.name)
+  }
+
+  const handleRename = async (category: Category) => {
+    if (!tempName().trim()) {
+      setError('Category name cannot be empty')
+      return
+    }
+
+    try {
+      await categoriesService.updateCategory({
+        id: category.id!,
+        name: tempName(),
+        color: category.color,
+        parent_id: category.parent_id || null
+      })
+      await loadCategories()
+      setRenamingCategoryId(null)
+      setTempName('')
+    } catch (err) {
+      setError(err.message || 'Failed to rename category')
+    }
+  }
+
+  const cancelRename = () => {
+    setRenamingCategoryId(null)
+    setTempName('')
+  }
+
   const resetForm = () => {
     setFormName('')
     setFormColor('#3B82F6')
@@ -163,8 +196,35 @@ export const CategoryManager: Component<CategoryManagerProps> = (props) => {
               class="w-4 h-4 text-macos-text-secondary" 
             />
             
-            {/* Category name */}
-            <span class="text-sm font-medium">{category.name}</span>
+            {/* Category name - inline editable */}
+            <Show 
+              when={renamingCategoryId() === category.id}
+              fallback={
+                <span 
+                  class="text-sm font-medium cursor-pointer hover:text-blue-400"
+                  onDoubleClick={() => startRenaming(category)}
+                  title="Double-click to rename"
+                >
+                  {category.name}
+                </span>
+              }
+            >
+              <input
+                type="text"
+                value={tempName()}
+                onInput={(e) => setTempName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleRename(category)
+                  } else if (e.key === 'Escape') {
+                    cancelRename()
+                  }
+                }}
+                onBlur={() => handleRename(category)}
+                class="text-sm font-medium bg-macos-hover border border-blue-500 rounded px-2 py-1 min-w-24"
+                ref={(el) => el?.focus()}
+              />
+            </Show>
             
             {/* Subcategory count */}
             {hasSubcategories && (
@@ -184,13 +244,22 @@ export const CategoryManager: Component<CategoryManagerProps> = (props) => {
               <Icon icon="material-symbols:add" class="w-4 h-4" />
             </button>
             
+            {/* Rename button */}
+            <button
+              onClick={() => startRenaming(category)}
+              class="p-1 hover:bg-macos-hover rounded text-macos-text-secondary"
+              title="Rename category"
+            >
+              <Icon icon="material-symbols:edit" class="w-4 h-4" />
+            </button>
+            
             {/* Edit button */}
             <button
               onClick={() => startEditing(category)}
               class="p-1 hover:bg-macos-hover rounded text-macos-text-secondary"
-              title="Edit category"
+              title="Edit category properties"
             >
-              <Icon icon="material-symbols:edit" class="w-4 h-4" />
+              <Icon icon="material-symbols:settings" class="w-4 h-4" />
             </button>
             
             {/* Delete button */}

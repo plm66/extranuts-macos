@@ -39,18 +39,6 @@ impl CategoryPreset {
     pub fn get_default_presets() -> Vec<CategoryPreset> {
         vec![
             CategoryPreset {
-                name: "Personal".to_string(),
-                color: "#3B82F6".to_string(),
-                description: "Personal thoughts and private reflections".to_string(),
-                icon: "material-symbols:person".to_string(),
-            },
-            CategoryPreset {
-                name: "Work".to_string(),
-                color: "#F59E0B".to_string(),
-                description: "Professional tasks and work-related notes".to_string(),
-                icon: "material-symbols:work".to_string(),
-            },
-            CategoryPreset {
                 name: "Projects".to_string(),
                 color: "#8B5CF6".to_string(),
                 description: "Creative projects and long-term planning".to_string(),

@@ -21,6 +21,9 @@ import { createFullBackup } from './utils/backup'
 import { parseWikiLinks, getAutoCompleteMatches, findWikiLinkAtCursor } from './utils/wikilinks'
 import SettingsPanel from './components/SettingsPanel'
 import ExportModal from './components/ExportModal'
+import CategoryManager from './components/CategoryManager'
+import CategorySelector from './components/CategorySelector'
+import { categoriesService } from './services/categories'
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -89,6 +92,8 @@ const App: Component = () => {
   const [noteToDelete, setNoteToDelete] = createSignal<string | null>(null)
   const [showSettings, setShowSettings] = createSignal(false)
   const [showExportModal, setShowExportModal] = createSignal(false)
+  const [showCategoryManager, setShowCategoryManager] = createSignal(false)
+  const [availableCategories, setAvailableCategories] = createSignal<Array<{id: number, name: string, color: string}>>([])
   
   onMount(async () => {
     console.log('App mounted, starting initialization...')
@@ -133,6 +138,26 @@ const App: Component = () => {
       } catch (loadError) {
         console.error('Failed to load notes:', loadError)
         console.error('Error details:', JSON.stringify(loadError, null, 2))
+      }
+
+      // Load categories
+      try {
+        const cats = await categoriesService.getHierarchicalCategories()
+        const flatCategories = []
+        const flattenCategories = (categories) => {
+          categories.forEach(cat => {
+            if (cat.id) {
+              flatCategories.push({ id: cat.id, name: cat.name, color: cat.color })
+            }
+            if (cat.subcategories) {
+              flattenCategories(cat.subcategories)
+            }
+          })
+        }
+        flattenCategories(cats)
+        setAvailableCategories(flatCategories)
+      } catch (err) {
+        console.error('Failed to load categories:', err)
       }
       
       // Listen for window events
@@ -324,6 +349,11 @@ const App: Component = () => {
     }
   }
 
+  const getCategoryInfo = (categoryId?: string) => {
+    if (!categoryId) return null
+    return availableCategories().find(cat => cat.id.toString() === categoryId)
+  }
+
   const insertAutoComplete = (noteTitle: string) => {
     const textarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
     if (!textarea) return
@@ -429,6 +459,14 @@ const App: Component = () => {
             />
           </button>
           <button
+            onClick={() => setShowCategoryManager(true)}
+            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag flex items-center gap-1"
+            title="Manage Categories"
+          >
+            <Icon icon="material-symbols:category" class="w-4 h-4" />
+            <span class="text-xs">Categories</span>
+          </button>
+          <button
             onClick={() => setShowExportModal(true)}
             class="px-3 py-1.5 text-sm hover-highlight rounded no-drag flex items-center gap-1"
             title="Export to Obsidian"
@@ -477,30 +515,44 @@ const App: Component = () => {
             <div class="flex-1 flex flex-col p-6">
               {/* Title Field */}
               <div class="flex items-center justify-between mb-4">
-                <input
-                  type="text"
-                  value={noteTitle()}
-                  onInput={(e) => setNoteTitle(e.target.value)}
-                  onBlur={saveCurrentNote}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      // Move cursor to content area when Enter is pressed
-                      const contentTextarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
-                      if (contentTextarea) {
-                        contentTextarea.focus()
+                <div class="flex-1 flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={noteTitle()}
+                    onInput={(e) => setNoteTitle(e.target.value)}
+                    onBlur={saveCurrentNote}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        // Move cursor to beginning of content area when Enter is pressed
+                        const contentTextarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
+                        if (contentTextarea) {
+                          contentTextarea.focus()
+                          // Force cursor to absolute beginning, even if there's existing content
+                          setTimeout(() => {
+                            contentTextarea.setSelectionRange(0, 0)
+                            contentTextarea.scrollTop = 0 // Also scroll to top
+                          }, 0)
+                        }
                       }
-                    }
-                  }}
-                  class="flex-1 text-2xl font-semibold bg-transparent border-none outline-none text-macos-text no-drag mr-4"
-                  placeholder="Note title..."
-                  ref={(el) => {
-                    // Auto-focus title when note is selected
-                    if (el && selectedNote()) {
-                      setTimeout(() => el.focus(), 100)
-                    }
-                  }}
-                />
+                    }}
+                    class="flex-1 text-2xl font-semibold bg-transparent border-none outline-none text-macos-text no-drag"
+                    placeholder="Note title..."
+                    ref={(el) => {
+                      // Auto-focus title when note is selected
+                      if (el && selectedNote()) {
+                        setTimeout(() => el.focus(), 100)
+                      }
+                    }}
+                  />
+                </div>
                 <div class="flex items-center space-x-2">
+                  <button
+                    onClick={() => setShowCategoryManager(true)}
+                    class="p-2 hover-highlight rounded no-drag"
+                    title="Manage categories"
+                  >
+                    <Icon icon="material-symbols:category" class="w-4 h-4" />
+                  </button>
                   <button
                     onClick={togglePreviewMode}
                     class={`p-2 hover-highlight rounded no-drag ${showPreview() ? 'bg-blue-500/20 text-blue-400' : ''}`}
@@ -580,7 +632,7 @@ const App: Component = () => {
                     }
                   }}
                   class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed"
-                  placeholder="Start writing your note content... Use [[Note Title]] to link to other notes. Press Cmd+Shift+P to preview links."
+                  placeholder="Write your note..."
                   style={{
                     "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                     "line-height": "1.6"
@@ -662,10 +714,25 @@ const App: Component = () => {
                         {note.isPinned && (
                           <Icon icon="material-symbols:push-pin" class="w-3 h-3 text-blue-400" />
                         )}
+                        {getCategoryInfo(note.categoryId) && (
+                          <div 
+                            class="w-2 h-2 rounded-full border border-white/20" 
+                            style={{ backgroundColor: getCategoryInfo(note.categoryId)!.color }}
+                            title={getCategoryInfo(note.categoryId)!.name}
+                          />
+                        )}
                         {note.title}
                       </div>
-                      <div class="text-xs text-macos-text-secondary truncate mt-1">
-                        {note.content.split('\n')[0] || 'Empty note'}
+                      <div class="text-xs text-macos-text-secondary truncate mt-1 flex items-center gap-2">
+                        <span>{note.content.split('\n')[0] || 'Empty note'}</span>
+                        {getCategoryInfo(note.categoryId) && (
+                          <span class="text-xs px-1.5 py-0.5 rounded" style={{ 
+                            backgroundColor: getCategoryInfo(note.categoryId)!.color + '20',
+                            color: getCategoryInfo(note.categoryId)!.color 
+                          }}>
+                            {getCategoryInfo(note.categoryId)!.name}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div class="flex items-center space-x-2 ml-2">
@@ -766,6 +833,12 @@ const App: Component = () => {
       <ExportModal 
         isOpen={showExportModal()} 
         onClose={() => setShowExportModal(false)} 
+      />
+      
+      {/* Category Manager */}
+      <CategoryManager 
+        isOpen={showCategoryManager()} 
+        onClose={() => setShowCategoryManager(false)} 
       />
     </div>
   )

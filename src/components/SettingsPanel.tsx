@@ -226,6 +226,89 @@ export const SettingsPanel: Component<{
                       <option value="120">2 minutes</option>
                     </select>
                   </SettingItem>
+                  
+                  {/* WikiLinks Documentation */}
+                  <div class="glass-morphism rounded-lg p-4 bg-blue-500/10 border border-blue-500/30">
+                    <div class="flex items-start gap-3">
+                      <Icon icon="material-symbols:link" class="w-5 h-5 mt-0.5 text-blue-400" />
+                      <div>
+                        <h4 class="text-sm font-medium text-blue-400 mb-2">WikiLinks - Connect Your Notes</h4>
+                        <p class="text-xs text-blue-300 mb-3">
+                          Create connections between your notes using WikiLink syntax. This powerful feature helps you build a knowledge network.
+                        </p>
+                        <div class="space-y-2">
+                          <div>
+                            <h5 class="text-xs font-medium text-blue-300 mb-1">How to Create Links:</h5>
+                            <ul class="text-xs text-blue-200 space-y-1 ml-2">
+                              <li>• Type <code class="bg-blue-900/30 px-1 rounded">[[Note Title]]</code> to link to existing notes</li>
+                              <li>• Type <code class="bg-blue-900/30 px-1 rounded">[[New Note]]</code> to create and link to new notes</li>
+                              <li>• Use <code class="bg-blue-900/30 px-1 rounded">[[Note Title|Display Text]]</code> for custom link text</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h5 class="text-xs font-medium text-blue-300 mb-1">Features:</h5>
+                            <ul class="text-xs text-blue-200 space-y-1 ml-2">
+                              <li>• <strong>Auto-complete:</strong> Start typing a link to see matching notes</li>
+                              <li>• <strong>Preview mode:</strong> Press Cmd+Shift+P to see clickable links</li>
+                              <li>• <strong>Smart creation:</strong> Links to non-existent notes create them automatically</li>
+                              <li>• <strong>Visual indicators:</strong> Existing links appear in blue, missing ones in red</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h5 class="text-xs font-medium text-blue-300 mb-1">Keyboard Shortcuts:</h5>
+                            <div class="flex items-center gap-4">
+                              <div class="flex items-center gap-2">
+                                <span class="text-xs text-blue-200">Toggle Preview:</span>
+                                <kbd class="text-xs bg-blue-900/30 px-2 py-1 rounded font-mono">⌘⇧P</kbd>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Categories Documentation */}
+                  <div class="glass-morphism rounded-lg p-4 bg-purple-500/10 border border-purple-500/30">
+                    <div class="flex items-start gap-3">
+                      <Icon icon="material-symbols:category" class="w-5 h-5 mt-0.5 text-purple-400" />
+                      <div>
+                        <h4 class="text-sm font-medium text-purple-400 mb-2">Categories - Organize Your Notes</h4>
+                        <p class="text-xs text-purple-300 mb-3">
+                          Organize your notes with unlimited hierarchical categories. Create a personalized system that grows with your needs.
+                        </p>
+                        <div class="space-y-2">
+                          <div>
+                            <h5 class="text-xs font-medium text-purple-300 mb-1">How to Use Categories:</h5>
+                            <ul class="text-xs text-purple-200 space-y-1 ml-2">
+                              <li>• Click the <Icon icon="material-symbols:category" class="w-3 h-3 inline" /> icon in the note toolbar to assign categories</li>
+                              <li>• Click "Categories" in the main header to manage all categories</li>
+                              <li>• Double-click category names to rename them quickly</li>
+                              <li>• Create unlimited sub-categories for detailed organization</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h5 class="text-xs font-medium text-purple-300 mb-1">Features:</h5>
+                            <ul class="text-xs text-purple-200 space-y-1 ml-2">
+                              <li>• <strong>Visual indicators:</strong> Color dots and labels in the note list</li>
+                              <li>• <strong>Quick presets:</strong> Projects, Ideas, Research, Important, Draft, Archive</li>
+                              <li>• <strong>Hierarchical structure:</strong> Create sub-categories within categories</li>
+                              <li>• <strong>Color coding:</strong> Assign unique colors based on psychology research</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h5 class="text-xs font-medium text-purple-300 mb-1">Quick Actions:</h5>
+                            <ul class="text-xs text-purple-200 space-y-1 ml-2">
+                              <li>• <strong>Create:</strong> Use presets or create custom categories</li>
+                              <li>• <strong>Rename:</strong> Double-click category names for inline editing</li>
+                              <li>• <strong>Organize:</strong> Drag or use forms to create sub-categories</li>
+                              <li>• <strong>Delete:</strong> Remove categories with confirmation</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </Show>
                 
                 {/* Appearance Settings */}
