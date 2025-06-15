@@ -26,7 +26,7 @@
 ## 📝 Priorité Moyenne
 
 ### 4. Fonctionnalités Notes
-- [ ] Éditeur de notes avec markdown support
+- [x] Éditeur de notes avec markdown support
 - [ ] Système de recherche en temps réel
 - [ ] Tags et catégories avec filtrage
 - [ ] Pin/unpin des notes importantes

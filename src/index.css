@@ -67,4 +67,115 @@
   .wikilink-missing {
     @apply text-orange-400 bg-orange-400/10 px-1 rounded cursor-pointer border border-orange-400/20 hover:bg-orange-400/20 transition-colors;
   }
+  
+  /* Markdown Preview Styles */
+  .markdown-preview {
+    @apply text-macos-text leading-relaxed;
+  }
+  
+  .markdown-h1 {
+    @apply text-3xl font-bold mb-4 mt-6 text-macos-text;
+  }
+  
+  .markdown-h2 {
+    @apply text-2xl font-semibold mb-3 mt-5 text-macos-text;
+  }
+  
+  .markdown-h3 {
+    @apply text-xl font-semibold mb-2 mt-4 text-macos-text;
+  }
+  
+  .markdown-h4 {
+    @apply text-lg font-medium mb-2 mt-3 text-macos-text;
+  }
+  
+  .markdown-h5 {
+    @apply text-base font-medium mb-1 mt-3 text-macos-text;
+  }
+  
+  .markdown-h6 {
+    @apply text-sm font-medium mb-1 mt-2 text-macos-text-secondary;
+  }
+  
+  .markdown-paragraph {
+    @apply mb-4 text-macos-text;
+  }
+  
+  .markdown-code-block {
+    @apply bg-black/50 border border-macos-border rounded-lg p-4 mb-4 overflow-x-auto;
+  }
+  
+  .markdown-code-block code {
+    @apply text-sm font-mono text-blue-300;
+  }
+  
+  .inline-code {
+    @apply bg-black/30 px-1.5 py-0.5 rounded text-sm font-mono text-blue-300 border border-macos-border;
+  }
+  
+  .markdown-preview ul {
+    @apply list-disc list-inside mb-4 space-y-1;
+  }
+  
+  .markdown-preview ol {
+    @apply list-decimal list-inside mb-4 space-y-1;
+  }
+  
+  .markdown-preview li {
+    @apply text-macos-text ml-4;
+  }
+  
+  .markdown-link {
+    @apply text-blue-400 underline hover:text-blue-300 transition-colors;
+  }
+  
+  .markdown-preview strong {
+    @apply font-semibold text-macos-text;
+  }
+  
+  .markdown-preview em {
+    @apply italic text-macos-text;
+  }
+  
+  /* Syntax highlighting styles */
+  .syntax-keyword {
+    @apply text-purple-400 font-medium;
+  }
+  
+  .syntax-string {
+    @apply text-green-400;
+  }
+  
+  .syntax-comment {
+    @apply text-gray-500 italic;
+  }
+  
+  .syntax-number {
+    @apply text-cyan-400;
+  }
+  
+  .syntax-operator {
+    @apply text-orange-400;
+  }
+  
+  .syntax-function {
+    @apply text-yellow-400;
+  }
+  
+  .syntax-variable {
+    @apply text-blue-400;
+  }
+  
+  /* Enhanced code block styles */
+  .markdown-code-block {
+    @apply bg-black/50 border border-macos-border rounded-lg p-4 mb-4 overflow-hidden;
+  }
+  
+  .markdown-code-block pre {
+    @apply m-0 overflow-x-auto;
+  }
+  
+  .markdown-code-block code {
+    @apply text-sm font-mono text-gray-300 block;
+  }
 }

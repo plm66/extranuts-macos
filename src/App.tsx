@@ -22,7 +22,10 @@ import { parseWikiLinks, getAutoCompleteMatches, findWikiLinkAtCursor } from './
 import SettingsPanel from './components/SettingsPanel'
 import ExportModal from './components/ExportModal'
 import CategorySelector from './components/CategorySelector'
+import CategoryManager from './components/CategoryManager'
 import { categoriesService } from './services/categories'
+import MarkdownPreview from './components/MarkdownPreview'
+import EnhancedEditor from './components/EnhancedEditor'
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -93,6 +96,7 @@ const App: Component = () => {
   const [showExportModal, setShowExportModal] = createSignal(false)
   const [availableCategories, setAvailableCategories] = createSignal<Array<{id: number, name: string, color: string}>>([])
   const [searchQuery, setSearchQuery] = createSignal('')
+  const [showCategoryManager, setShowCategoryManager] = createSignal(false)
   
   
   onMount(async () => {
@@ -550,8 +554,9 @@ const App: Component = () => {
                     onBlur={saveCurrentNote}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
+                        e.preventDefault() // Prevent default form submission
                         // Move cursor to beginning of content area when Enter is pressed
-                        const contentTextarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
+                        const contentTextarea = document.querySelector('textarea') as HTMLTextAreaElement
                         if (contentTextarea) {
                           contentTextarea.focus()
                           // Force cursor to absolute beginning, even if there's existing content
@@ -644,32 +649,48 @@ const App: Component = () => {
                 when={!showPreview()}
                 fallback={
                   <div class="flex-1 p-4 overflow-y-auto native-scrollbar leading-relaxed">
-                    <WikiLinkRenderer 
+                    <MarkdownPreview
                       content={noteContent()}
                       noteList={notes()}
-                      onLinkClick={handleWikiLinkClick}
+                      onWikiLinkClick={handleWikiLinkClick}
                     />
                   </div>
                 }
               >
-                <textarea
-                  value={noteContent()}
-                  onInput={handleContentInput}
-                  onBlur={saveCurrentNote}
-                  onKeyDown={(e) => {
-                    // Only native shortcuts - no custom ones
-                    if (e.metaKey && e.key === 's') {
-                      e.preventDefault()
-                      saveCurrentNote()
-                    }
-                  }}
-                  class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed"
-                  placeholder="Write your note..."
-                  style={{
-                    "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                    "line-height": "1.6"
-                  }}
-                />
+                <div class="flex-1 flex flex-col">
+                  <EnhancedEditor
+                    value={noteContent()}
+                    onInput={(value) => {
+                      setNoteContent(value)
+                      // Check for WikiLink auto-completion
+                      const textarea = document.querySelector('textarea') as HTMLTextAreaElement
+                      if (textarea) {
+                        const cursorPos = textarea.selectionStart || 0
+                        const wikiLinkInfo = findWikiLinkAtCursor(value, cursorPos)
+                        
+                        if (wikiLinkInfo.isInWikiLink && wikiLinkInfo.linkText !== undefined) {
+                          const matches = getAutoCompleteMatches(wikiLinkInfo.linkText, notes())
+                          setAutoCompleteResults(matches)
+                          
+                          if (matches.length > 0) {
+                            const rect = textarea.getBoundingClientRect()
+                            setAutoCompletePosition({
+                              top: rect.top + 20,
+                              left: rect.left + 10
+                            })
+                            setShowAutoComplete(true)
+                          } else {
+                            setShowAutoComplete(false)
+                          }
+                        } else {
+                          setShowAutoComplete(false)
+                        }
+                      }
+                    }}
+                    onBlur={saveCurrentNote}
+                    placeholder="Write your note with markdown support..."
+                  />
+                </div>
               </Show>
             </div>
           </Show>
@@ -871,6 +892,11 @@ const App: Component = () => {
         isOpen={showExportModal()} 
         onClose={() => setShowExportModal(false)} 
       />
+      
+      {/* Category Manager Modal */}
+      <Show when={showCategoryManager()}>
+        <CategoryManager onClose={() => setShowCategoryManager(false)} />
+      </Show>
       
     </div>
   )

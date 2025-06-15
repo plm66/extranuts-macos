@@ -131,3 +131,35 @@ npm run preview      # Preview build frontend
 - Régions draggables pour déplacer les fenêtres
 - Transitions smooth sur les interactions
 - Support du mode sombre natif
+
+## 📝 Éditeur de Notes Amélioré
+
+### Markdown Support
+- Parser markdown personnalisé pour le rendu en preview
+- Support des éléments de base:
+  - **Bold** et *Italic*
+  - Headers (H1-H6)
+  - Listes ordonnées et non-ordonnées
+  - Code inline et blocs de code
+  - Liens
+- Intégration avec le système WikiLinks existant
+
+### Enhanced Editor Component
+- Barre d'outils de formatage avec boutons pour:
+  - Bold/Italic
+  - Headers
+  - Listes
+  - Code/Code blocks
+  - Liens
+  - WikiLinks
+- Raccourcis clavier:
+  - ⌘B pour bold
+  - ⌘I pour italic
+  - ⌘K pour liens
+  - Tab pour indentation
+
+### Markdown Preview Component
+- Rendu en temps réel du markdown
+- Styles cohérents avec le thème macOS
+- Support des WikiLinks cliquables dans le preview
+- Syntax highlighting pour les blocs de code
