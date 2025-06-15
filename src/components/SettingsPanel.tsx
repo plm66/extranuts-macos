@@ -53,6 +53,8 @@ export const SettingsPanel: Component<{
   onClose: () => void
 }> = (props) => {
   const [selectedSection, setSelectedSection] = createSignal<string>('editor')
+  const [wikiLinksExpanded, setWikiLinksExpanded] = createSignal(false)
+  const [categoriesExpanded, setCategoriesExpanded] = createSignal(false)
   
   const getCurrentSection = () => sections.find(s => s.id === selectedSection())
   
@@ -228,17 +230,31 @@ export const SettingsPanel: Component<{
                   </SettingItem>
                   
                   {/* WikiLinks Documentation */}
-                  <div class="glass-morphism rounded-lg p-4 bg-blue-500/10 border border-blue-500/30">
-                    <div class="flex items-start gap-3">
-                      <Icon icon="material-symbols:link" class="w-5 h-5 mt-0.5 text-blue-400" />
-                      <div>
-                        <h4 class="text-sm font-medium text-blue-400 mb-2">WikiLinks - Connect Your Notes</h4>
-                        <p class="text-xs text-blue-300 mb-3">
-                          Create connections between your notes using WikiLink syntax. This powerful feature helps you build a knowledge network.
-                        </p>
-                        <div class="space-y-2">
+                  <div class="glass-morphism rounded-lg bg-blue-500/10 border border-blue-500/30">
+                    <button
+                      onClick={() => setWikiLinksExpanded(!wikiLinksExpanded())}
+                      class="w-full p-4 flex items-center justify-between hover:bg-blue-500/20 transition-colors"
+                    >
+                      <div class="flex items-center gap-3">
+                        <Icon icon="material-symbols:link" class="w-5 h-5 text-blue-400" />
+                        <div class="text-left">
+                          <h4 class="text-sm font-medium text-blue-400">WikiLinks - Connect Your Notes</h4>
+                          <p class="text-xs text-blue-300">
+                            Create connections using [[Note Title]] syntax
+                          </p>
+                        </div>
+                      </div>
+                      <Icon 
+                        icon={wikiLinksExpanded() ? "material-symbols:expand-less" : "material-symbols:expand-more"} 
+                        class="w-5 h-5 text-blue-400" 
+                      />
+                    </button>
+                    
+                    <Show when={wikiLinksExpanded()}>
+                      <div class="px-4 pb-4 border-t border-blue-500/30">
+                        <div class="space-y-3 pt-3">
                           <div>
-                            <h5 class="text-xs font-medium text-blue-300 mb-1">How to Create Links:</h5>
+                            <h5 class="text-xs font-medium text-blue-300 mb-2">How to Create Links:</h5>
                             <ul class="text-xs text-blue-200 space-y-1 ml-2">
                               <li>• Type <code class="bg-blue-900/30 px-1 rounded">[[Note Title]]</code> to link to existing notes</li>
                               <li>• Type <code class="bg-blue-900/30 px-1 rounded">[[New Note]]</code> to create and link to new notes</li>
@@ -246,40 +262,45 @@ export const SettingsPanel: Component<{
                             </ul>
                           </div>
                           <div>
-                            <h5 class="text-xs font-medium text-blue-300 mb-1">Features:</h5>
+                            <h5 class="text-xs font-medium text-blue-300 mb-2">Features:</h5>
                             <ul class="text-xs text-blue-200 space-y-1 ml-2">
                               <li>• <strong>Auto-complete:</strong> Start typing a link to see matching notes</li>
-                              <li>• <strong>Preview mode:</strong> Press Cmd+Shift+P to see clickable links</li>
+                              <li>• <strong>Preview mode:</strong> Click the preview button to see clickable links</li>
                               <li>• <strong>Smart creation:</strong> Links to non-existent notes create them automatically</li>
                               <li>• <strong>Visual indicators:</strong> Existing links appear in blue, missing ones in red</li>
                             </ul>
                           </div>
-                          <div>
-                            <h5 class="text-xs font-medium text-blue-300 mb-1">Keyboard Shortcuts:</h5>
-                            <div class="flex items-center gap-4">
-                              <div class="flex items-center gap-2">
-                                <span class="text-xs text-blue-200">Toggle Preview:</span>
-                                <kbd class="text-xs bg-blue-900/30 px-2 py-1 rounded font-mono">⌘⇧P</kbd>
-                              </div>
-                            </div>
-                          </div>
                         </div>
                       </div>
-                    </div>
+                    </Show>
                   </div>
                   
                   {/* Categories Documentation */}
-                  <div class="glass-morphism rounded-lg p-4 bg-purple-500/10 border border-purple-500/30">
-                    <div class="flex items-start gap-3">
-                      <Icon icon="material-symbols:category" class="w-5 h-5 mt-0.5 text-purple-400" />
-                      <div>
-                        <h4 class="text-sm font-medium text-purple-400 mb-2">Categories - Organize Your Notes</h4>
-                        <p class="text-xs text-purple-300 mb-3">
-                          Organize your notes with unlimited hierarchical categories. Create a personalized system that grows with your needs.
-                        </p>
-                        <div class="space-y-2">
+                  <div class="glass-morphism rounded-lg bg-purple-500/10 border border-purple-500/30">
+                    <button
+                      onClick={() => setCategoriesExpanded(!categoriesExpanded())}
+                      class="w-full p-4 flex items-center justify-between hover:bg-purple-500/20 transition-colors"
+                    >
+                      <div class="flex items-center gap-3">
+                        <Icon icon="material-symbols:category" class="w-5 h-5 text-purple-400" />
+                        <div class="text-left">
+                          <h4 class="text-sm font-medium text-purple-400">Categories - Organize Your Notes</h4>
+                          <p class="text-xs text-purple-300">
+                            Unlimited hierarchical categories with visual indicators
+                          </p>
+                        </div>
+                      </div>
+                      <Icon 
+                        icon={categoriesExpanded() ? "material-symbols:expand-less" : "material-symbols:expand-more"} 
+                        class="w-5 h-5 text-purple-400" 
+                      />
+                    </button>
+                    
+                    <Show when={categoriesExpanded()}>
+                      <div class="px-4 pb-4 border-t border-purple-500/30">
+                        <div class="space-y-3 pt-3">
                           <div>
-                            <h5 class="text-xs font-medium text-purple-300 mb-1">How to Use Categories:</h5>
+                            <h5 class="text-xs font-medium text-purple-300 mb-2">How to Use Categories:</h5>
                             <ul class="text-xs text-purple-200 space-y-1 ml-2">
                               <li>• Click the <Icon icon="material-symbols:category" class="w-3 h-3 inline" /> icon in the note toolbar to assign categories</li>
                               <li>• Click "Categories" in the main header to manage all categories</li>
@@ -288,7 +309,7 @@ export const SettingsPanel: Component<{
                             </ul>
                           </div>
                           <div>
-                            <h5 class="text-xs font-medium text-purple-300 mb-1">Features:</h5>
+                            <h5 class="text-xs font-medium text-purple-300 mb-2">Features:</h5>
                             <ul class="text-xs text-purple-200 space-y-1 ml-2">
                               <li>• <strong>Visual indicators:</strong> Color dots and labels in the note list</li>
                               <li>• <strong>Quick presets:</strong> Projects, Ideas, Research, Important, Draft, Archive</li>
@@ -297,7 +318,7 @@ export const SettingsPanel: Component<{
                             </ul>
                           </div>
                           <div>
-                            <h5 class="text-xs font-medium text-purple-300 mb-1">Quick Actions:</h5>
+                            <h5 class="text-xs font-medium text-purple-300 mb-2">Quick Actions:</h5>
                             <ul class="text-xs text-purple-200 space-y-1 ml-2">
                               <li>• <strong>Create:</strong> Use presets or create custom categories</li>
                               <li>• <strong>Rename:</strong> Double-click category names for inline editing</li>
@@ -307,7 +328,7 @@ export const SettingsPanel: Component<{
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </Show>
                   </div>
                 </Show>
                 
@@ -472,41 +493,103 @@ export const SettingsPanel: Component<{
                 
                 {/* Shortcuts */}
                 <Show when={selectedSection() === 'shortcuts'}>
-                  <div class="glass-morphism rounded-lg p-4">
-                    <h4 class="text-sm font-medium mb-3">Available Shortcuts</h4>
-                    <div class="grid grid-cols-2 gap-2">
-                      <div class="flex justify-between items-center p-2 bg-macos-hover/50 rounded">
-                        <span class="text-sm text-macos-text-secondary">New Note</span>
-                        <kbd class="text-xs bg-macos-bg px-2 py-1 rounded font-mono">⌘N</kbd>
+                  <div class="glass-morphism rounded-lg p-4 bg-green-500/10 border border-green-500/30">
+                    <div class="flex items-center gap-3 mb-4">
+                      <Icon icon="material-symbols:keyboard" class="w-5 h-5 text-green-400" />
+                      <h4 class="text-sm font-medium text-green-400">Native macOS Shortcuts</h4>
+                    </div>
+                    <p class="text-xs text-green-300 mb-4">
+                      Extranuts uses standard macOS shortcuts that work across all applications. No custom shortcuts to remember!
+                    </p>
+                    
+                    <div class="space-y-3">
+                      <div>
+                        <h5 class="text-xs font-medium text-green-300 mb-2">File Operations</h5>
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">New Note</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘N</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Save Note</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘S</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Close Window</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘W</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Quit App</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘Q</kbd>
+                          </div>
+                        </div>
                       </div>
-                      <div class="flex justify-between items-center p-2 bg-macos-hover/50 rounded">
-                        <span class="text-sm text-macos-text-secondary">Save Note</span>
-                        <kbd class="text-xs bg-macos-bg px-2 py-1 rounded font-mono">⌘S</kbd>
+                      
+                      <div>
+                        <h5 class="text-xs font-medium text-green-300 mb-2">Text Editing</h5>
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Select All</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘A</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Copy</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘C</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Paste</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘V</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Undo</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘Z</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Redo</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘⇧Z</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Find</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘F</kbd>
+                          </div>
+                        </div>
                       </div>
-                      <div class="flex justify-between items-center p-2 bg-macos-hover/50 rounded">
-                        <span class="text-sm text-macos-text-secondary">Delete Note</span>
-                        <kbd class="text-xs bg-macos-bg px-2 py-1 rounded font-mono">⌘⌫</kbd>
-                      </div>
-                      <div class="flex justify-between items-center p-2 bg-macos-hover/50 rounded">
-                        <span class="text-sm text-macos-text-secondary">Search Notes</span>
-                        <kbd class="text-xs bg-macos-bg px-2 py-1 rounded font-mono">⌘F</kbd>
-                      </div>
-                      <div class="flex justify-between items-center p-2 bg-macos-hover/50 rounded">
-                        <span class="text-sm text-macos-text-secondary">Toggle Preview</span>
-                        <kbd class="text-xs bg-macos-bg px-2 py-1 rounded font-mono">⌘⇧P</kbd>
-                      </div>
-                      <div class="flex justify-between items-center p-2 bg-macos-hover/50 rounded">
-                        <span class="text-sm text-macos-text-secondary">Settings</span>
-                        <kbd class="text-xs bg-macos-bg px-2 py-1 rounded font-mono">⌘,</kbd>
+                      
+                      <div>
+                        <h5 class="text-xs font-medium text-green-300 mb-2">Application</h5>
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Settings</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘,</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Hide App</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘H</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Minimize</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌘M</kbd>
+                          </div>
+                          <div class="flex justify-between items-center p-2 bg-green-900/20 rounded">
+                            <span class="text-xs">Enter/Exit Full Screen</span>
+                            <kbd class="text-xs bg-green-900/30 px-2 py-1 rounded font-mono">⌃⌘F</kbd>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                   
-                  <div class="glass-morphism rounded-lg p-4 text-center">
-                    <Icon icon="material-symbols:keyboard" class="w-12 h-12 mx-auto mb-2 text-macos-text-secondary" />
-                    <p class="text-sm text-macos-text-secondary">
-                      Custom keyboard shortcuts coming soon
-                    </p>
+                  <div class="glass-morphism rounded-lg p-4 bg-blue-500/10 border border-blue-500/30">
+                    <div class="flex items-start gap-3">
+                      <Icon icon="material-symbols:info" class="w-5 h-5 mt-0.5 text-blue-400" />
+                      <div>
+                        <h4 class="text-sm font-medium text-blue-400 mb-1">Mouse-Centric Design</h4>
+                        <p class="text-xs text-blue-300">
+                          Extranuts is designed for thinking with your mouse. Every action has a clear button or arrow - 
+                          use shortcuts only when convenient, never required.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </Show>
                 

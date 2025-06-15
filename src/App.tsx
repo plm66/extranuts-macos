@@ -465,6 +465,7 @@ const App: Component = () => {
           >
             <Icon icon="material-symbols:category" class="w-4 h-4" />
             <span class="text-xs">Categories</span>
+            <Icon icon="material-symbols:keyboard-arrow-right" class="w-3 h-3 opacity-60" />
           </button>
           <button
             onClick={() => setShowExportModal(true)}
@@ -473,6 +474,7 @@ const App: Component = () => {
           >
             <Icon icon="simple-icons:obsidian" class="w-4 h-4" />
             <span class="text-xs">Export</span>
+            <Icon icon="material-symbols:keyboard-arrow-right" class="w-3 h-3 opacity-60" />
           </button>
           <button
             onClick={hideToMenuBar}
@@ -482,10 +484,11 @@ const App: Component = () => {
           </button>
           <button
             onClick={() => setShowSettings(true)}
-            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
+            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag flex items-center gap-1"
             title="Settings"
           >
             <Icon icon="material-symbols:settings" class="w-4 h-4" />
+            <Icon icon="material-symbols:keyboard-arrow-right" class="w-3 h-3 opacity-60" />
           </button>
         </div>
       </div>
@@ -548,19 +551,24 @@ const App: Component = () => {
                 <div class="flex items-center space-x-2">
                   <button
                     onClick={() => setShowCategoryManager(true)}
-                    class="p-2 hover-highlight rounded no-drag"
+                    class="p-2 hover-highlight rounded no-drag flex items-center gap-1"
                     title="Manage categories"
                   >
                     <Icon icon="material-symbols:category" class="w-4 h-4" />
+                    <Icon icon="material-symbols:keyboard-arrow-right" class="w-3 h-3 opacity-60" />
                   </button>
                   <button
                     onClick={togglePreviewMode}
-                    class={`p-2 hover-highlight rounded no-drag ${showPreview() ? 'bg-blue-500/20 text-blue-400' : ''}`}
+                    class={`p-2 hover-highlight rounded no-drag flex items-center gap-1 ${showPreview() ? 'bg-blue-500/20 text-blue-400' : ''}`}
                     title={showPreview() ? "Switch to edit mode" : "Preview with clickable links"}
                   >
                     <Icon 
                       icon={showPreview() ? "material-symbols:edit" : "material-symbols:visibility"} 
                       class="w-4 h-4" 
+                    />
+                    <Icon 
+                      icon="material-symbols:keyboard-arrow-right" 
+                      class="w-3 h-3 opacity-60" 
                     />
                   </button>
                   <button
@@ -625,10 +633,10 @@ const App: Component = () => {
                   onInput={handleContentInput}
                   onBlur={saveCurrentNote}
                   onKeyDown={(e) => {
-                    // Cmd+Shift+P to toggle preview mode
-                    if (e.metaKey && e.shiftKey && e.key === 'P') {
+                    // Only native shortcuts - no custom ones
+                    if (e.metaKey && e.key === 's') {
                       e.preventDefault()
-                      togglePreviewMode()
+                      saveCurrentNote()
                     }
                   }}
                   class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed"
