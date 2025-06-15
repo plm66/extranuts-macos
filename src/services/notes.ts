@@ -75,11 +75,21 @@ export const notesService = {
   },
   
   async deleteNote(id: string): Promise<void> {
+    console.log('notesService.deleteNote called with id:', id);
     const numericId = parseInt(id);
-    if (isNaN(numericId)) return;
+    if (isNaN(numericId)) {
+      console.error('Invalid note ID:', id);
+      return;
+    }
     
-    // For now, deletion is not implemented in backend
-    console.log('Note deletion not yet implemented in backend', { id });
+    console.log('Invoking delete_note with numericId:', numericId);
+    try {
+      await invoke('delete_note', { id: numericId });
+      console.log('delete_note command completed successfully');
+    } catch (error) {
+      console.error('delete_note command failed:', error);
+      throw error;
+    }
   }
 };
 

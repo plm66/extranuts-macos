@@ -74,17 +74,23 @@ export function updateNote(id: string, updates: Partial<Note>) {
   })
 }
 
-// Delete note locally (until backend has delete command)
+// Delete note
 export function deleteNote(id: string) {
-  setNotes(prev => prev.filter(note => note.id !== id))
-  if (selectedNote()?.id === id) {
-    setSelectedNote(null)
-  }
+  console.log('deleteNote called with id:', id)
   
-  // TODO: Sync with backend when delete command is available
-  notesService.deleteNote(id).catch(err => {
-    console.warn('Note deletion not synced to backend:', err)
-  })
+  // Delete from backend first
+  notesService.deleteNote(id)
+    .then(() => {
+      console.log('Note deleted from backend successfully')
+      // Then update local state
+      setNotes(prev => prev.filter(note => note.id !== id))
+      if (selectedNote()?.id === id) {
+        setSelectedNote(null)
+      }
+    })
+    .catch(err => {
+      console.error('Failed to delete note:', err)
+    })
 }
 
 export function togglePinNote(id: string) {

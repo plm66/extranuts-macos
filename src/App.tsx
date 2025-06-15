@@ -16,8 +16,10 @@ import {
   isLoading,
   error
 } from './stores/noteStore'
+import { preferences, loadPreferences, toggleDeleteConfirmation } from './stores/preferencesStore'
 import { createFullBackup } from './utils/backup'
 import { parseWikiLinks, getAutoCompleteMatches, findWikiLinkAtCursor } from './utils/wikilinks'
+import SettingsPanel from './components/SettingsPanel'
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -82,14 +84,32 @@ const App: Component = () => {
   const [autoCompleteResults, setAutoCompleteResults] = createSignal<Array<{ title: string; id: string }>>([])
   const [autoCompletePosition, setAutoCompletePosition] = createSignal({ top: 0, left: 0 })
   const [showPreview, setShowPreview] = createSignal(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = createSignal(false)
+  const [noteToDelete, setNoteToDelete] = createSignal<string | null>(null)
+  const [showSettings, setShowSettings] = createSignal(false)
   
   onMount(async () => {
     console.log('App mounted, starting initialization...')
+    
+    // Global keyboard shortcuts
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Cmd+, for settings
+      if (e.metaKey && e.key === ',') {
+        e.preventDefault()
+        setShowSettings(true)
+      }
+    }
+    
+    document.addEventListener('keydown', handleKeyDown)
     
     try {
       console.log('Step 1: Getting current window...')
       const currentWindow = getCurrentWindow()
       console.log('Got current window:', currentWindow)
+      
+      // Load preferences
+      console.log('Loading preferences...')
+      await loadPreferences()
       
       // Check if we need to migrate notes from localStorage
       const { migrateNotesFromLocalStorage, isMigrationComplete } = await import('./utils/migrateFromLocalStorage')
@@ -141,7 +161,10 @@ const App: Component = () => {
       }, 1000)
       
       console.log('App initialization completed')
-      return () => clearInterval(timeInterval)
+      return () => {
+        clearInterval(timeInterval)
+        document.removeEventListener('keydown', handleKeyDown)
+      }
     } catch (err) {
       console.error('CRITICAL: Error during app initialization:', err)
       console.error('Error stack:', err.stack)
@@ -409,6 +432,13 @@ const App: Component = () => {
           >
             Hide
           </button>
+          <button
+            onClick={() => setShowSettings(true)}
+            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
+            title="Settings"
+          >
+            <Icon icon="material-symbols:settings" class="w-4 h-4" />
+          </button>
         </div>
       </div>
       
@@ -494,11 +524,17 @@ const App: Component = () => {
                   <button
                     onClick={() => {
                       const note = selectedNote()
-                      if (note && confirm('Delete this note?')) {
-                        deleteNote(note.id)
-                        setSelectedNote(null)
-                        setNoteTitle('')
-                        setNoteContent('')
+                      if (note) {
+                        if (preferences().editor.confirm_delete) {
+                          setNoteToDelete(note.id)
+                          setShowDeleteConfirm(true)
+                        } else {
+                          // Delete without confirmation
+                          deleteNote(note.id)
+                          setSelectedNote(null)
+                          setNoteTitle('')
+                          setNoteContent('')
+                        }
                       }
                     }}
                     class="p-2 hover-highlight rounded text-red-400 no-drag"
@@ -669,6 +705,52 @@ const App: Component = () => {
           </span>
         </div>
       </div>
+      
+      {/* Delete Confirmation Modal */}
+      <Show when={showDeleteConfirm()}>
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div class="bg-macos-bg border border-macos-border rounded-lg p-6 max-w-sm mx-4">
+            <h3 class="text-lg font-semibold mb-4">Delete Note?</h3>
+            <p class="text-macos-text-secondary mb-6">
+              Are you sure you want to delete "{notes().find(n => n.id === noteToDelete())?.title}"? This action cannot be undone.
+            </p>
+            <div class="flex justify-end space-x-3">
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false)
+                  setNoteToDelete(null)
+                }}
+                class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const id = noteToDelete()
+                  if (id) {
+                    deleteNote(id)
+                    if (selectedNote()?.id === id) {
+                      setSelectedNote(null)
+                      setNoteTitle('')
+                      setNoteContent('')
+                    }
+                  }
+                  setShowDeleteConfirm(false)
+                  setNoteToDelete(null)
+                }}
+                class="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 border border-red-500/50 rounded-lg text-sm text-red-400"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </Show>
+      
+      {/* Settings Modal */}
+      <Show when={showSettings()}>
+        <SettingsPanel onClose={() => setShowSettings(false)} />
+      </Show>
     </div>
   )
 }

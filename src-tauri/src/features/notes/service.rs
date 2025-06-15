@@ -41,4 +41,8 @@ impl NoteService {
     pub fn update_note(&self, request: UpdateNoteRequest) -> AppResult<Note> {
         self.repository.update_note(&request)
     }
+    
+    pub fn delete_note(&self, id: i64) -> AppResult<()> {
+        self.repository.delete_note(id)
+    }
 }

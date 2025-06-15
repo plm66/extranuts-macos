@@ -25,11 +25,11 @@
 
 @layer components {
   .glass-morphism {
-    @apply bg-macos-bg backdrop-blur-macos border border-macos-border rounded-lg;
+    @apply bg-macos-bg backdrop-blur-[20px] border border-macos-border rounded-lg;
   }
   
   .sidebar-glass {
-    @apply bg-macos-sidebar backdrop-blur-macos border-r border-macos-border;
+    @apply bg-macos-sidebar backdrop-blur-[20px] border-r border-macos-border;
   }
   
   .hover-highlight {

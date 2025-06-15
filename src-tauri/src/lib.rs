@@ -76,10 +76,15 @@ pub fn run() {
             features::notes::search_notes,
             features::notes::get_all_notes,
             features::notes::update_note,
+            features::notes::delete_note,
             
             // Sync commands
             features::sync::get_sync_status,
             features::sync::toggle_icloud_sync,
+            
+            // Preferences commands
+            features::preferences::get_preferences,
+            features::preferences::update_preferences,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

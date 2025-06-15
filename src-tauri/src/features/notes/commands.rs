@@ -51,3 +51,22 @@ pub fn update_note(
     service.update_note(request)
         .map_err(|e| e.message)
 }
+
+#[tauri::command]
+pub fn delete_note(
+    state: State<AppState>,
+    id: i64,
+) -> Result<(), String> {
+    println!("delete_note command called with id: {}", id);
+    let service = NoteService::new(state.db());
+    match service.delete_note(id) {
+        Ok(_) => {
+            println!("Note {} deleted successfully", id);
+            Ok(())
+        },
+        Err(e) => {
+            eprintln!("Failed to delete note {}: {}", id, e.message);
+            Err(e.message)
+        }
+    }
+}

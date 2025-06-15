@@ -197,6 +197,31 @@ impl NoteRepository {
         })
     }
     
+    pub fn delete_note(&self, id: i64) -> AppResult<()> {
+        let db = self.db.lock().unwrap();
+        let conn = db.connection();
+        
+        // Commencer une transaction
+        let tx = conn.unchecked_transaction()
+            .map_err(|e| AppError::new("TRANSACTION_ERROR", e.to_string()))?;
+        
+        // Supprimer d'abord les tags associés
+        tx.execute(
+            "DELETE FROM note_tags WHERE note_id = ?1",
+            params![id],
+        )?;
+        
+        // Supprimer la note
+        tx.execute(
+            "DELETE FROM notes WHERE id = ?1",
+            params![id],
+        )?;
+        
+        tx.commit()?;
+        
+        Ok(())
+    }
+    
     fn get_or_create_tag(&self, tx: &rusqlite::Transaction, name: &str) -> AppResult<i64> {
         let existing: Option<i64> = tx.query_row(
             "SELECT id FROM tags WHERE name = ?1",
