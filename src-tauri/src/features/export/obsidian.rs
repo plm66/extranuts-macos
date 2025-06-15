@@ -22,10 +22,10 @@ impl ObsidianExporter {
         Ok(Self { vault_path })
     }
     
-    pub fn export_notes(&self, notes: Vec<Note>) -> AppResult<ExportResult> {
+    pub fn export_notes(&self, notes: Vec<Note>, target_folder: Option<String>) -> AppResult<ExportResult> {
         let mut successful_exports = 0;
         let mut failed_exports = Vec::new();
-        let export_folder = self.create_export_folder()?;
+        let export_folder = self.create_export_folder(target_folder)?;
         
         for note in notes {
             match self.export_note(&note, &export_folder) {
@@ -42,10 +42,24 @@ impl ObsidianExporter {
         })
     }
     
-    fn create_export_folder(&self) -> AppResult<PathBuf> {
+    fn create_export_folder(&self, target_folder: Option<String>) -> AppResult<PathBuf> {
         let timestamp = Local::now().format("%Y%m%d_%H%M%S");
         let folder_name = format!("Extranuts_Export_{}", timestamp);
-        let export_path = self.vault_path.join(&folder_name);
+        
+        let base_path = match target_folder {
+            Some(folder) if !folder.trim().is_empty() => {
+                let target_path = self.vault_path.join(&folder);
+                // Create the target folder if it doesn't exist
+                if !target_path.exists() {
+                    std::fs::create_dir_all(&target_path)
+                        .map_err(|e| AppError::new("CREATE_TARGET_FOLDER_ERROR", format!("Failed to create target folder: {}", e)))?;
+                }
+                target_path
+            }
+            _ => self.vault_path.clone()
+        };
+        
+        let export_path = base_path.join(&folder_name);
         
         fs::create_dir(&export_path)
             .map_err(|e| AppError::new("CREATE_FOLDER_ERROR", format!("Failed to create export folder: {}", e)))?;

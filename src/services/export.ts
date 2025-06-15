@@ -9,8 +9,14 @@ export interface ExportResult {
 }
 
 export const exportService = {
-  async exportToObsidian(vaultPath: string): Promise<ExportResult> {
-    return await invoke<ExportResult>('export_to_obsidian', { vaultPath })
+  async exportToObsidian(vaultPath: string, noteIds?: string[], targetFolder?: string): Promise<ExportResult> {
+    // Convert string IDs to numbers for the backend
+    const numericIds = noteIds ? noteIds.map(id => parseInt(id)) : undefined
+    return await invoke<ExportResult>('export_to_obsidian', { 
+      vaultPath, 
+      noteIds: numericIds,
+      targetFolder 
+    })
   },
 
   async validateObsidianVault(vaultPath: string): Promise<boolean> {

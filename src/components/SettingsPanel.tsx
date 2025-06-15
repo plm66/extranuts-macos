@@ -313,16 +313,22 @@ export const SettingsPanel: Component<{
                     <div class="flex items-center gap-2">
                       <button
                         onClick={async () => {
+                          console.log('Selecting Obsidian vault...')
                           const path = await exportService.selectObsidianVault()
+                          console.log('Selected path:', path)
                           if (path) {
+                            console.log('Validating vault...')
                             const isValid = await exportService.validateObsidianVault(path)
+                            console.log('Vault is valid:', isValid)
                             if (isValid) {
+                              console.log('Updating preferences with path:', path)
                               await updatePreferences({
                                 export: {
                                   ...preferences().export,
                                   obsidian_vault_path: path
                                 }
                               })
+                              console.log('Preferences updated, new preferences:', preferences())
                             } else {
                               alert('The selected folder does not appear to be an Obsidian vault. Please select a folder that contains a .obsidian directory.')
                             }

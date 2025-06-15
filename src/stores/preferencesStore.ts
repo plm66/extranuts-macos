@@ -37,7 +37,8 @@ export async function updatePreferences(updates: Partial<Preferences>) {
   const updated = {
     sync: { ...current.sync, ...(updates.sync || {}) },
     window: { ...current.window, ...(updates.window || {}) },
-    editor: { ...current.editor, ...(updates.editor || {}) }
+    editor: { ...current.editor, ...(updates.editor || {}) },
+    export: { ...current.export, ...(updates.export || {}) }
   }
   
   try {

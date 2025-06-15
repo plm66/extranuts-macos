@@ -7,17 +7,34 @@ use std::path::PathBuf;
 pub fn export_to_obsidian(
     state: State<AppState>,
     vault_path: String,
+    note_ids: Option<Vec<i64>>,
+    target_folder: Option<String>,
 ) -> Result<ExportResult, String> {
-    // Get all notes from the database
+    // Get notes from the database
     let service = crate::features::notes::service::NoteService::new(state.db());
-    let notes = service.get_all_notes()
-        .map_err(|e| format!("Failed to fetch notes: {}", e.message))?;
+    let notes = match note_ids {
+        Some(ids) => {
+            // Export only specific notes
+            let mut filtered_notes = Vec::new();
+            for id in ids {
+                if let Ok(Some(note)) = service.get_note(id) {
+                    filtered_notes.push(note);
+                }
+            }
+            filtered_notes
+        }
+        None => {
+            // Export all notes
+            service.get_all_notes()
+                .map_err(|e| format!("Failed to fetch notes: {}", e.message))?
+        }
+    };
     
     // Create exporter and export notes
     let exporter = ObsidianExporter::new(PathBuf::from(vault_path))
         .map_err(|e| e.message)?;
     
-    exporter.export_notes(notes)
+    exporter.export_notes(notes, target_folder)
         .map_err(|e| e.message)
 }
 

@@ -2,7 +2,7 @@ import { Component, createSignal, Show } from 'solid-js'
 import { Icon } from '@iconify-icon/solid'
 import { exportService } from '../services/export'
 import { preferences } from '../stores/preferencesStore'
-import { notes } from '../stores/noteStore'
+import { notes, selectedNote } from '../stores/noteStore'
 
 interface ExportModalProps {
   isOpen: boolean
@@ -13,13 +13,28 @@ export const ExportModal: Component<ExportModalProps> = (props) => {
   const [isExporting, setIsExporting] = createSignal(false)
   const [exportResult, setExportResult] = createSignal<any>(null)
   const [error, setError] = createSignal<string>('')
+  const [exportMode, setExportMode] = createSignal<'all' | 'current'>('all')
+  const [targetFolder, setTargetFolder] = createSignal<string>('')
   
   const handleExport = async () => {
     const vaultPath = preferences().export.obsidian_vault_path
+    console.log('Export triggered, vault path:', vaultPath)
+    console.log('Full preferences:', preferences())
     
     if (!vaultPath) {
       setError('Please select an Obsidian vault in Settings > Export & Import first.')
       return
+    }
+
+    // Determine which notes to export
+    let noteIds: string[] | undefined = undefined
+    if (exportMode() === 'current') {
+      const current = selectedNote()
+      if (!current) {
+        setError('No note is currently selected.')
+        return
+      }
+      noteIds = [current.id]
     }
     
     setIsExporting(true)
@@ -27,7 +42,7 @@ export const ExportModal: Component<ExportModalProps> = (props) => {
     setExportResult(null)
     
     try {
-      const result = await exportService.exportToObsidian(vaultPath)
+      const result = await exportService.exportToObsidian(vaultPath, noteIds, targetFolder() || undefined)
       setExportResult(result)
     } catch (err) {
       setError(err.message || 'Failed to export notes')
@@ -141,16 +156,87 @@ export const ExportModal: Component<ExportModalProps> = (props) => {
                 
                 <Show when={preferences().export.obsidian_vault_path}>
                   <div class="space-y-4">
+                    {/* Export Mode Selection */}
+                    <div class="glass-morphism rounded-lg p-4">
+                      <h4 class="text-sm font-medium mb-3">What to Export</h4>
+                      <div class="space-y-2">
+                        <label class="flex items-center gap-3 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="exportMode"
+                            checked={exportMode() === 'all'}
+                            onChange={() => setExportMode('all')}
+                            class="w-4 h-4 text-blue-600"
+                          />
+                          <div>
+                            <div class="text-sm font-medium">All Notes</div>
+                            <div class="text-xs text-macos-text-secondary">
+                              Export all {notes().length} notes from your collection
+                            </div>
+                          </div>
+                        </label>
+                        
+                        <label class="flex items-center gap-3 cursor-pointer">
+                          <input
+                            type="radio"
+                            name="exportMode"
+                            checked={exportMode() === 'current'}
+                            onChange={() => setExportMode('current')}
+                            class="w-4 h-4 text-blue-600"
+                            disabled={!selectedNote()}
+                          />
+                          <div class={selectedNote() ? '' : 'opacity-50'}>
+                            <div class="text-sm font-medium">Current Note Only</div>
+                            <div class="text-xs text-macos-text-secondary">
+                              {selectedNote() 
+                                ? `Export "${selectedNote()?.title}"` 
+                                : 'No note selected'}
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    {/* Target Folder Selection */}
+                    <div class="glass-morphism rounded-lg p-4">
+                      <h4 class="text-sm font-medium mb-3">Export Location</h4>
+                      <div class="space-y-2">
+                        <label class="text-xs text-macos-text-secondary">
+                          Folder within vault (optional)
+                        </label>
+                        <input
+                          type="text"
+                          value={targetFolder()}
+                          onInput={(e) => setTargetFolder(e.target.value)}
+                          placeholder="e.g., Imports, Notes, Daily Notes"
+                          class="w-full px-3 py-2 bg-macos-hover border border-macos-border rounded text-sm placeholder-macos-text-secondary/50"
+                        />
+                        <p class="text-xs text-macos-text-secondary">
+                          Leave empty to export to vault root. If folder doesn't exist, it will be created.
+                        </p>
+                      </div>
+                    </div>
+                    
                     <div class="glass-morphism rounded-lg p-4">
                       <h4 class="text-sm font-medium mb-2">Export Information</h4>
                       <div class="space-y-2 text-xs text-macos-text-secondary">
                         <div class="flex items-center gap-2">
                           <Icon icon="material-symbols:note" class="w-4 h-4" />
-                          <span>{notes().length} notes will be exported</span>
+                          <span>
+                            {exportMode() === 'all' 
+                              ? `${notes().length} notes will be exported`
+                              : selectedNote() 
+                                ? '1 note will be exported'
+                                : 'No notes selected'
+                            }
+                          </span>
                         </div>
                         <div class="flex items-center gap-2">
                           <Icon icon="material-symbols:folder" class="w-4 h-4" />
-                          <span class="truncate">To: {preferences().export.obsidian_vault_path}</span>
+                          <span class="truncate">
+                            To: {preferences().export.obsidian_vault_path}
+                            {targetFolder() && `/${targetFolder()}`}
+                          </span>
                         </div>
                         <div class="flex items-center gap-2">
                           <Icon icon="material-symbols:calendar-today" class="w-4 h-4" />
