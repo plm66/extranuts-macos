@@ -90,6 +90,16 @@ pub fn run() {
             // Export commands
             features::export::export_to_obsidian,
             features::export::validate_obsidian_vault,
+            
+            // Category commands
+            features::categories::create_category,
+            features::categories::get_category,
+            features::categories::get_all_categories,
+            features::categories::get_hierarchical_categories,
+            features::categories::update_category,
+            features::categories::delete_category,
+            features::categories::get_category_presets,
+            features::categories::create_category_from_preset,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

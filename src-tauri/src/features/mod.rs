@@ -3,3 +3,4 @@ pub mod notes;
 pub mod sync;
 pub mod preferences;
 pub mod export;
+pub mod categories;

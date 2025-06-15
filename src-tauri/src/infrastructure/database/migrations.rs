@@ -8,9 +8,12 @@ pub fn run_migrations(db: &Database) -> Result<()> {
         -- Categories table
         CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
+            name TEXT NOT NULL,
             color TEXT,
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            parent_id INTEGER,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (parent_id) REFERENCES categories(id) ON DELETE CASCADE,
+            UNIQUE(name, parent_id)
         );
         
         -- Notes table
