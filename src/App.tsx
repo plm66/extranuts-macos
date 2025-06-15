@@ -2,6 +2,7 @@ import { Component, createSignal, onMount, For, Show, createEffect } from 'solid
 import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import { TauriEvent } from '@tauri-apps/api/event'
+import { Icon } from '@iconify-icon/solid'
 import { 
   notes, 
   selectedNote, 
@@ -11,70 +12,149 @@ import {
   deleteNote,
   togglePinNote,
   filteredNotes,
-  setNotes,
-  setCategories,
-  setTags
+  loadNotes,
+  isLoading,
+  error
 } from './stores/noteStore'
-import { storage } from './stores/storage'
 import { createFullBackup } from './utils/backup'
+import { parseWikiLinks, getAutoCompleteMatches, findWikiLinkAtCursor } from './utils/wikilinks'
+
+// WikiLink Renderer Component
+const WikiLinkRenderer: Component<{
+  content: string
+  noteList: Array<{ title: string; id: string }>
+  onLinkClick: (noteTitle: string, exists: boolean) => void
+}> = (props) => {
+  const renderContent = () => {
+    const parsed = parseWikiLinks(props.content, props.noteList)
+    
+    if (parsed.links.length === 0) {
+      return <pre class="whitespace-pre-wrap font-sans text-macos-text">{props.content}</pre>
+    }
+    
+    const elements: any[] = []
+    let lastIndex = 0
+    
+    parsed.links.forEach((link, i) => {
+      // Add text before the link
+      if (link.startIndex > lastIndex) {
+        const textBefore = props.content.slice(lastIndex, link.startIndex)
+        elements.push(<span key={`text-${i}`}>{textBefore}</span>)
+      }
+      
+      // Add the clickable link
+      const displayText = link.displayText || link.noteTitle
+      const className = link.exists ? 'wikilink-exists' : 'wikilink-missing'
+      
+      elements.push(
+        <span 
+          key={`link-${i}`}
+          class={className}
+          onClick={() => props.onLinkClick(link.noteTitle, link.exists)}
+        >
+          {displayText}
+        </span>
+      )
+      
+      lastIndex = link.endIndex
+    })
+    
+    // Add remaining text after the last link
+    if (lastIndex < props.content.length) {
+      const textAfter = props.content.slice(lastIndex)
+      elements.push(<span key="text-end">{textAfter}</span>)
+    }
+    
+    return <pre class="whitespace-pre-wrap font-sans text-macos-text">{elements}</pre>
+  }
+  
+  return <div>{renderContent()}</div>
+}
 
 const App: Component = () => {
   const [isAlwaysOnTop, setIsAlwaysOnTop] = createSignal(false)
   const [noteTitle, setNoteTitle] = createSignal('')
   const [noteContent, setNoteContent] = createSignal('')
   const [editorHeight, setEditorHeight] = createSignal(60) // percentage
+  const [currentTime, setCurrentTime] = createSignal(new Date())
+  const [lastSaved, setLastSaved] = createSignal<Date | null>(null)
+  const [showAutoComplete, setShowAutoComplete] = createSignal(false)
+  const [autoCompleteResults, setAutoCompleteResults] = createSignal<Array<{ title: string; id: string }>>([])
+  const [autoCompletePosition, setAutoCompletePosition] = createSignal({ top: 0, left: 0 })
+  const [showPreview, setShowPreview] = createSignal(false)
   
   onMount(async () => {
-    const currentWindow = getCurrentWindow()
+    console.log('App mounted, starting initialization...')
     
-    // Load data from storage
-    const savedNotes = storage.loadNotes()
-    const savedCategories = storage.loadCategories()
-    const savedTags = storage.loadTags()
-    
-    setNotes(savedNotes)
-    setCategories(savedCategories)
-    setTags(savedTags)
-    
-    // Listen for window events
-    await currentWindow.listen(TauriEvent.WINDOW_FOCUS, () => {
-      console.log('Window focused')
-    })
-    
-    // Check if window is always on top
-    const alwaysOnTop = await currentWindow.isAlwaysOnTop()
-    setIsAlwaysOnTop(alwaysOnTop)
-  })
-
-  // Auto-save functionality with backup
-  createEffect(() => {
-    const noteList = notes()
-    if (noteList.length > 0) {
-      storage.saveNotes(noteList)
+    try {
+      console.log('Step 1: Getting current window...')
+      const currentWindow = getCurrentWindow()
+      console.log('Got current window:', currentWindow)
       
-      // Also create backup every 10 notes or every hour
-      const now = Date.now()
-      const lastBackup = localStorage.getItem('lastAutoBackup')
-      const oneHour = 60 * 60 * 1000
-      
-      if (!lastBackup || (now - parseInt(lastBackup)) > oneHour) {
-        console.log('🔄 Creating automatic backup...')
-        localStorage.setItem('lastAutoBackup', now.toString())
-        
-        // Silent backup to localStorage as additional safety
-        const backupData = {
-          notes: noteList,
-          timestamp: new Date().toISOString(),
-          version: '1.0'
+      // Check if we need to migrate notes from localStorage
+      const { migrateNotesFromLocalStorage, isMigrationComplete } = await import('./utils/migrateFromLocalStorage')
+      if (!isMigrationComplete()) {
+        console.log('Migrating notes from localStorage...')
+        try {
+          const migratedCount = await migrateNotesFromLocalStorage()
+          console.log(`Migrated ${migratedCount} notes from localStorage`)
+        } catch (migrationError) {
+          console.error('Migration failed:', migrationError)
         }
-        localStorage.setItem('extranuts_emergency_backup', JSON.stringify(backupData))
       }
+      
+      // Load notes from database
+      console.log('Step 2: Loading notes from database...')
+      try {
+        await loadNotes()
+        console.log('Notes loaded successfully:', notes().length)
+      } catch (loadError) {
+        console.error('Failed to load notes:', loadError)
+        console.error('Error details:', JSON.stringify(loadError, null, 2))
+      }
+      
+      // Listen for window events
+      console.log('Step 3: Setting up window event listeners...')
+      try {
+        await currentWindow.listen(TauriEvent.WINDOW_FOCUS, () => {
+          console.log('Window focused')
+        })
+        console.log('Window event listeners set up')
+      } catch (eventError) {
+        console.error('Failed to set up window events:', eventError)
+      }
+      
+      // Check if window is always on top
+      console.log('Step 4: Checking window always on top status...')
+      try {
+        const alwaysOnTop = await currentWindow.isAlwaysOnTop()
+        setIsAlwaysOnTop(alwaysOnTop)
+        console.log('Always on top status:', alwaysOnTop)
+      } catch (topError) {
+        console.error('Failed to check always on top:', topError)
+      }
+      
+      // Update current time every second
+      console.log('Step 5: Setting up time interval...')
+      const timeInterval = setInterval(() => {
+        setCurrentTime(new Date())
+      }, 1000)
+      
+      console.log('App initialization completed')
+      return () => clearInterval(timeInterval)
+    } catch (err) {
+      console.error('CRITICAL: Error during app initialization:', err)
+      console.error('Error stack:', err.stack)
     }
   })
+
+  // Remove old auto-save functionality since we're using the database
   
   const createFloatingNote = async () => {
     try {
-      const note = createNote('New Floating Note')
+      const note = await createNote('New Floating Note')
+      if (!note) return
+      
       updateNote(note.id, { isFloating: true })
       
       await invoke('create_floating_window', {
@@ -89,8 +169,10 @@ const App: Component = () => {
     }
   }
 
-  const createRegularNote = () => {
-    const note = createNote('New Note')
+  const createRegularNote = async () => {
+    const note = await createNote('New Note')
+    if (!note) return
+    
     setSelectedNote(note)
     setNoteTitle(note.title)
     setNoteContent(note.content)
@@ -111,6 +193,7 @@ const App: Component = () => {
         title: noteTitle() || 'Untitled Note',
         content: noteContent()
       })
+      setLastSaved(new Date())
     }
   }
   
@@ -157,9 +240,141 @@ const App: Component = () => {
     document.body.style.userSelect = 'none'
   }
 
+  const showVersionHistory = () => {
+    const note = selectedNote()
+    if (!note) return
+    
+    // Version history will be implemented with backend support
+    alert('Version history will be available in a future update.')
+  }
+
+  const handleWikiLinkClick = async (noteTitle: string, exists: boolean) => {
+    if (exists) {
+      // Find and navigate to existing note
+      const targetNote = notes().find(note => note.title.toLowerCase() === noteTitle.toLowerCase())
+      if (targetNote) {
+        setSelectedNote(targetNote)
+        setNoteTitle(targetNote.title)
+        setNoteContent(targetNote.content)
+      }
+    } else {
+      // Create new note
+      const newNote = await createNote(noteTitle)
+      if (newNote) {
+        setSelectedNote(newNote)
+        setNoteTitle(newNote.title)
+        setNoteContent(newNote.content)
+      }
+    }
+  }
+
+  const handleContentInput = (e: InputEvent) => {
+    const target = e.target as HTMLTextAreaElement
+    const value = target.value
+    const cursorPos = target.selectionStart || 0
+    
+    setNoteContent(value)
+    
+    // Check for wikilink auto-completion
+    const wikiLinkInfo = findWikiLinkAtCursor(value, cursorPos)
+    
+    if (wikiLinkInfo.isInWikiLink && wikiLinkInfo.linkText !== undefined) {
+      // Show auto-complete
+      const matches = getAutoCompleteMatches(wikiLinkInfo.linkText, notes())
+      setAutoCompleteResults(matches)
+      
+      if (matches.length > 0) {
+        // Calculate position for auto-complete dropdown
+        const rect = target.getBoundingClientRect()
+        setAutoCompletePosition({
+          top: rect.top + 20,
+          left: rect.left + 10
+        })
+        setShowAutoComplete(true)
+      } else {
+        setShowAutoComplete(false)
+      }
+    } else {
+      setShowAutoComplete(false)
+    }
+  }
+
+  const insertAutoComplete = (noteTitle: string) => {
+    const textarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
+    if (!textarea) return
+    
+    const value = textarea.value
+    const cursorPos = textarea.selectionStart || 0
+    const wikiLinkInfo = findWikiLinkAtCursor(value, cursorPos)
+    
+    if (wikiLinkInfo.isInWikiLink && wikiLinkInfo.startPos !== undefined) {
+      const beforeLink = value.slice(0, wikiLinkInfo.startPos)
+      const afterCursor = value.slice(cursorPos)
+      const newValue = beforeLink + `[[${noteTitle}]]` + afterCursor
+      
+      setNoteContent(newValue)
+      setShowAutoComplete(false)
+      
+      // Set cursor position after the inserted link
+      setTimeout(() => {
+        const newCursorPos = beforeLink.length + `[[${noteTitle}]]`.length
+        textarea.setSelectionRange(newCursorPos, newCursorPos)
+        textarea.focus()
+      }, 0)
+    }
+  }
+
+  const renderContentWithLinks = () => {
+    const content = noteContent()
+    if (!content.trim()) return content
+    
+    const parsed = parseWikiLinks(content, notes())
+    
+    if (parsed.links.length === 0) {
+      return content
+    }
+    
+    let result = content
+    let offset = 0
+    
+    // Replace links from end to start to maintain correct indices
+    parsed.links.reverse().forEach(link => {
+      const displayText = link.displayText || link.noteTitle
+      const className = link.exists ? 'wikilink-exists' : 'wikilink-missing'
+      
+      const beforeLink = result.slice(0, link.startIndex)
+      const afterLink = result.slice(link.endIndex)
+      
+      result = beforeLink + displayText + afterLink
+    })
+    
+    return result
+  }
+
+  const togglePreviewMode = () => {
+    setShowPreview(!showPreview())
+    saveCurrentNote() // Save before switching modes
+  }
+
   
   return (
-    <div class="flex flex-col h-screen bg-black/80">
+    <div class="flex flex-col h-screen bg-macos-bg">
+      {/* Loading State */}
+      <Show when={isLoading()}>
+        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div class="text-center">
+            <Icon icon="material-symbols:sync" class="w-8 h-8 animate-spin mb-2" />
+            <p class="text-macos-text">Loading notes...</p>
+          </div>
+        </div>
+      </Show>
+      
+      {/* Error State */}
+      <Show when={error()}>
+        <div class="fixed top-4 right-4 bg-red-500/20 border border-red-500/50 rounded-lg p-4 z-50">
+          <p class="text-red-400">{error()}</p>
+        </div>
+      </Show>
       {/* Top Header */}
       <div class="h-16 sidebar-glass flex items-center justify-between px-6 border-b border-macos-border drag-region">
         <h1 class="text-xl font-semibold">Extranuts</h1>
@@ -173,15 +388,20 @@ const App: Component = () => {
           </button>
           <button
             onClick={createFloatingNote}
-            class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag"
+            class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag flex items-center gap-2"
           >
-            🪟 Float
+            <Icon icon="material-symbols:open-in-new" class="w-4 h-4" />
+            Float
           </button>
           <button
             onClick={toggleAlwaysOnTop}
             class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
+            title={isAlwaysOnTop() ? "Unpin from top" : "Pin to top"}
           >
-            {isAlwaysOnTop() ? '📌' : '📍'}
+            <Icon 
+              icon={isAlwaysOnTop() ? "material-symbols:push-pin" : "material-symbols:push-pin-outline"} 
+              class="w-4 h-4" 
+            />
           </button>
           <button
             onClick={hideToMenuBar}
@@ -222,6 +442,15 @@ const App: Component = () => {
                   value={noteTitle()}
                   onInput={(e) => setNoteTitle(e.target.value)}
                   onBlur={saveCurrentNote}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      // Move cursor to content area when Enter is pressed
+                      const contentTextarea = document.querySelector('textarea[placeholder*="content"]') as HTMLTextAreaElement
+                      if (contentTextarea) {
+                        contentTextarea.focus()
+                      }
+                    }
+                  }}
                   class="flex-1 text-2xl font-semibold bg-transparent border-none outline-none text-macos-text no-drag mr-4"
                   placeholder="Note title..."
                   ref={(el) => {
@@ -233,6 +462,23 @@ const App: Component = () => {
                 />
                 <div class="flex items-center space-x-2">
                   <button
+                    onClick={togglePreviewMode}
+                    class={`p-2 hover-highlight rounded no-drag ${showPreview() ? 'bg-blue-500/20 text-blue-400' : ''}`}
+                    title={showPreview() ? "Switch to edit mode" : "Preview with clickable links"}
+                  >
+                    <Icon 
+                      icon={showPreview() ? "material-symbols:edit" : "material-symbols:visibility"} 
+                      class="w-4 h-4" 
+                    />
+                  </button>
+                  <button
+                    onClick={showVersionHistory}
+                    class="p-2 hover-highlight rounded no-drag"
+                    title="View version history"
+                  >
+                    <Icon icon="material-symbols:history" class="w-4 h-4" />
+                  </button>
+                  <button
                     onClick={() => {
                       const note = selectedNote()
                       if (note) togglePinNote(note.id)
@@ -240,7 +486,10 @@ const App: Component = () => {
                     class="p-2 hover-highlight rounded no-drag"
                     title="Pin note"
                   >
-                    {selectedNote()?.isPinned ? '📌' : '📍'}
+                    <Icon 
+                      icon={selectedNote()?.isPinned ? "material-symbols:push-pin" : "material-symbols:push-pin-outline"} 
+                      class="w-4 h-4" 
+                    />
                   </button>
                   <button
                     onClick={() => {
@@ -255,27 +504,80 @@ const App: Component = () => {
                     class="p-2 hover-highlight rounded text-red-400 no-drag"
                     title="Delete note"
                   >
-                    🗑️
+                    <Icon icon="material-symbols:delete-outline" class="w-4 h-4" />
                   </button>
                 </div>
               </div>
               
-              {/* Content Editor */}
-              <textarea
-                value={noteContent()}
-                onInput={(e) => setNoteContent(e.target.value)}
-                onBlur={saveCurrentNote}
-                class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed"
-                placeholder="Start writing your note content..."
-                style={{
-                  "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-                  "line-height": "1.6"
-                }}
-              />
+              {/* Content Editor/Preview */}
+              <Show 
+                when={!showPreview()}
+                fallback={
+                  <div class="flex-1 p-4 overflow-y-auto native-scrollbar leading-relaxed">
+                    <WikiLinkRenderer 
+                      content={noteContent()}
+                      noteList={notes()}
+                      onLinkClick={handleWikiLinkClick}
+                    />
+                  </div>
+                }
+              >
+                <textarea
+                  value={noteContent()}
+                  onInput={handleContentInput}
+                  onBlur={saveCurrentNote}
+                  onKeyDown={(e) => {
+                    // Cmd+Shift+P to toggle preview mode
+                    if (e.metaKey && e.shiftKey && e.key === 'P') {
+                      e.preventDefault()
+                      togglePreviewMode()
+                    }
+                  }}
+                  class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed"
+                  placeholder="Start writing your note content... Use [[Note Title]] to link to other notes. Press Cmd+Shift+P to preview links."
+                  style={{
+                    "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                    "line-height": "1.6"
+                  }}
+                />
+              </Show>
             </div>
           </Show>
         </div>
       </div>
+      
+      {/* Auto-complete Dropdown */}
+      <Show when={showAutoComplete()}>
+        <div 
+          class="fixed z-50 bg-black/90 backdrop-blur-md border border-macos-border rounded-lg shadow-2xl max-w-xs"
+          style={{
+            top: `${autoCompletePosition().top}px`,
+            left: `${autoCompletePosition().left}px`
+          }}
+        >
+          <div class="p-2">
+            <div class="text-xs text-macos-text-secondary mb-2 px-2 flex items-center gap-1">
+              <Icon icon="material-symbols:link" class="w-3 h-3" />
+              Link to note:
+            </div>
+            <For each={autoCompleteResults()}>
+              {(note, index) => (
+                <div 
+                  class="px-3 py-2 hover:bg-macos-hover rounded cursor-pointer text-sm transition-colors"
+                  onClick={() => insertAutoComplete(note.title)}
+                >
+                  <div class="font-medium">{note.title}</div>
+                </div>
+              )}
+            </For>
+            <Show when={autoCompleteResults().length === 0}>
+              <div class="px-3 py-2 text-sm text-macos-text-secondary italic">
+                No existing notes found
+              </div>
+            </Show>
+          </div>
+        </div>
+      </Show>
       
       {/* Resize Handle */}
       <div 
@@ -310,8 +612,11 @@ const App: Component = () => {
                 >
                   <div class="flex items-center justify-between">
                     <div class="flex-1 min-w-0">
-                      <div class="text-sm font-semibold truncate">
-                        {note.isPinned && '📌 '}{note.title}
+                      <div class="text-sm font-semibold truncate flex items-center gap-1">
+                        {note.isPinned && (
+                          <Icon icon="material-symbols:push-pin" class="w-3 h-3 text-blue-400" />
+                        )}
+                        {note.title}
                       </div>
                       <div class="text-xs text-macos-text-secondary truncate mt-1">
                         {note.content.split('\n')[0] || 'Empty note'}
@@ -330,6 +635,38 @@ const App: Component = () => {
               )}
             </For>
           </div>
+        </div>
+      </div>
+      
+      {/* Status Bar */}
+      <div class="h-6 bg-macos-border/50 backdrop-blur-md flex items-center justify-between px-4 text-xs text-macos-text-secondary border-t border-macos-border">
+        <div class="flex items-center space-x-4">
+          <span class="flex items-center gap-1">
+            <Icon icon="material-symbols:note" class="w-3 h-3" />
+            {notes().length} notes
+          </span>
+          <Show when={selectedNote()}>
+            <span class="flex items-center gap-1">
+              <Icon icon="material-symbols:edit" class="w-3 h-3" />
+              Editing: {selectedNote()?.title}
+            </span>
+          </Show>
+          <Show when={lastSaved()}>
+            <span class="flex items-center gap-1">
+              <Icon icon="material-symbols:save" class="w-3 h-3" />
+              Saved: {lastSaved()?.toLocaleTimeString()}
+            </span>
+          </Show>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="flex items-center gap-1">
+            <Icon icon="material-symbols:schedule" class="w-3 h-3" />
+            {currentTime().toLocaleTimeString()}
+          </span>
+          <span class="flex items-center gap-1">
+            <Icon icon="material-symbols:calendar-today" class="w-3 h-3" />
+            {currentTime().toLocaleDateString()}
+          </span>
         </div>
       </div>
     </div>

@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extranuts - Color Palette Design Guide</title>
+    <style>
+        /* 
+        ===========================================
+        EDUCATIONAL CSS - LEARNING DARK UI DESIGN
+        ===========================================
+        
+        This CSS demonstrates how to build a color system
+        for dark glassmorphism interfaces like Extranuts.
+        */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            /* 
+            Dark Background Strategy:
+            - Very dark base prevents eye strain
+            - Slight transparency allows layering effects
+            - System fonts ensure native feel on macOS
+            */
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: rgba(255, 255, 255, 0.9);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* 
+        TYPOGRAPHY HIERARCHY
+        Clear visual hierarchy helps users understand content structure
+        */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #3B82F6, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem 0;
+            color: rgba(255, 255, 255, 0.8);
+            border-left: 4px solid #3B82F6;
+            padding-left: 1rem;
+        }
+        
+        h3 {
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+        
+        /* 
+        GLASSMORPHISM CARD COMPONENT
+        This demonstrates the same effect used in Extranuts
+        */
+        .glass-card {
+            background: rgba(40, 40, 40, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 
+        COLOR GRID SYSTEM
+        Grid layout makes color comparison easy
+        */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        /*
+        COLOR SWATCH COMPONENT
+        Each swatch demonstrates how a color works in practice
+        */
+        .color-swatch {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 8px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .color-swatch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* 
+        COLOR PREVIEW
+        Shows the actual color with its hex code
+        */
+        .color-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 6px;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        /*
+        GLASSMORPHISM PREVIEW
+        Shows how the color looks with transparency (like in Extranuts)
+        */
+        .glass-preview {
+            width: 100%;
+            height: 40px;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .category-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .color-description {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.4;
+        }
+        
+        /* 
+        SPECIFIC COLOR DEFINITIONS
+        Each category gets its own color with glassmorphism variants
+        */
+        
+        /* Personal - Calming Blue */
+        .personal {
+            background-color: #3B82F6;
+        }
+        .personal-glass {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93C5FD;
+        }
+        
+        /* Work - Professional Amber */
+        .work {
+            background-color: #F59E0B;
+        }
+        .work-glass {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #FDE68A;
+        }
+        
+        /* Projects - Creative Violet */
+        .projects {
+            background-color: #8B5CF6;
+        }
+        .projects-glass {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #C4B5FD;
+        }
+        
+        /* Ideas - Inspiring Pink */
+        .ideas {
+            background-color: #EC4899;
+        }
+        .ideas-glass {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            color: #F9A8D4;
+        }
+        
+        /* Research - Analytical Cyan */
+        .research {
+            background-color: #06B6D4;
+        }
+        .research-glass {
+            background: rgba(6, 182, 212, 0.15);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            color: #67E8F9;
+        }
+        
+        /* Important - Attention Red */
+        .important {
+            background-color: #EF4444;
+        }
+        .important-glass {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #FCA5A5;
+        }
+        
+        /* Archive - Neutral Gray */
+        .archive {
+            background-color: #6B7280;
+        }
+        .archive-glass {
+            background: rgba(107, 114, 128, 0.15);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+            color: #D1D5DB;
+        }
+        
+        /* Draft - Creative Orange */
+        .draft {
+            background-color: #F97316;
+        }
+        .draft-glass {
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            color: #FDBA74;
+        }
+        
+        /*
+        ACCESSIBILITY SECTION
+        Shows combinations that work for colorblind users
+        */
+        .accessibility-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .good-combo {
+            border: 2px solid #10B981;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(16, 185, 129, 0.1);
+        }
+        
+        .bad-combo {
+            border: 2px solid #EF4444;
+            padding: 1rem;
+            border-radius: 8px;
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .combo-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        /*
+        INTERACTIVE EXAMPLES
+        Demonstrates how colors work in real UI scenarios
+        */
+        .ui-example {
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .note-item {
+            padding: 0.8rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        
+        .note-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .category-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .note-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Extranuts Color Design Guide</h1>
+        <p>
+            This guide explains how to choose and use colors effectively in dark UI interfaces. 
+            Each color decision is based on color theory, accessibility principles, and the specific 
+            needs of the Extranuts note-taking application.
+        </p>
+        
+        <div class="glass-card">
+            <h2>🧠 Understanding Color Psychology in Note-Taking</h2>
+            <p>
+                <strong>Why color matters for productivity:</strong> Different colors trigger different mental states. 
+                Blue promotes focus and calm thinking (perfect for personal notes), while amber suggests 
+                energy and attention (ideal for work tasks). Pink stimulates creativity (great for ideas), 
+                and violet indicates imagination and innovation (perfect for projects).
+            </p>
+            <p>
+                <strong>Dark theme considerations:</strong> In dark interfaces, bright colors can cause eye strain. 
+                We use <em>desaturated versions</em> with transparency to maintain visual hierarchy while 
+                keeping the interface comfortable for extended use.
+            </p>
+        </div>
+        
+        <h2>🎯 Primary Category Colors</h2>
+        <p>
+            These are the main colors designed for your most-used note categories. 
+            Each color has been chosen for its psychological impact and visual distinctiveness.
+        </p>
+        
+        <div class="color-grid">
+            <div class="color-swatch">
+                <div class="color-preview personal">#3B82F6</div>
+                <div class="glass-preview personal-glass">Glassmorphism Effect</div>
+                <div class="category-name">Personal</div>
+                <div class="color-description">
+                    <strong>Blue:</strong> Promotes calm, trust, and focus. Perfect for personal thoughts 
+                    and private reflections. Blue is universally liked and works well for extended reading.
+                </div>
+            </div>
+            
+            <div class="color-swatch">
+                <div class="color-preview work">#F59E0B</div>
+                <div class="glass-preview work-glass">Glassmorphism Effect</div>
+                <div class="category-name">Work</div>
+                <div class="color-description">
+                    <strong>Amber:</strong> Energetic and professional. Suggests urgency without being 
+                    alarming like red. Helps distinguish work tasks from personal notes at a glance.
+                </div>
+            </div>
+            
+            <div class="color-swatch">
+                <div class="color-preview projects">#8B5CF6</div>
+                <div class="glass-preview projects-glass">Glassmorphism Effect</div>
+                <div class="category-name">Projects</div>
+                <div class="color-description">
+                    <strong>Violet:</strong> Stimulates imagination and innovation. Perfect for creative 
+                    projects and long-term planning. The purple family is associated with creativity.
+                </div>
+            </div>
+            
+            <div class="color-swatch">
+                <div class="color-preview ideas">#EC4899</div>
+                <div class="glass-preview ideas-glass">Glassmorphism Effect</div>
+                <div class="category-name">Ideas</div>
+                <div class="color-description">
+                    <strong>Pink:</strong> Encourages creative thinking and brainstorming. Bright enough 
+                    to grab attention when inspiration strikes, but not overwhelming like pure red.
+                </div>
+            </div>
+            
+            <div class="color-swatch">
+                <div class="color-preview research">#06B6D4</div>
+                <div class="glass-preview research-glass">Glassmorphism Effect</div>
+                <div class="category-name">Research</div>
+                <div class="color-description">
+                    <strong>Cyan:</strong> Associated with analysis and clarity of thought. The cool tone 
+                    promotes methodical thinking, perfect for research notes and data collection.
+                </div>
+            </div>
+        </div>
+        
+        <h2>⚡ Secondary Category Colors</h2>
+        <p>
+            Additional colors for specialized note types. These complement the primary palette 
+            while serving specific functional needs.
+        </p>
+        
+        <div class="color-grid">
+            <div class="color-swatch">
+                <div class="color-preview important">#EF4444</div>
+                <div class="glass-preview important-glass">Glassmorphism Effect</div>
+                <div class="category-name">Important</div>
+                <div class="color-description">
+                    <strong>Red:</strong> Universal color for urgency and importance. Use sparingly 
+                    to maintain its impact. Perfect for deadlines and critical information.
+                </div>
+            </div>
+            
+            <div class="color-swatch">
+                <div class="color-preview draft">#F97316</div>
+                <div class="glass-preview draft-glass">Glassmorphism Effect</div>
+                <div class="category-name">Draft</div>
+                <div class="color-description">
+                    <strong>Orange:</strong> Suggests work-in-progress and creativity. Warmer than red 
+                    but still attention-grabbing. Perfect for unfinished thoughts and drafts.
+                </div>
+            </div>
+            
+            <div class="color-swatch">
+                <div class="color-preview archive">#6B7280</div>
+                <div class="glass-preview archive-glass">Glassmorphism Effect</div>
+                <div class="category-name">Archive</div>
+                <div class="color-description">
+                    <strong>Gray:</strong> Neutral and unobtrusive. Indicates completed or stored items 
+                    that don't need immediate attention. Won't distract from active work.
+                </div>
+            </div>
+        </div>
+        
+        <div class="glass-card">
+            <h2>♿ Accessibility & Daltonism Considerations</h2>
+            <p>
+                <strong>Why we avoid green and brown:</strong> These colors are the most difficult to distinguish 
+                for people with color vision differences (deuteranopia and protanopia). By avoiding them, 
+                we ensure the interface works for everyone.
+            </p>
+            
+            <h3>✅ Good Color Combinations</h3>
+            <div class="accessibility-demo">
+                <div class="good-combo">
+                    <div class="combo-title">High Contrast Pairs</div>
+                    <p>Blue + Orange: Maximum distinction</p>
+                    <p>Purple + Yellow: Clear separation</p>
+                    <p>Red + Blue: Universal recognition</p>
+                </div>
+                <div class="good-combo">
+                    <div class="combo-title">Safe for Colorblind Users</div>
+                    <p>All colors maintain distinction</p>
+                    <p>No green-red combinations</p>
+                    <p>Clear brightness differences</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>🔍 Glassmorphism Color Behavior</h2>
+        <p>
+            In your Extranuts app, colors appear with transparency and blur effects. 
+            This section shows how each color behaves in the glassmorphism environment.
+        </p>
+        
+        <div class="glass-card">
+            <h3>Key Principles:</h3>
+            <p><strong>15% Opacity Background:</strong> Subtle enough not to interfere with text readability</p>
+            <p><strong>30% Opacity Borders:</strong> Provides definition without being harsh</p>
+            <p><strong>Lighter Text Colors:</strong> Ensures good contrast against the transparent background</p>
+            <p><strong>Backdrop Blur:</strong> Creates depth and hierarchy in the interface</p>
+        </div>
+        
+        <h2>🎮 Interactive UI Examples</h2>
+        <p>
+            See how these colors work in practice with simulated note items. 
+            Hover over each item to see the interaction effects.
+        </p>
+        
+        <div class="ui-example">
+            <h3>Example Note List:</h3>
+            <div class="note-item personal-glass">
+                <div class="category-dot personal"></div>
+                <div class="note-text">My thoughts on productivity systems</div>
+            </div>
+            <div class="note-item work-glass">
+                <div class="category-dot work"></div>
+                <div class="note-text">Project deadline: Q1 planning review</div>
+            </div>
+            <div class="note-item ideas-glass">
+                <div class="category-dot ideas"></div>
+                <div class="note-text">App idea: Smart reading tracker</div>
+            </div>
+            <div class="note-item projects-glass">
+                <div class="category-dot projects"></div>
+                <div class="note-text">Home renovation: kitchen design</div>
+            </div>
+            <div class="note-item research-glass">
+                <div class="category-dot research"></div>
+                <div class="note-text">Color theory in UI design research</div>
+            </div>
+        </div>
+        
+        <div class="glass-card">
+            <h2>🚀 Next Steps</h2>
+            <p>
+                <strong>Choose your favorites:</strong> Select 5-8 colors that match your workflow and personal preferences.
+            </p>
+            <p>
+                <strong>Test in practice:</strong> Try the colors with your actual notes to see how they feel in daily use.
+            </p>
+            <p>
+                <strong>Customize:</strong> These colors can be adjusted for brightness, saturation, or hue to match your exact needs.
+            </p>
+            <p>
+                <strong>Implement gradually:</strong> Start with 3-4 main categories, then add more as needed.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
