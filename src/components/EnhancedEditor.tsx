@@ -87,9 +87,24 @@ const EnhancedEditor: Component<EnhancedEditorProps> = (props) => {
   }
   
   return (
-    <div class="flex flex-col h-full">
-      {/* Formatting Toolbar */}
-      <div class="flex items-center gap-1 p-2 border-b border-macos-border bg-black/20">
+    <div class="flex h-full">
+      {/* Editor */}
+      <textarea
+        ref={textareaRef}
+        value={props.value}
+        onInput={(e) => props.onInput(e.target.value)}
+        onBlur={props.onBlur}
+        onKeyDown={handleKeyDown}
+        placeholder={props.placeholder}
+        class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed p-4"
+        style={{
+          "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          "line-height": "1.6"
+        }}
+      />
+      
+      {/* Vertical Formatting Toolbar - Right Side */}
+      <div class="flex flex-col gap-1 p-2 border-l border-macos-border bg-black/20 min-w-[44px]">
         <button
           onClick={() => insertFormatting('**')}
           class="p-1.5 hover-highlight rounded text-sm"
@@ -104,7 +119,6 @@ const EnhancedEditor: Component<EnhancedEditorProps> = (props) => {
         >
           <Icon icon="material-symbols:format-italic" class="w-4 h-4" />
         </button>
-        <div class="w-px h-4 bg-macos-border mx-1" />
         <button
           onClick={() => insertAtCursor('# ')}
           class="p-1.5 hover-highlight rounded text-sm"
@@ -126,7 +140,6 @@ const EnhancedEditor: Component<EnhancedEditorProps> = (props) => {
         >
           <Icon icon="material-symbols:format-list-numbered" class="w-4 h-4" />
         </button>
-        <div class="w-px h-4 bg-macos-border mx-1" />
         <button
           onClick={() => insertFormatting('`')}
           class="p-1.5 hover-highlight rounded text-sm"
@@ -175,7 +188,6 @@ const EnhancedEditor: Component<EnhancedEditorProps> = (props) => {
         >
           <Icon icon="material-symbols:link" class="w-4 h-4" />
         </button>
-        <div class="w-px h-4 bg-macos-border mx-1" />
         <button
           onClick={() => insertAtCursor('[[')}
           class="p-1.5 hover-highlight rounded text-sm"
@@ -183,87 +195,7 @@ const EnhancedEditor: Component<EnhancedEditorProps> = (props) => {
         >
           <Icon icon="material-symbols:hub" class="w-4 h-4" />
         </button>
-        
-        <div class="flex-1" />
-        
-        {/* Quick code language buttons */}
-        <div class="flex items-center gap-1 mr-2">
-          <span class="text-xs text-macos-text-secondary mr-1">Quick:</span>
-          <button
-            onClick={() => {
-              if (!textareaRef) return
-              const start = textareaRef.selectionStart
-              const end = textareaRef.selectionEnd
-              const text = textareaRef.value
-              const selectedText = text.substring(start, end)
-              
-              const newText = 
-                text.substring(0, start) + 
-                '```bash\n' + (selectedText || '# ') + '\n```' + 
-                text.substring(end)
-              
-              props.onInput(newText)
-              
-              setTimeout(() => {
-                if (!textareaRef) return
-                const newCursorPos = start + 8 + (selectedText ? 0 : 2)
-                textareaRef.setSelectionRange(newCursorPos, newCursorPos)
-                textareaRef.focus()
-              }, 0)
-            }}
-            class="px-1.5 py-0.5 text-xs bg-black/30 hover:bg-black/50 rounded transition-colors"
-            title="Insert Bash code block"
-          >
-            bash
-          </button>
-          <button
-            onClick={() => {
-              if (!textareaRef) return
-              const start = textareaRef.selectionStart
-              const end = textareaRef.selectionEnd
-              const text = textareaRef.value
-              const selectedText = text.substring(start, end)
-              
-              const newText = 
-                text.substring(0, start) + 
-                '```python\n' + (selectedText || '# ') + '\n```' + 
-                text.substring(end)
-              
-              props.onInput(newText)
-              
-              setTimeout(() => {
-                if (!textareaRef) return
-                const newCursorPos = start + 10 + (selectedText ? 0 : 2)
-                textareaRef.setSelectionRange(newCursorPos, newCursorPos)
-                textareaRef.focus()
-              }, 0)
-            }}
-            class="px-1.5 py-0.5 text-xs bg-black/30 hover:bg-black/50 rounded transition-colors"
-            title="Insert Python code block"
-          >
-            python
-          </button>
-        </div>
-        
-        <div class="text-xs text-macos-text-secondary px-2">
-          Markdown supported
-        </div>
       </div>
-      
-      {/* Editor */}
-      <textarea
-        ref={textareaRef}
-        value={props.value}
-        onInput={(e) => props.onInput(e.target.value)}
-        onBlur={props.onBlur}
-        onKeyDown={handleKeyDown}
-        placeholder={props.placeholder}
-        class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed p-4"
-        style={{
-          "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-          "line-height": "1.6"
-        }}
-      />
     </div>
   )
 }
