@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Icon Picker - New Instance</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .icon-option {
+            background: #2a2a2a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .icon-option:hover {
+            border-color: #60a5fa;
+            background: #3a3a3a;
+        }
+        .icon-option.selected {
+            border-color: #f59e0b;
+            background: #451a03;
+        }
+        .icon-display {
+            font-size: 48px;
+            width: 60px;
+            text-align: center;
+        }
+        .icon-info {
+            flex: 1;
+        }
+        .icon-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #60a5fa;
+        }
+        .icon-description {
+            font-size: 14px;
+            color: #ccc;
+            margin-top: 5px;
+        }
+        .icon-code {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .selected-code {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #f59e0b;
+            color: black;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Pick the Perfect "New Instance" Icon</h1>
+        <p>Click on any option to select it. These are Unicode symbols that work everywhere!</p>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('⫴', 'Vertical Split', 'material-symbols:vertical-split', this)">
+        <div class="icon-display">⫴</div>
+        <div class="icon-info">
+            <div class="icon-name">Vertical Split</div>
+            <div class="icon-description">Perfect for "new instance" - shows splitting into multiple views</div>
+            <div class="icon-code">material-symbols:vertical-split</div>
+        </div>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('⚏', 'Horizontal Split', 'material-symbols:horizontal-split', this)">
+        <div class="icon-display">⚏</div>
+        <div class="icon-info">
+            <div class="icon-name">Horizontal Split</div>
+            <div class="icon-description">Alternative split view - horizontal orientation</div>
+            <div class="icon-code">material-symbols:horizontal-split</div>
+        </div>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('📑', 'Multiple Documents', 'material-symbols:tab-duplicate', this)">
+        <div class="icon-display">📑</div>
+        <div class="icon-info">
+            <div class="icon-name">Tab Duplicate</div>
+            <div class="icon-description">Shows duplication/multiple instances clearly</div>
+            <div class="icon-code">material-symbols:tab-duplicate</div>
+        </div>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('🗂️', 'Layers', 'material-symbols:layers', this)">
+        <div class="icon-display">🗂️</div>
+        <div class="icon-info">
+            <div class="icon-name">Layers</div>
+            <div class="icon-description">Stacked instances - good for multiple views</div>
+            <div class="icon-code">material-symbols:layers</div>
+        </div>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('⧉', 'Picture in Picture', 'material-symbols:picture-in-picture', this)">
+        <div class="icon-display">⧉</div>
+        <div class="icon-info">
+            <div class="icon-name">Picture in Picture</div>
+            <div class="icon-description">Shows a floating window within main window</div>
+            <div class="icon-code">material-symbols:picture-in-picture</div>
+        </div>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('▦', 'Split Screen', 'material-symbols:splitscreen', this)">
+        <div class="icon-display">▦</div>
+        <div class="icon-info">
+            <div class="icon-name">Split Screen</div>
+            <div class="icon-description">Classic split view icon</div>
+            <div class="icon-code">material-symbols:splitscreen</div>
+        </div>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('⊞', 'Add Window', 'material-symbols:tab-new', this)">
+        <div class="icon-display">⊞</div>
+        <div class="icon-info">
+            <div class="icon-name">New Tab</div>
+            <div class="icon-description">Plus icon - good for "add new instance"</div>
+            <div class="icon-code">material-symbols:tab-new</div>
+        </div>
+    </div>
+
+    <div class="icon-option" onclick="selectIcon('🪟', 'Window', 'material-symbols:window', this)">
+        <div class="icon-display">🪟</div>
+        <div class="icon-info">
+            <div class="icon-name">Window</div>
+            <div class="icon-description">Simple window icon</div>
+            <div class="icon-code">material-symbols:window</div>
+        </div>
+    </div>
+
+    <div class="selected-code" id="selectedCode">
+        Click an icon to see the code!
+    </div>
+
+    <script>
+        function selectIcon(symbol, name, code, element) {
+            // Remove previous selection
+            document.querySelectorAll('.icon-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Select current
+            element.classList.add('selected');
+            
+            // Show code
+            const codeDiv = document.getElementById('selectedCode');
+            codeDiv.style.display = 'block';
+            codeDiv.innerHTML = `
+                <div>Selected: <strong>${name}</strong> ${symbol}</div>
+                <div style="margin-top: 10px; font-size: 12px;">
+                    &lt;Icon icon="${code}" class="w-4 h-4" /&gt;
+                </div>
+            `;
+            
+            console.log(`Selected: ${code}`);
+        }
+    </script>
+</body>
+</html>

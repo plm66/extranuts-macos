@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Browser - Find New Instance Icon</title>
+    <script src="https://code.iconify.design/iconify-icon/1.0.8/iconify-icon.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #2a2a2a;
+            color: white;
+            margin: 20px auto;
+            display: block;
+        }
+        .category {
+            margin-bottom: 40px;
+        }
+        .category h2 {
+            color: #60a5fa;
+            border-bottom: 2px solid #60a5fa;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        .icon-item {
+            background: #2a2a2a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .icon-item:hover {
+            border-color: #60a5fa;
+            background: #3a3a3a;
+            transform: scale(1.05);
+        }
+        .icon-item.selected {
+            border-color: #f59e0b;
+            background: #451a03;
+        }
+        .icon-item iconify-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .icon-name {
+            font-size: 12px;
+            color: #ccc;
+            word-break: break-all;
+        }
+        .selected-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #f59e0b;
+            color: black;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+        .description {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #60a5fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎯 Icon Browser - New Instance Icons</h1>
+        <div class="description">
+            <p><strong>Goal:</strong> Find an icon that represents "new instance" - something like duplication, mirroring, or multiple copies.</p>
+            <p><strong>Current:</strong> We're using "content-copy" but that means "copy", not "new instance".</p>
+            <p><strong>Click any icon</strong> to see its name and copy the code!</p>
+        </div>
+        <input type="text" class="search-box" id="searchBox" placeholder="Search icons... (try: instance, duplicate, mirror, multiple, split, tab)" onkeyup="filterIcons()">
+    </div>
+
+    <div class="category">
+        <h2>🪟 Window & Instance Icons</h2>
+        <div class="icon-grid" id="windowIcons"></div>
+    </div>
+
+    <div class="category">
+        <h2>📑 Duplication & Multiple Icons</h2>
+        <div class="icon-grid" id="duplicateIcons"></div>
+    </div>
+
+    <div class="category">
+        <h2>🔄 Split & Mirror Icons</h2>
+        <div class="icon-grid" id="splitIcons"></div>
+    </div>
+
+    <div class="category">
+        <h2>📊 Layout & Grid Icons</h2>
+        <div class="icon-grid" id="layoutIcons"></div>
+    </div>
+
+    <div class="selected-info" id="selectedInfo">
+        Click an icon to select it!
+    </div>
+
+    <script>
+        // Icon sets for different categories
+        const iconSets = {
+            window: [
+                'material-symbols:tab',
+                'material-symbols:tab-duplicate',
+                'material-symbols:tab-new',
+                'material-symbols:web-stories',
+                'material-symbols:picture-in-picture',
+                'material-symbols:picture-in-picture-alt',
+                'material-symbols:open-in-new-window',
+                'material-symbols:launch',
+                'material-symbols:open-in-browser',
+                'material-symbols:tab-unselected',
+                'material-symbols:window',
+                'material-symbols:web-asset',
+                'material-symbols:desktop-windows'
+            ],
+            duplicate: [
+                'material-symbols:content-copy',
+                'material-symbols:copy-all',
+                'material-symbols:content-duplicate',
+                'material-symbols:layers',
+                'material-symbols:library-add',
+                'material-symbols:library-books',
+                'material-symbols:dynamic-feed',
+                'material-symbols:queue',
+                'material-symbols:post-add',
+                'material-symbols:note-add',
+                'material-symbols:add-box',
+                'material-symbols:control-point-duplicate'
+            ],
+            split: [
+                'material-symbols:splitscreen',
+                'material-symbols:view-column',
+                'material-symbols:view-sidebar',
+                'material-symbols:vertical-split',
+                'material-symbols:horizontal-split',
+                'material-symbols:flip',
+                'material-symbols:compare',
+                'material-symbols:swap-horiz',
+                'material-symbols:swap-vert',
+                'material-symbols:multiple-stop',
+                'material-symbols:alt-route',
+                'material-symbols:timeline'
+            ],
+            layout: [
+                'material-symbols:grid-view',
+                'material-symbols:view-module',
+                'material-symbols:dashboard',
+                'material-symbols:apps',
+                'material-symbols:view-quilt',
+                'material-symbols:view-array',
+                'material-symbols:view-agenda',
+                'material-symbols:view-week',
+                'material-symbols:calendar-view-week',
+                'material-symbols:table-chart',
+                'material-symbols:border-all',
+                'material-symbols:dataset'
+            ]
+        };
+
+        function createIconItem(iconName) {
+            const item = document.createElement('div');
+            item.className = 'icon-item';
+            item.innerHTML = `
+                <iconify-icon icon="${iconName}" style="font-size: 32px; display: block; margin-bottom: 10px;"></iconify-icon>
+                <div class="icon-name">${iconName}</div>
+            `;
+            item.onclick = () => selectIcon(iconName, item);
+            
+            // Add loading indicator
+            const iconElement = item.querySelector('iconify-icon');
+            iconElement.addEventListener('load', () => {
+                console.log(`Icon loaded: ${iconName}`);
+            });
+            
+            return item;
+        }
+
+        function selectIcon(iconName, element) {
+            // Remove previous selection
+            document.querySelectorAll('.icon-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Select current
+            element.classList.add('selected');
+            
+            // Show info
+            const info = document.getElementById('selectedInfo');
+            info.style.display = 'block';
+            info.innerHTML = `
+                <div>Selected: <strong>${iconName}</strong></div>
+                <div style="margin-top: 10px; font-size: 12px;">
+                    Copy this: &lt;Icon icon="${iconName}" class="w-4 h-4" /&gt;
+                </div>
+            `;
+        }
+
+        function filterIcons() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const allItems = document.querySelectorAll('.icon-item');
+            
+            allItems.forEach(item => {
+                const iconName = item.querySelector('.icon-name').textContent.toLowerCase();
+                if (iconName.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize icon grids
+        function initializeIcons() {
+            const windowGrid = document.getElementById('windowIcons');
+            const duplicateGrid = document.getElementById('duplicateIcons');
+            const splitGrid = document.getElementById('splitIcons');
+            const layoutGrid = document.getElementById('layoutIcons');
+
+            iconSets.window.forEach(icon => {
+                windowGrid.appendChild(createIconItem(icon));
+            });
+
+            iconSets.duplicate.forEach(icon => {
+                duplicateGrid.appendChild(createIconItem(icon));
+            });
+
+            iconSets.split.forEach(icon => {
+                splitGrid.appendChild(createIconItem(icon));
+            });
+
+            iconSets.layout.forEach(icon => {
+                layoutGrid.appendChild(createIconItem(icon));
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeIcons);
+    </script>
+</body>
+</html>
