@@ -1,6 +1,7 @@
 import { Component, createSignal, For, Show } from 'solid-js'
 import { Icon } from '@iconify-icon/solid'
 import { preferences, updatePreferences } from '../stores/preferencesStore'
+import { exportService } from '../services/export'
 
 interface SettingSection {
   id: string
@@ -27,6 +28,12 @@ const sections: SettingSection[] = [
     title: 'Sync & Backup',
     icon: 'material-symbols:sync',
     description: 'Cloud synchronization and data backup'
+  },
+  {
+    id: 'export',
+    title: 'Export & Import',
+    icon: 'material-symbols:import-export',
+    description: 'Export notes to other applications'
   },
   {
     id: 'shortcuts',
@@ -291,6 +298,83 @@ export const SettingsPanel: Component<{
                           <li>• Changes sync automatically when online</li>
                           <li>• Available on all devices with same Apple ID</li>
                           <li>• End-to-end encrypted by Apple</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </Show>
+                
+                {/* Export Settings */}
+                <Show when={selectedSection() === 'export'}>
+                  <SettingItem
+                    title="Obsidian Vault Location"
+                    description="Select the folder where your Obsidian vault is located. Your notes will be exported to a timestamped folder within this vault."
+                  >
+                    <div class="flex items-center gap-2">
+                      <button
+                        onClick={async () => {
+                          const path = await exportService.selectObsidianVault()
+                          if (path) {
+                            const isValid = await exportService.validateObsidianVault(path)
+                            if (isValid) {
+                              await updatePreferences({
+                                export: {
+                                  ...preferences().export,
+                                  obsidian_vault_path: path
+                                }
+                              })
+                            } else {
+                              alert('The selected folder does not appear to be an Obsidian vault. Please select a folder that contains a .obsidian directory.')
+                            }
+                          }
+                        }}
+                        class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
+                      >
+                        Select Vault
+                      </button>
+                      {preferences().export.obsidian_vault_path && (
+                        <button
+                          onClick={async () => {
+                            await updatePreferences({
+                              export: {
+                                ...preferences().export,
+                                obsidian_vault_path: null
+                              }
+                            })
+                          }}
+                          class="p-1 hover-highlight rounded"
+                          title="Clear vault path"
+                        >
+                          <Icon icon="material-symbols:close" class="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </SettingItem>
+                  
+                  <Show when={preferences().export.obsidian_vault_path}>
+                    <div class="glass-morphism rounded-lg p-4">
+                      <div class="flex items-start gap-3">
+                        <Icon icon="material-symbols:folder-open" class="w-5 h-5 mt-0.5 text-green-400" />
+                        <div class="flex-1">
+                          <h4 class="text-sm font-medium mb-1">Current Vault Path</h4>
+                          <p class="text-xs text-macos-text-secondary font-mono break-all">
+                            {preferences().export.obsidian_vault_path}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Show>
+                  
+                  <div class="glass-morphism rounded-lg p-4 bg-purple-500/10 border border-purple-500/30">
+                    <div class="flex items-start gap-3">
+                      <Icon icon="simple-icons:obsidian" class="w-5 h-5 mt-0.5 text-purple-400" />
+                      <div>
+                        <h4 class="text-sm font-medium text-purple-400 mb-1">About Obsidian Export</h4>
+                        <ul class="text-xs text-purple-300 space-y-1">
+                          <li>• Each export creates a timestamped folder</li>
+                          <li>• Notes include frontmatter with metadata</li>
+                          <li>• Wikilinks are preserved in [[note]] format</li>
+                          <li>• Tags and creation dates are included</li>
                         </ul>
                       </div>
                     </div>

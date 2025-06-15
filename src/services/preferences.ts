@@ -16,10 +16,15 @@ export interface SyncSettings {
   icloud_sync_enabled: boolean
 }
 
+export interface ExportPreferences {
+  obsidian_vault_path: string | null
+}
+
 export interface Preferences {
   sync: SyncSettings
   window: WindowPreferences
   editor: EditorPreferences
+  export: ExportPreferences
 }
 
 export const preferencesService = {

@@ -20,6 +20,7 @@ import { preferences, loadPreferences, toggleDeleteConfirmation } from './stores
 import { createFullBackup } from './utils/backup'
 import { parseWikiLinks, getAutoCompleteMatches, findWikiLinkAtCursor } from './utils/wikilinks'
 import SettingsPanel from './components/SettingsPanel'
+import ExportModal from './components/ExportModal'
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -87,6 +88,7 @@ const App: Component = () => {
   const [showDeleteConfirm, setShowDeleteConfirm] = createSignal(false)
   const [noteToDelete, setNoteToDelete] = createSignal<string | null>(null)
   const [showSettings, setShowSettings] = createSignal(false)
+  const [showExportModal, setShowExportModal] = createSignal(false)
   
   onMount(async () => {
     console.log('App mounted, starting initialization...')
@@ -427,6 +429,14 @@ const App: Component = () => {
             />
           </button>
           <button
+            onClick={() => setShowExportModal(true)}
+            class="px-3 py-1.5 text-sm hover-highlight rounded no-drag flex items-center gap-1"
+            title="Export to Obsidian"
+          >
+            <Icon icon="simple-icons:obsidian" class="w-4 h-4" />
+            <span class="text-xs">Export</span>
+          </button>
+          <button
             onClick={hideToMenuBar}
             class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
           >
@@ -751,6 +761,12 @@ const App: Component = () => {
       <Show when={showSettings()}>
         <SettingsPanel onClose={() => setShowSettings(false)} />
       </Show>
+      
+      {/* Export Modal */}
+      <ExportModal 
+        isOpen={showExportModal()} 
+        onClose={() => setShowExportModal(false)} 
+      />
     </div>
   )
 }

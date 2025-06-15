@@ -15,6 +15,9 @@ const defaultPreferences: Preferences = {
     confirm_delete: true,
     auto_save: true,
     auto_save_interval: 30
+  },
+  export: {
+    obsidian_vault_path: null
   }
 }
 

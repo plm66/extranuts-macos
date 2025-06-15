@@ -6,6 +6,7 @@ pub struct Preferences {
     pub sync: SyncSettings,
     pub window: WindowPreferences,
     pub editor: EditorPreferences,
+    pub export: ExportPreferences,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -20,6 +21,11 @@ pub struct EditorPreferences {
     pub confirm_delete: bool,
     pub auto_save: bool,
     pub auto_save_interval: u64, // in seconds
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExportPreferences {
+    pub obsidian_vault_path: Option<String>,
 }
 
 impl Default for Preferences {
@@ -37,6 +43,9 @@ impl Default for Preferences {
                 confirm_delete: true,
                 auto_save: true,
                 auto_save_interval: 30,
+            },
+            export: ExportPreferences {
+                obsidian_vault_path: None,
             },
         }
     }
