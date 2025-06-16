@@ -2,16 +2,16 @@ import { Component, createMemo } from 'solid-js'
 import { BilliardSelectorProps, Selector, SelectorAnimationStates } from '../types/selectors'
 
 const billiardColors = {
-  0: { base: '#ff6b6b', hover: '#ff5252', active: '#ff4444', variants: ['#ffebee', '#ffcdd2', '#ef9a9a', '#e57373', '#ef5350', '#f44336', '#e53935', '#d32f2f', '#c62828', '#b71c1c'] }, // Rouge clair → foncé
-  1: { base: '#4fc3f7', hover: '#42a5f5', active: '#2196f3', variants: ['#e3f2fd', '#bbdefb', '#90caf9', '#64b5f6', '#42a5f5', '#2196f3', '#1e88e5', '#1976d2', '#1565c0', '#0d47a1'] }, // Bleu clair → foncé  
-  2: { base: '#ba68c8', hover: '#ab47bc', active: '#9c27b0', variants: ['#f3e5f5', '#e1bee7', '#ce93d8', '#ba68c8', '#ab47bc', '#9c27b0', '#8e24aa', '#7b1fa2', '#6a1b9a', '#4a148c'] }, // Violet clair → foncé
-  3: { base: '#ffb74d', hover: '#ffa726', active: '#ff9800', variants: ['#fff3e0', '#ffe0b2', '#ffcc80', '#ffb74d', '#ffa726', '#ff9800', '#fb8c00', '#f57c00', '#ef6c00', '#e65100'] }, // Orange clair → foncé
-  4: { base: '#29b6f6', hover: '#039be5', active: '#0288d1', variants: ['#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b'] }, // Cyan clair → foncé
-  5: { base: '#f06292', hover: '#ec407a', active: '#e91e63', variants: ['#fce4ec', '#f8bbd9', '#f48fb1', '#f06292', '#ec407a', '#e91e63', '#d81b60', '#c2185b', '#ad1457', '#880e4f'] }, // Rose clair → foncé
-  6: { base: '#9575cd', hover: '#7e57c2', active: '#673ab7', variants: ['#ede7f6', '#d1c4e9', '#b39ddb', '#9575cd', '#7e57c2', '#673ab7', '#5e35b1', '#512da8', '#4527a0', '#311b92'] }, // Indigo clair → foncé
-  7: { base: '#26c6da', hover: '#00bcd4', active: '#00acc1', variants: ['#e0f7fa', '#b2ebf2', '#80deea', '#4dd0e1', '#26c6da', '#00bcd4', '#00acc1', '#0097a7', '#00838f', '#006064'] }, // Cyan clair → foncé
-  8: { base: '#ffee58', hover: '#ffeb3b', active: '#fdd835', variants: ['#fffde7', '#fff9c4', '#fff59d', '#fff176', '#ffee58', '#ffeb3b', '#fdd835', '#fbc02d', '#f9a825', '#f57f17'] }, // Jaune clair → foncé  
-  9: { base: '#ff8a65', hover: '#ff7043', active: '#ff5722', variants: ['#fbe9e7', '#ffccbc', '#ffab91', '#ff8a65', '#ff7043', '#ff5722', '#f4511e', '#e64a19', '#d84315', '#bf360c'] } // Orange-rouge clair → foncé
+  0: { base: '#d4a5a5', hover: '#c99999', active: '#be8d8d', variants: ['#f5f0f0', '#ede0e0', '#e5d0d0', '#dcc0c0', '#d4a5a5', '#cb9a9a', '#c28f8f', '#b98484', '#b07979', '#a76e6e'] }, // Rouge doux
+  1: { base: '#a5c4d4', hover: '#99b8c9', active: '#8dacbe', variants: ['#f0f4f5', '#e0e9ed', '#d0dee5', '#c0d3dc', '#a5c4d4', '#9ab9cb', '#8faec2', '#84a3b9', '#7998b0', '#6e8da7'] }, // Bleu doux
+  2: { base: '#c4a5d4', hover: '#b899c9', active: '#ac8dbe', variants: ['#f4f0f5', '#e9e0ed', '#ded0e5', '#d3c0dc', '#c4a5d4', '#b99acb', '#ae8fc2', '#a384b9', '#9879b0', '#8d6ea7'] }, // Violet doux
+  3: { base: '#d4a5a5', hover: '#c99999', active: '#be8d8d', variants: ['#f5f0f0', '#ede0e0', '#e5d0d0', '#dcc0c0', '#d4a5a5', '#cb9a9a', '#c28f8f', '#b98484', '#b07979', '#a76e6e'] }, // Orange doux
+  4: { base: '#a5a5d4', hover: '#9999c9', active: '#8d8dbe', variants: ['#f0f0f5', '#e0e0ed', '#d0d0e5', '#c0c0dc', '#a5a5d4', '#9a9acb', '#8f8fc2', '#8484b9', '#7979b0', '#6e6ea7'] }, // Indigo doux
+  5: { base: '#d4a5c4', hover: '#c999b8', active: '#be8dac', variants: ['#f5f0f4', '#ede0e9', '#e5d0de', '#dcc0d3', '#d4a5c4', '#cb9ab9', '#c28fae', '#b984a3', '#b07998', '#a76e8d'] }, // Rose doux
+  6: { base: '#b4a5d4', hover: '#a999c9', active: '#9e8dbe', variants: ['#f2f0f5', '#e6e0ed', '#dad0e5', '#cec0dc', '#b4a5d4', '#a99acb', '#9e8fc2', '#9384b9', '#8879b0', '#7d6ea7'] }, // Lavande doux
+  7: { base: '#a5b4d4', hover: '#99a9c9', active: '#8d9ebe', variants: ['#f0f2f5', '#e0e6ed', '#d0dae5', '#c0cedc', '#a5b4d4', '#9aa9cb', '#8f9ec2', '#8493b9', '#7988b0', '#6e7da7'] }, // Bleu-gris doux
+  8: { base: '#d4d4a5', hover: '#c9c999', active: '#bebe8d', variants: ['#f5f5f0', '#edede0', '#e5e5d0', '#dcdcc0', '#d4d4a5', '#cbcb9a', '#c2c28f', '#b9b984', '#b0b079', '#a7a76e'] }, // Jaune doux
+  9: { base: '#d4a5d4', hover: '#c999c9', active: '#be8dbe', variants: ['#f5f0f5', '#ede0ed', '#e5d0e5', '#dcc0dc', '#d4a5d4', '#cb9acb', '#c28fc2', '#b984b9', '#b079b0', '#a76ea7'] } // Magenta doux
 }
 
 const animationStates: SelectorAnimationStates = {
@@ -36,7 +36,6 @@ const BilliardSelector: Component<BilliardSelectorProps> = (props) => {
     const positionInGroup = (props.selector.id - 1) % 10    // Position 0-9 dans le groupe
     const groupColors = billiardColors[group as keyof typeof billiardColors] || billiardColors[0]
     
-    console.log(`Sélecteur ${props.selector.id}: groupe=${group}, position=${positionInGroup}, couleur=${groupColors.variants[positionInGroup]}`)
     
     return {
       base: groupColors.variants[positionInGroup] || groupColors.base,
@@ -46,33 +45,18 @@ const BilliardSelector: Component<BilliardSelectorProps> = (props) => {
   })
 
   const baseStyle = createMemo(() => ({
-    'background': `radial-gradient(circle at 30% 30%, ${colorScheme().base}ff, ${colorScheme().base}aa 50%, ${colorScheme().base}66 100%)`,
-    'box-shadow': `
-      0 4px 8px rgba(0,0,0,0.3),
-      inset 0 1px 0 rgba(255,255,255,0.5),
-      inset 0 -1px 0 rgba(0,0,0,0.3),
-      0 0 15px ${colorScheme().base}40
-    `
+    'background-color': colorScheme().base,
+    'box-shadow': `0 2px 4px rgba(0,0,0,0.2)`
   }))
 
   const hoverStyle = createMemo(() => ({
-    'background': `radial-gradient(circle at 30% 30%, ${colorScheme().hover}ff, ${colorScheme().hover}bb 50%, ${colorScheme().hover}77 100%)`,
-    'box-shadow': `
-      0 6px 12px rgba(0,0,0,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.6),
-      inset 0 -1px 0 rgba(0,0,0,0.4),
-      0 0 25px ${colorScheme().hover}60
-    `
+    'background-color': colorScheme().hover,
+    'box-shadow': `0 4px 8px rgba(0,0,0,0.3)`
   }))
 
   const activeStyle = createMemo(() => ({
-    'background': `radial-gradient(circle at 30% 30%, ${colorScheme().active}ff, ${colorScheme().active}cc 50%, ${colorScheme().active}88 100%)`,
-    'box-shadow': `
-      0 2px 4px rgba(0,0,0,0.4),
-      inset 0 1px 0 rgba(255,255,255,0.7),
-      inset 0 -1px 0 rgba(0,0,0,0.5),
-      0 0 30px ${colorScheme().active}80
-    `
+    'background-color': colorScheme().active,
+    'box-shadow': `0 1px 2px rgba(0,0,0,0.3)`
   }))
 
   return (

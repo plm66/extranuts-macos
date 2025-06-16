@@ -615,7 +615,7 @@ const App: Component = () => {
       <div class="sidebar-glass border-b border-macos-border px-6 py-2">
         <div class="flex flex-col gap-2">
           {/* Nom du sélecteur centré */}
-          <div class="text-center">
+          <div class="text-center relative">
             <Show when={selectorsStore.activeSelector} fallback={
               <div class="text-lg font-medium text-macos-text-secondary">
                 Groupe {selectorsStore.currentGroup + 1}/10
@@ -625,6 +625,25 @@ const App: Component = () => {
                 {selectorsStore.activeSelector?.name}
               </div>
             </Show>
+            
+            {/* Chiffres 1-10 à droite */}
+            <div class="absolute right-0 top-1/2 transform -translate-y-1/2 flex gap-1">
+              <For each={Array.from({length: 10}, (_, i) => i + 1)}>
+                {(groupNum) => (
+                  <button
+                    class={`w-6 h-6 rounded text-xs font-bold transition-all duration-200 ${
+                      selectorsStore.currentGroup === groupNum - 1
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-macos-hover/30 text-macos-text-secondary hover:bg-macos-hover hover:text-macos-text'
+                    }`}
+                    onClick={() => selectorsStore.navigateToGroup(groupNum - 1)}
+                    title={`Groupe ${groupNum}`}
+                  >
+                    {groupNum}
+                  </button>
+                )}
+              </For>
+            </div>
           </div>
           
           {/* Flèches + Grille des sélecteurs sur la même ligne */}
