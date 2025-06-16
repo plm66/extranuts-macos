@@ -48,6 +48,9 @@ import { selectorsStore } from "./stores/selectorsStore";
 import SelectorGrid from "./components/SelectorGrid";
 import NoteSelectorColumn from "./components/NoteSelectorColumn";
 
+// Import du debug des sélecteurs (à retirer en production)
+import "./debugSelectors";
+
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
   content: string;
@@ -756,19 +759,10 @@ const App: Component = () => {
             when={selectedNote()}
             fallback={
               <div class="flex-1 flex items-center justify-center">
-                <div class="text-center">
-                  <h2 class="text-2xl mb-4 text-macos-text-secondary">
-                    Welcome to Extranuts
-                  </h2>
-                  <p class="text-macos-text-secondary mb-6">
-                    Select a note or create a new one to get started
+                <div class="text-center opacity-50">
+                  <p class="text-macos-text-secondary text-sm">
+                    No note selected
                   </p>
-                  <button
-                    onClick={createRegularNote}
-                    class="px-6 py-3 glass-morphism hover-highlight rounded-lg no-drag"
-                  >
-                    + Create Your First Note
-                  </button>
                 </div>
               </div>
             }

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extranuts - Architecture UI/UX Reference</title>
+    <style>
+        /* Couleurs macOS glassmorphism exactes */
+        :root {
+            --macos-bg: rgba(30, 30, 30, 0.85);
+            --macos-sidebar: rgba(40, 40, 40, 0.95);
+            --macos-hover: rgba(60, 60, 60, 0.9);
+            --macos-border: rgba(255, 255, 255, 0.1);
+            --macos-text: rgba(255, 255, 255, 0.9);
+            --macos-text-secondary: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--macos-text);
+            overflow-x: hidden;
+        }
+
+        /* Layout principal exact */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: var(--macos-bg);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Header - 64px de hauteur exacte */
+        .header {
+            height: 64px;
+            background: var(--macos-sidebar);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--macos-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: relative;
+        }
+
+        .header::before {
+            content: "HEADER ZONE - 64px height";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            font-size: 10px;
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.2);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        /* Selectors Section - hauteur dynamique */
+        .selectors-section {
+            background: var(--macos-sidebar);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--macos-border);
+            padding: 8px 24px;
+            position: relative;
+        }
+
+        .selectors-section::before {
+            content: "SELECTORS ZONE - ~100px height";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            font-size: 10px;
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.2);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        /* Nom du sélecteur */
+        .selector-name {
+            text-align: center;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .selector-title {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        /* Navigation avec flèches et grille */
+        .navigation-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .arrow-button {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(60, 60, 60, 0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .arrow-button:hover {
+            background: var(--macos-hover);
+            transform: scale(1.1);
+        }
+
+        /* Grille des sélecteurs - 10 boules */
+        .selectors-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 16px;
+            width: 600px;
+            position: relative;
+        }
+
+        .selectors-grid::before {
+            content: "BILLIARD GRID - 600px width";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 10px;
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        /* Boule de billard individuelle */
+        .billiard-ball {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.15s ease;
+        }
+
+        .billiard-ball:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        .billiard-ball:active {
+            transform: scale(0.98);
+        }
+
+        /* Reflet sur la boule */
+        .billiard-ball::before {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 12px;
+            height: 12px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 50%;
+            filter: blur(1px);
+        }
+
+        /* Badge compteur rouge - specs exactes */
+        .count-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 16px;
+            height: 16px;
+            background-color: #ff6b6b;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Couleurs des groupes de sélecteurs */
+        .billiard-ball.group-0 { background: linear-gradient(135deg, #f5f0f0, #d4a5a5); }
+        .billiard-ball.group-1 { background: linear-gradient(135deg, #f0f4f5, #a5c4d4); }
+        .billiard-ball.group-2 { background: linear-gradient(135deg, #f4f0f5, #c4a5d4); }
+
+        /* Editor Area - hauteur flexible 60% */
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 60%;
+            position: relative;
+        }
+
+        .editor-area::before {
+            content: "EDITOR AREA - 60% viewport height";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            font-size: 10px;
+            color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.2);
+            padding: 2px 4px;
+            border-radius: 2px;
+            z-index: 10;
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 24px;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .title-input {
+            width: 100%;
+            font-size: 32px;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--macos-text);
+            margin-bottom: 16px;
+        }
+
+        .content-area {
+            width: 100%;
+            height: 200px;
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--macos-border);
+            border-radius: 8px;
+            padding: 16px;
+            resize: none;
+            outline: none;
+            color: var(--macos-text);
+            font-family: inherit;
+        }
+
+        /* Resize Handle - 4px height */
+        .resize-handle {
+            height: 4px;
+            background: var(--macos-border);
+            cursor: ns-resize;
+            transition: background 0.2s ease;
+            position: relative;
+        }
+
+        .resize-handle::before {
+            content: "RESIZE HANDLE - 4px height";
+            position: absolute;
+            top: -16px;
+            left: 4px;
+            font-size: 10px;
+            color: #06b6d4;
+            background: rgba(6, 182, 212, 0.2);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        .resize-handle:hover {
+            background: rgba(59, 130, 246, 0.5);
+        }
+
+        /* Notes List - hauteur flexible 40% */
+        .notes-list {
+            flex: 1;
+            background: var(--macos-sidebar);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--macos-border);
+            padding: 16px;
+            position: relative;
+        }
+
+        .notes-list::before {
+            content: "NOTES LIST - 40% viewport height";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            font-size: 10px;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.2);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--macos-hover);
+            border: 1px solid var(--macos-border);
+            border-radius: 8px;
+            color: var(--macos-text);
+            outline: none;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .note-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .note-item:hover {
+            background: var(--macos-hover);
+        }
+
+        /* Note Selector Column - 48px width */
+        .note-selector-column {
+            width: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .mini-billiard {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f0f4f5, #a5c4d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+        }
+
+        /* Title Column avec resize handle */
+        .title-column {
+            width: 200px;
+            padding: 0 8px;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .title-column::after {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: rgba(255,255,255,0.2);
+            cursor: col-resize;
+        }
+
+        .title-column::before {
+            content: "200px width";
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            font-size: 9px;
+            color: var(--macos-text-secondary);
+        }
+
+        /* Status Bar - 24px height */
+        .status-bar {
+            height: 24px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--macos-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            font-size: 12px;
+            color: var(--macos-text-secondary);
+            position: relative;
+        }
+
+        .status-bar::before {
+            content: "STATUS BAR - 24px height";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            font-size: 10px;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.2);
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+
+        /* Navigation rapide */
+        .nav-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--macos-sidebar);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--macos-border);
+            border-radius: 8px;
+            padding: 12px;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 4px 8px;
+            margin: 2px 0;
+            color: var(--macos-text);
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .nav-item:hover {
+            background: var(--macos-hover);
+        }
+
+        /* Dimension indicators */
+        .dimension-label {
+            position: absolute;
+            font-size: 10px;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+            padding: 1px 3px;
+            border-radius: 2px;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .selectors-grid {
+                width: 400px;
+                gap: 8px;
+            }
+            
+            .billiard-ball {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation rapide -->
+    <nav class="nav-menu">
+        <a href="#header" class="nav-item">📋 Header (64px)</a>
+        <a href="#selectors" class="nav-item">🎱 Selectors (~100px)</a>
+        <a href="#editor" class="nav-item">✏️ Editor (60%)</a>
+        <a href="#notes" class="nav-item">📝 Notes (40%)</a>
+        <a href="#status" class="nav-item">📊 Status (24px)</a>
+    </nav>
+
+    <!-- Container principal -->
+    <div class="app-container">
+        
+        <!-- HEADER ZONE - 64px fixe -->
+        <header id="header" class="header">
+            <h1 style="font-size: 20px; font-weight: 600;">Extranuts</h1>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button style="padding: 8px 16px; background: rgba(255,255,255,0.1); border: 1px solid var(--macos-border); border-radius: 6px; color: var(--macos-text); cursor: pointer;">+ New Note</button>
+                <button style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid var(--macos-border); border-radius: 6px; color: var(--macos-text); cursor: pointer;">⚙️</button>
+            </div>
+            <div class="dimension-label" style="top: 20px; right: 100px;">Width: 100vw</div>
+        </header>
+
+        <!-- SELECTORS ZONE - hauteur dynamique ~100px -->
+        <section id="selectors" class="selectors-section">
+            <!-- Nom du sélecteur actif -->
+            <div class="selector-name">
+                <div class="selector-title">Trading</div>
+                <!-- Chiffres de groupes 1-10 -->
+                <div style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); display: flex; gap: 4px;">
+                    <button style="width: 24px; height: 24px; border-radius: 4px; background: #3b82f6; color: white; border: none; font-size: 12px; font-weight: bold;">1</button>
+                    <button style="width: 24px; height: 24px; border-radius: 4px; background: rgba(255,255,255,0.1); color: var(--macos-text-secondary); border: none; font-size: 12px;">2</button>
+                    <button style="width: 24px; height: 24px; border-radius: 4px; background: rgba(255,255,255,0.1); color: var(--macos-text-secondary); border: none; font-size: 12px;">3</button>
+                </div>
+            </div>
+
+            <!-- Navigation avec flèches et grille -->
+            <div class="navigation-row">
+                <!-- Flèche gauche -->
+                <button class="arrow-button">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M20 24L12 16L20 8" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+                <!-- Grille des 10 sélecteurs -->
+                <div class="selectors-grid">
+                    <!-- Sélecteur 1 avec badge -->
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">
+                        1
+                        <div class="count-badge">5</div>
+                    </div>
+                    <!-- Sélecteur 2 -->
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">2</div>
+                    <!-- Sélecteur 3 avec badge -->
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">
+                        3
+                        <div class="count-badge">12</div>
+                    </div>
+                    <!-- Sélecteurs 4-10 -->
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">4</div>
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">5</div>
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">6</div>
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">7</div>
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">8</div>
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">9</div>
+                    <div class="billiard-ball group-0" onclick="highlightBall(this)">10</div>
+                </div>
+
+                <!-- Flèche droite -->
+                <button class="arrow-button">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                        <path d="M12 8L20 16L12 24" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="dimension-label" style="bottom: 8px; left: 50%; transform: translateX(-50%);">Gap: 16px | Ball: 48px | Badge: 16px</div>
+        </section>
+
+        <!-- EDITOR ZONE - 60% de la hauteur restante -->
+        <main id="editor" class="editor-area">
+            <div class="editor-content">
+                <input type="text" class="title-input" placeholder="Note title..." value="Ma note de trading">
+                <textarea class="content-area" placeholder="Write your note with markdown support...">
+# Trading Strategy
+
+Cette note contient mes stratégies de trading.
+
+## Points clés:
+- Analyse technique
+- [[Risk Management]]
+- Position sizing
+
+*Dernière mise à jour: aujourd'hui*
+                </textarea>
+            </div>
+            <div class="dimension-label" style="bottom: 8px; right: 8px;">Title: 32px | Content: flexible</div>
+        </main>
+
+        <!-- RESIZE HANDLE - 4px -->
+        <div id="resize" class="resize-handle" onclick="showResizeInfo()"></div>
+
+        <!-- NOTES LIST - 40% de la hauteur restante -->
+        <aside id="notes" class="notes-list">
+            <!-- Barre de recherche -->
+            <input type="text" class="search-bar" placeholder="Search 127 notes..." value="">
+
+            <!-- Liste des notes avec layout exact -->
+            <div style="max-height: 144px; overflow-y: auto;">
+                <!-- Note 1 -->
+                <div class="note-item" onclick="selectNote(this)">
+                    <!-- Colonne sélecteur -->
+                    <div class="note-selector-column">
+                        <div class="mini-billiard">1</div>
+                    </div>
+                    <!-- Colonne titre -->
+                    <div class="title-column">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Ma note de trading</div>
+                        </div>
+                    </div>
+                    <!-- Colonne contenu -->
+                    <div style="flex: 1; min-width: 0; padding: 0 12px;">
+                        <div style="font-size: 12px; color: var(--macos-text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Cette note contient mes stratégies de trading...</div>
+                    </div>
+                    <!-- Colonne timestamp -->
+                    <div style="flex-shrink: 0; padding: 0 8px;">
+                        <span style="font-size: 12px; color: var(--macos-text-secondary);">14:23</span>
+                    </div>
+                </div>
+
+                <!-- Note 2 -->
+                <div class="note-item">
+                    <div class="note-selector-column">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #6b7280; display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(255,255,255,0.3);">
+                            <span style="font-size: 16px; color: var(--macos-text-secondary); opacity: 0.6;">+</span>
+                        </div>
+                    </div>
+                    <div class="title-column">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Ideas & Notes</div>
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 0; padding: 0 12px;">
+                        <div style="font-size: 12px; color: var(--macos-text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Brainstorming session notes...</div>
+                    </div>
+                    <div style="flex-shrink: 0; padding: 0 8px;">
+                        <span style="font-size: 12px; color: var(--macos-text-secondary);">Hier</span>
+                    </div>
+                </div>
+
+                <!-- Note 3 avec sélecteur -->
+                <div class="note-item">
+                    <div class="note-selector-column">
+                        <div class="mini-billiard" style="background: linear-gradient(135deg, #f4f0f5, #c4a5d4);">3</div>
+                    </div>
+                    <div class="title-column">
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Research Notes</div>
+                        </div>
+                    </div>
+                    <div style="flex: 1; min-width: 0; padding: 0 12px;">
+                        <div style="font-size: 12px; color: var(--macos-text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Market analysis and trends...</div>
+                    </div>
+                    <div style="flex-shrink: 0; padding: 0 8px;">
+                        <span style="font-size: 12px; color: var(--macos-text-secondary);">Mar 15</span>
+                    </div>
+                </div>
+            </div>
+            <div class="dimension-label" style="bottom: 8px; left: 8px;">Selector: 48px | Title: 200px | Content: flex-1</div>
+        </aside>
+
+        <!-- STATUS BAR - 24px fixe -->
+        <footer id="status" class="status-bar">
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <span>📝 127 notes</span>
+                <span>✏️ Editing: Ma note de trading</span>
+                <span>💾 Saved: 14:23:45</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span>🕐 14:23:45</span>
+                <span>📅 16 juin 2025</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        // Interactions pour démonstration
+        function highlightBall(element) {
+            // Retirer la sélection précédente
+            document.querySelectorAll('.billiard-ball').forEach(ball => {
+                ball.style.transform = '';
+                ball.style.boxShadow = '';
+            });
+            
+            // Mettre en évidence la boule sélectionnée
+            element.style.transform = 'scale(1.15)';
+            element.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+            
+            // Mettre à jour le titre
+            document.querySelector('.selector-title').textContent = 'Sélecteur ' + element.textContent.trim();
+        }
+
+        function selectNote(element) {
+            // Retirer la sélection précédente
+            document.querySelectorAll('.note-item').forEach(note => {
+                note.style.background = 'rgba(0,0,0,0.1)';
+            });
+            
+            // Sélectionner la note
+            element.style.background = 'var(--macos-hover)';
+            
+            // Mettre à jour l'éditeur
+            const title = element.querySelector('div[style*="font-weight: 600"]').textContent;
+            document.querySelector('.title-input').value = title;
+        }
+
+        function showResizeInfo() {
+            alert('Resize Handle: 4px de hauteur\nPermet de redimensionner entre Editor (60%) et Notes List (40%)');
+        }
+
+        // Navigation fluide
+        document.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+                
+                // Highlight temporaire
+                target.style.outline = '2px solid #3b82f6';
+                setTimeout(() => {
+                    target.style.outline = '';
+                }, 2000);
+            });
+        });
+
+        // Affichage des mesures au clic
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('dimension-label')) {
+                const info = e.target.textContent;
+                alert('Mesure: ' + info);
+            }
+        });
+
+        console.log('🎨 Architecture UI/UX Extranuts chargée');
+        console.log('📐 Dimensions:');
+        console.log('  - Header: 64px fixe');
+        console.log('  - Selectors: ~100px dynamique');
+        console.log('  - Editor: 60% viewport');
+        console.log('  - Notes: 40% viewport');
+        console.log('  - Status: 24px fixe');
+        console.log('  - Billiard balls: 48px diameter');
+        console.log('  - Count badges: 16px diameter');
+    </script>
+</body>
+</html>

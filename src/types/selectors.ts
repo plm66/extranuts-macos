@@ -32,6 +32,7 @@ export interface BilliardSelectorProps {
   onClick: (id: number) => void
   isVisible: boolean
   size?: 'small' | 'medium' | 'large'
+  articleCount?: number
 }
 
 export interface SelectorGridProps {

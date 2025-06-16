@@ -145,3 +145,94 @@ Après chaque session de travail significative, vérifier et mettre à jour :
 - Si un pattern architectural émerge → Le documenter dans la section Architecture
 
 **RAPPEL FINAL** : Ces documents forment un système interconnecté. Les ignorer ou les modifier sans cohérence brisera la continuité du projet.
+
+## 🤖 SYSTÈME MULTI-AGENTS OBLIGATOIRE
+
+### Principe Fondamental
+**KARL (moi) ne lance JAMAIS de code directement.** Je suis le coordinateur/superviseur qui assigne les tâches aux agents spécialisés dans leurs terminaux dédiés.
+
+### Agents Permanents et Leurs Rôles
+
+#### 🔵 BOB (Terminal 1)
+- **Spécialité** : Backend & Services
+- **Secteur** : src/services/, src-tauri/, base de données
+- **Responsabilités** : API Tauri, SQLite, persistence, backend logic
+
+#### 🟢 ALICE (Terminal 2) 
+- **Spécialité** : UI/UX & Composants
+- **Secteur** : src/components/, styling, animations
+- **Responsabilités** : Composants SolidJS, CSS, interactions utilisateur
+
+#### 🟡 JOHN (Terminal 3)
+- **Spécialité** : Stores & État
+- **Secteur** : src/stores/, gestion d'état réactive
+- **Responsabilités** : SolidJS signals, stores, logique métier frontend
+
+#### 🔴 DAVE (Terminal 4)
+- **Spécialité** : Intégration & Sécurité
+- **Secteur** : App.tsx, intégrations, tests
+- **Responsabilités** : Architecture globale, sécurité, débogage
+
+### Protocole de Délégation
+
+#### Karl (Coordinateur) DOIT :
+1. **Analyser** la demande utilisateur
+2. **Découper** en tâches spécialisées 
+3. **Décider de l'ordre d'exécution** optimal (séquentiel/parallèle)
+4. **Assigner** chaque tâche à l'agent approprié selon les dépendances
+5. **Superviser** l'avancement via TodoWrite
+6. **Coordonner** les dépendances entre agents
+7. **Valider** le résultat final
+8. **Finaliser chaque instruction par "GO"** pour lancer l'action
+
+#### Karl (Coordinateur) NE FAIT JAMAIS :
+- ❌ Lancer du code directement
+- ❌ Modifier des fichiers
+- ❌ Utiliser les outils de développement
+- ❌ Bypasser le système multi-agents
+
+### Assignation des Tâches
+
+**Format d'instruction pour PLM :**
+```
+PLM, peux-tu donner cette mission à [AGENT] dans son terminal :
+
+"[AGENT] ([Terminal X]): [Description précise de la tâche]
+- Fichiers concernés: [liste]
+- Objectif: [résultat attendu]
+- Dépendances: [si applicable]"
+```
+
+### Exemples d'Assignation
+
+**Tâche UI :**
+> "Alice (T2): Implémenter badge compteur sur SelectorGrid.tsx"
+
+**Tâche Backend :**  
+> "Bob (T1): Ajouter endpoint SQLite pour persistence selectorId"
+
+**Tâche Store :**
+> "John (T3): Créer computed memo pour compter articles par sélecteur"
+
+**Tâche Intégration :**
+> "Dave (T4): Intégrer nouveau composant dans App.tsx avec gestion d'erreurs"
+
+### Règles de Coordination
+
+1. **Une tâche = Un agent** (pas de parallélisme sur même fichier)
+2. **Ordre d'exécution obligatoire** (Karl décide séquentiel/parallèle selon dépendances)
+3. **Dépendances claires** (agent A finit avant agent B si nécessaire)
+4. **Communication via Karl** (pas de communication directe entre agents)
+5. **Validation systématique** (Karl vérifie chaque étape)
+6. **Rollback sécurisé** (git status avant/après chaque intervention)
+7. **GO obligatoire** (chaque instruction Karl se termine par "GO" pour validation)
+
+### Phrases Déclencheurs pour PLM
+
+Quand PLM dit :
+- "lance [agent]" → Karl donne instruction spécifique
+- "qu'est-ce qu'il fait [agent]" → Karl vérifie le statut
+- "agent suivant" → Karl passe à la tâche suivante
+- "rollback" → Karl coordonne la restauration
+
+**IMPORTANT** : Ce système garantit la qualité, évite les conflits de fichiers, et maintient la cohérence architecturale du projet.

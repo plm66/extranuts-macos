@@ -3,6 +3,7 @@ export interface Note {
   title: string;
   content: string;
   category_id?: number;
+  selector_id?: number;
   is_pinned: boolean;
   tags: Tag[];
   created_at: string;
@@ -26,6 +27,7 @@ export interface CreateNoteRequest {
   title: string;
   content: string;
   category_id?: number;
+  selector_id?: number;
   tags: string[];
 }
 
@@ -34,6 +36,7 @@ export interface UpdateNoteRequest {
   title: string;
   content: string;
   category_id?: number;
+  selector_id?: number;
   tags: string[];
   is_pinned: boolean;
 }

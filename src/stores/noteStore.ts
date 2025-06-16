@@ -12,13 +12,18 @@ export const [error, setError] = createSignal<string | null>(null)
 
 export const filteredNotes = createMemo(() => {
   const query = searchQuery().toLowerCase()
-  if (!query) return notes()
+  let notesToFilter = notes()
   
-  return notes().filter(note => 
-    note.title.toLowerCase().includes(query) ||
-    note.content.toLowerCase().includes(query) ||
-    note.tags.some(tag => tag.toLowerCase().includes(query))
-  )
+  // Appliquer d'abord le filtre de recherche
+  if (query) {
+    notesToFilter = notesToFilter.filter(note => 
+      note.title.toLowerCase().includes(query) ||
+      note.content.toLowerCase().includes(query) ||
+      note.tags.some(tag => tag.toLowerCase().includes(query))
+    )
+  }
+  
+  return notesToFilter
 })
 
 export const pinnedNotes = createMemo(() => 
@@ -62,6 +67,8 @@ export async function createNote(title: string, content: string = ''): Promise<N
 
 // Update note locally (until backend has update command)
 export function updateNote(id: string, updates: Partial<Note>) {
+  console.log('🔄 updateNote appelé:', { id, updates })
+  
   setNotes(prev => prev.map(note => 
     note.id === id 
       ? { ...note, ...updates, updatedAt: new Date() }
@@ -69,9 +76,13 @@ export function updateNote(id: string, updates: Partial<Note>) {
   ))
   
   // TODO: Sync with backend when update command is available
-  notesService.updateNote(id, updates).catch(err => {
-    console.warn('Note update not synced to backend:', err)
-  })
+  notesService.updateNote(id, updates)
+    .then(() => {
+      console.log('✅ Backend sync réussi pour note:', id)
+    })
+    .catch(err => {
+      console.error('❌ Backend sync échoué pour note:', id, err)
+    })
 }
 
 // Delete note
@@ -137,5 +148,30 @@ export function addTagToNote(noteId: string, tagName: string) {
 
 // Assign selector to note
 export function assignSelectorToNote(noteId: string, selectorId: number) {
+  console.log('🔧 assignSelectorToNote appelé:', { noteId, selectorId })
+  
+  // Vérifier que la note existe
+  const existingNote = notes().find(n => n.id === noteId)
+  if (!existingNote) {
+    console.error('❌ Note introuvable:', noteId)
+    return
+  }
+  
+  console.log('📝 Note avant update:', { id: existingNote.id, title: existingNote.title, selectorId: existingNote.selectorId })
+  
   updateNote(noteId, { selectorId })
+  
+  // Vérifier après update
+  const updatedNote = notes().find(n => n.id === noteId)
+  console.log('✅ Note après update:', { id: updatedNote?.id, title: updatedNote?.title, selectorId: updatedNote?.selectorId })
 }
+
+// Filter notes by selector
+export const filterNotesBySelector = createMemo(() => {
+  return (selectorId: number | null) => {
+    if (selectorId === null) {
+      return notes()
+    }
+    return notes().filter(note => note.selectorId === selectorId)
+  }
+})

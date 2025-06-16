@@ -1,5 +1,6 @@
 import { createSignal, createMemo } from 'solid-js'
 import type { Selector, SelectorGroup, SelectorStore, SelectorFilterResult } from '../types/selectors'
+import { notes } from './noteStore'
 
 const SELECTOR_NAMES = [
   'Trading', 'Extranut', '', '', '', '', '', '', '', '',
@@ -47,6 +48,7 @@ function adjustColorBrightness(hex: string, factor: number): string {
 }
 
 function initializeSelectors(): Selector[] {
+  console.log('🎯 initializeSelectors - Création des 100 sélecteurs')
   const selectors: Selector[] = []
   
   for (let i = 1; i <= 100; i++) {
@@ -60,11 +62,12 @@ function initializeSelectors(): Selector[] {
       name: SELECTOR_NAMES[i - 1] || '',
       isActive: false,
       color: variants[variantIndex],
-      articleCount: Math.floor(Math.random() * 50), // Simulation
+      articleCount: 0, // Will be calculated dynamically
       groupIndex: groupIndex
     })
   }
   
+  console.log('🎯 initializeSelectors - Sélecteurs créés:', selectors.length)
   return selectors
 }
 
@@ -74,10 +77,34 @@ const [currentGroup, setCurrentGroup] = createSignal<number>(0)
 
 const totalGroups = createMemo(() => Math.ceil(selectors().length / 10))
 
+// Computed memo pour compter les articles par sélecteur
+const articleCountsBySelector = createMemo(() => {
+  console.log('📊 articleCountsBySelector - Recalcul des comptages')
+  const counts = new Map<number, number>()
+  
+  // Initialiser tous les sélecteurs à 0
+  selectors().forEach(selector => {
+    counts.set(selector.id, 0)
+  })
+  
+  // Compter les notes assignées à chaque sélecteur
+  notes().forEach(note => {
+    if (note.selectorId) {
+      const currentCount = counts.get(note.selectorId) || 0
+      counts.set(note.selectorId, currentCount + 1)
+    }
+  })
+  
+  console.log('📊 articleCountsBySelector - Comptages:', Array.from(counts.entries()).filter(([_, count]) => count > 0))
+  return counts
+})
+
 const getCurrentGroupSelectors = () => {
   const start = currentGroup() * 10
   const end = start + 10
-  return selectors().slice(start, end)
+  const groupSelectors = selectors().slice(start, end)
+  console.log(`🎯 getCurrentGroupSelectors - Groupe: ${currentGroup()}, Sélecteurs: ${groupSelectors.map(s => s.id).join(', ')}`)
+  return groupSelectors
 }
 
 const getActiveGroupIndex = () => {
@@ -92,10 +119,13 @@ const getSelectorsByGroup = (groupIndex: number) => {
 }
 
 const setActiveSelectorFn = (id: number) => {
+  console.log('🎯 setActiveSelectorFn appelé avec ID:', id)
+  
   setSelectors(prev => prev.map(s => ({ ...s, isActive: s.id === id })))
   
   const selector = selectors().find(s => s.id === id)
   setActiveSelector(selector || null)
+  console.log('🎯 Nouveau sélecteur actif:', selector)
   
   if (selector) {
     const newGroup = Math.floor((selector.id - 1) / 10)
@@ -125,6 +155,8 @@ const navigateToGroup = (groupIndex: number) => {
 }
 
 const filterArticlesBySelector = (selector: Selector): SelectorFilterResult => {
+  console.log('🔍 filterArticlesBySelector - Filtrage pour le sélecteur:', selector.id, selector.name)
+  
   // Import dynamique pour éviter les dépendances circulaires
   import('../stores/noteStore').then(({ notes, setSearchQuery }) => {
     // Filtrer les notes basées sur le nom du sélecteur
@@ -139,8 +171,10 @@ const filterArticlesBySelector = (selector: Selector): SelectorFilterResult => {
     // Mettre à jour la recherche pour afficher les résultats
     setSearchQuery(selector.name)
     
-    console.log(`Sélecteur "${selector.name}" - ${matchingNotes.length} notes trouvées`)
+    console.log(`🔍 Sélecteur "${selector.name}" - ${matchingNotes.length} notes trouvées`)
     return matchingNotes
+  }).catch(err => {
+    console.error('❌ Erreur lors du filtrage:', err)
   })
   
   return {
@@ -168,6 +202,19 @@ export const selectorsStore: SelectorStore = {
   getSelectorsByGroup,
   initializeSelectors: initializeSelectorsFn,
   renameSelector: renameSelectorFn
+}
+
+// Export the article counts memo
+export { articleCountsBySelector }
+
+// Export les signaux pour debug (temporaire)
+export { activeSelector, setActiveSelector, selectors, setSelectors }
+
+// Helper function to get article count for a specific selector
+export const getArticleCountForSelector = (selectorId: number): number => {
+  const count = articleCountsBySelector().get(selectorId) || 0
+  console.log(`📊 getArticleCountForSelector - ID: ${selectorId}, Count: ${count}`)
+  return count
 }
 
 // Export des couleurs pour les composants

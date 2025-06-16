@@ -1,4 +1,4 @@
-import { Component, createMemo } from 'solid-js'
+import { Component, createMemo, Show } from 'solid-js'
 import { BilliardSelectorProps, Selector, SelectorAnimationStates } from '../types/selectors'
 
 const billiardColors = {
@@ -80,8 +80,15 @@ const BilliardSelector: Component<BilliardSelectorProps> = (props) => {
       `}
       style={props.selector.isActive ? activeStyle() : baseStyle()}
       onMouseEnter={(e) => Object.assign(e.currentTarget.style, hoverStyle())}
-      onMouseLeave={(e) => Object.assign(e.currentTarget.style, baseStyle())}
-      onClick={() => props.onClick(props.selector.id)}
+      onMouseLeave={(e) => {
+        if (!props.selector.isActive) {
+          Object.assign(e.currentTarget.style, baseStyle())
+        }
+      }}
+      onClick={() => {
+        console.log(`🎱 BilliardSelector - Click sur sélecteur ID: ${props.selector.id}`)
+        props.onClick(props.selector.id)
+      }}
     >
       {/* Reflet brillant sur la boule */}
       <div class="absolute top-1 left-1 w-3 h-3 bg-white/40 rounded-full blur-sm"></div>
@@ -89,6 +96,24 @@ const BilliardSelector: Component<BilliardSelectorProps> = (props) => {
       <div class="flex items-center justify-center relative z-10">
         <span class="font-black text-lg drop-shadow-sm">{props.selector.id}</span>
       </div>
+      
+      {/* Badge compteur rouge - specs Alice */}
+      <Show when={props.articleCount && props.articleCount > 0}>
+        <div 
+          class="absolute rounded-full flex items-center justify-center font-bold shadow-sm border border-white/30"
+          style={{
+            top: '-8px',
+            right: '-8px',
+            width: '16px',
+            height: '16px',
+            'background-color': '#ff6b6b',
+            color: 'white',
+            'font-size': '10px'
+          }}
+        >
+          {props.articleCount}
+        </div>
+      </Show>
     </div>
   )
 }
