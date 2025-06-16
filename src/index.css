@@ -205,10 +205,8 @@
     transition: background-color 150ms ease, box-shadow 150ms ease;
     box-shadow: 0 2px 8px var(--theme-glass-shadow);
   }
+
   
-  .theme-light .native-scrollbar {
-    scrollbar-color: rgba(28, 28, 30, 0.3) transparent;
-  }
   
   .theme-light .native-scrollbar::-webkit-scrollbar-thumb {
     background-color: rgba(28, 28, 30, 0.3);

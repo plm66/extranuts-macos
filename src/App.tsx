@@ -132,6 +132,8 @@ const App: Component = () => {
   const [searchQuery, setSearchQuery] = createSignal("");
   const [showCategoryManager, setShowCategoryManager] = createSignal(false);
   const [titleColumnWidth, setTitleColumnWidth] = createSignal(200); // pixels
+  const [isRenamingSelector, setIsRenamingSelector] = createSignal(false);
+  const [renameValue, setRenameValue] = createSignal("");
 
   onMount(async () => {
     console.log("App mounted, starting initialization...");
@@ -616,14 +618,48 @@ const App: Component = () => {
         <div class="flex flex-col gap-2">
           {/* Nom du sélecteur centré */}
           <div class="text-center relative">
-            <Show when={selectorsStore.activeSelector} fallback={
-              <div class="text-lg font-medium text-macos-text-secondary">
-                Groupe {selectorsStore.currentGroup + 1}/10
-              </div>
+            <Show when={isRenamingSelector()} fallback={
+              <Show when={selectorsStore.activeSelector} fallback={
+                <div class="text-lg font-medium text-macos-text-secondary cursor-pointer hover:text-macos-text transition-colors" onClick={() => console.log('Renommer groupe')}>
+                  Groupe {selectorsStore.currentGroup + 1}/10
+                </div>
+              }>
+                <div 
+                  class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg animate-pulse cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => {
+                    setRenameValue(selectorsStore.activeSelector?.name || '');
+                    setIsRenamingSelector(true);
+                  }}
+                >
+                  {selectorsStore.activeSelector?.name || selectorsStore.activeSelector?.id}
+                </div>
+              </Show>
             }>
-              <div class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg animate-pulse">
-                {selectorsStore.activeSelector?.name}
-              </div>
+              {/* Input de renommage */}
+              <input
+                type="text"
+                value={renameValue()}
+                onInput={(e) => setRenameValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    if (selectorsStore.activeSelector) {
+                      selectorsStore.renameSelector(selectorsStore.activeSelector.id, renameValue());
+                    }
+                    setIsRenamingSelector(false);
+                  } else if (e.key === 'Escape') {
+                    setIsRenamingSelector(false);
+                  }
+                }}
+                onBlur={() => {
+                  if (selectorsStore.activeSelector) {
+                    selectorsStore.renameSelector(selectorsStore.activeSelector.id, renameValue());
+                  }
+                  setIsRenamingSelector(false);
+                }}
+                class="text-2xl font-bold bg-transparent border border-blue-400 rounded px-2 py-1 text-center text-macos-text outline-none"
+                placeholder="Nom du sélecteur"
+                ref={(el) => setTimeout(() => el?.focus(), 0)}
+              />
             </Show>
             
             {/* Chiffres 1-10 à droite */}

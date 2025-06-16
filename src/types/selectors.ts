@@ -24,6 +24,7 @@ export interface SelectorStore {
   getActiveGroupIndex: () => number
   getSelectorsByGroup: (groupIndex: number) => Selector[]
   initializeSelectors: () => void
+  renameSelector: (id: number, newName: string) => void
 }
 
 export interface BilliardSelectorProps {

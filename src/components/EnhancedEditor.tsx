@@ -97,7 +97,7 @@ const EnhancedEditor: Component<EnhancedEditorProps> = (props) => {
         onBlur={props.onBlur}
         onKeyDown={handleKeyDown}
         placeholder={props.placeholder}
-        class="flex-1 bg-transparent border-none outline-none text-[var(--theme-text-primary)] resize-none no-drag native-scrollbar leading-relaxed px-4 pt-1 pb-4"
+        class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed px-4 pt-1 pb-4"
         style={{
           "font-family": preferences().editor.font_family,
           "font-size": `${preferences().editor.font_size}px`,

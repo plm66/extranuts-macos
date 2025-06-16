@@ -106,6 +106,18 @@ const setActiveSelectorFn = (id: number) => {
   }
 }
 
+const renameSelectorFn = (id: number, newName: string) => {
+  setSelectors(prev => prev.map(s => 
+    s.id === id ? { ...s, name: newName.trim() } : s
+  ))
+  
+  // Mettre à jour activeSelector si c'est celui qui est renommé
+  const updatedSelector = selectors().find(s => s.id === id)
+  if (activeSelector()?.id === id && updatedSelector) {
+    setActiveSelector(updatedSelector)
+  }
+}
+
 const navigateToGroup = (groupIndex: number) => {
   const maxGroup = totalGroups() - 1
   const validGroup = Math.max(0, Math.min(maxGroup, groupIndex))
@@ -154,7 +166,8 @@ export const selectorsStore: SelectorStore = {
   getCurrentGroupSelectors,
   getActiveGroupIndex,
   getSelectorsByGroup,
-  initializeSelectors: initializeSelectorsFn
+  initializeSelectors: initializeSelectorsFn,
+  renameSelector: renameSelectorFn
 }
 
 // Export des couleurs pour les composants

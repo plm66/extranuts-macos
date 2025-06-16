@@ -8,12 +8,12 @@ export default {
     extend: {
       colors: {
         // macOS System Colors
-        'macos-bg': 'rgba(30, 30, 30, 0.85)',
-        'macos-sidebar': 'rgba(40, 40, 40, 0.95)',
-        'macos-hover': 'rgba(60, 60, 60, 0.9)',
-        'macos-border': 'rgba(255, 255, 255, 0.1)',
-        'macos-text': 'rgba(255, 255, 255, 0.9)',
-        'macos-text-secondary': 'rgba(255, 255, 255, 0.6)',
+        'macos-bg': 'var(--theme-bg-primary)',
+        'macos-sidebar': 'var(--theme-bg-secondary)',
+        'macos-hover': 'var(--theme-bg-hover)',
+        'macos-border': 'var(--theme-border-primary)',
+        'macos-text': 'var(--theme-text-primary)',
+        'macos-text-secondary': 'var(--theme-text-secondary)',
         
         // Category Colors (from color-palettes.html research)
         'category-personal': '#3B82F6',
