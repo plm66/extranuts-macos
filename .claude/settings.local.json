@@ -5,7 +5,8 @@
       "Bash(git add:*)",
       "mcp__sequential-thinking__sequentialthinking",
       "Bash(rm:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "mcp__git__git_log"
     ],
     "deny": []
   }
