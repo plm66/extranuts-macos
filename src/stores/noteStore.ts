@@ -36,14 +36,19 @@ export const floatingNotes = createMemo(() =>
 
 // Load all notes from backend
 export async function loadNotes() {
+  console.log('🚀 DAVE DEBUG: loadNotes appelée');
   setIsLoading(true)
   setError(null)
   
   try {
+    console.log('🚀 DAVE DEBUG: Appel de notesService.getAllNotes...');
     const loadedNotes = await notesService.getAllNotes()
+    console.log('🚀 DAVE DEBUG: Notes chargées du backend:', loadedNotes.length);
+    console.log('🚀 DAVE DEBUG: Détail des notes:', loadedNotes.map(n => ({ id: n.id, title: n.title })));
     setNotes(loadedNotes)
+    console.log('🚀 DAVE DEBUG: Signal notes() mis à jour:', notes().length);
   } catch (err) {
-    console.error('Failed to load notes:', err)
+    console.error('❌ DAVE DEBUG: Failed to load notes:', err)
     setError('Failed to load notes')
   } finally {
     setIsLoading(false)
@@ -52,14 +57,26 @@ export async function loadNotes() {
 
 // Create a new note
 export async function createNote(title: string, content: string = ''): Promise<Note | null> {
+  console.log('🚀 DAVE DEBUG: createNote dans noteStore appelée');
+  console.log('🚀 DAVE DEBUG: Paramètres:', { title, content });
   setError(null)
   
   try {
+    console.log('🚀 DAVE DEBUG: Appel de notesService.createNote...');
     const note = await notesService.createNote(title, content)
-    setNotes(prev => [note, ...prev])
+    console.log('🚀 DAVE DEBUG: Note créée par le service:', note);
+    
+    console.log('🚀 DAVE DEBUG: État notes AVANT ajout:', notes().length);
+    setNotes(prev => {
+      const newNotes = [note, ...prev];
+      console.log('🚀 DAVE DEBUG: État notes APRÈS ajout dans setNotes:', newNotes.length);
+      return newNotes;
+    })
+    
+    console.log('🚀 DAVE DEBUG: Vérification finale - notes():', notes().length);
     return note
   } catch (err) {
-    console.error('Failed to create note:', err)
+    console.error('❌ DAVE DEBUG: Failed to create note:', err)
     setError('Failed to create note')
     return null
   }

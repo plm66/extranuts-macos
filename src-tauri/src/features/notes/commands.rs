@@ -47,6 +47,9 @@ pub fn update_note(
     state: State<AppState>,
     request: UpdateNoteRequest,
 ) -> Result<Note, String> {
+    println!("🔧 Backend update_note command called with request: {:?}", request);
+    println!("🔧 Backend selector_id reçu: {:?}", request.selector_id);
+    
     let service = NoteService::new(state.db());
     service.update_note(request)
         .map_err(|e| e.message)

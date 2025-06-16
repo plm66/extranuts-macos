@@ -23,12 +23,13 @@ impl NoteRepository {
             .map_err(|e| AppError::new("TRANSACTION_ERROR", e.to_string()))?;
         
         tx.execute(
-            "INSERT INTO notes (title, content, category_id, is_pinned, created_at, updated_at) 
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            "INSERT INTO notes (title, content, category_id, selector_id, is_pinned, created_at, updated_at) 
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
             params![
                 request.title,
                 request.content,
                 request.category_id,
+                request.selector_id,
                 0, // is_pinned default to false
                 now.to_rfc3339(),
                 now.to_rfc3339()
@@ -47,6 +48,7 @@ impl NoteRepository {
             title: request.title.clone(),
             content: request.content.clone(),
             category_id: request.category_id,
+            selector_id: request.selector_id,
             is_pinned: false,
             tags: vec![],
             created_at: now,
@@ -59,7 +61,7 @@ impl NoteRepository {
         let conn = db.connection();
         
         let mut stmt = conn.prepare(
-            "SELECT id, title, content, category_id, is_pinned, created_at, updated_at 
+            "SELECT id, title, content, category_id, selector_id, is_pinned, created_at, updated_at 
              FROM notes WHERE id = ?1"
         )?;
         
@@ -69,12 +71,13 @@ impl NoteRepository {
                 title: row.get(1)?,
                 content: row.get(2)?,
                 category_id: row.get(3)?,
-                is_pinned: row.get::<_, i32>(4)? != 0,
+                selector_id: row.get(4)?,
+                is_pinned: row.get::<_, i32>(5)? != 0,
                 tags: vec![],
-                created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(5)?)
+                created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
                     .unwrap()
                     .with_timezone(&Utc),
-                updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
+                updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(7)?)
                     .unwrap()
                     .with_timezone(&Utc),
             })
@@ -94,7 +97,7 @@ impl NoteRepository {
         let conn = db.connection();
         
         let mut query = String::from(
-            "SELECT DISTINCT n.id, n.title, n.content, n.category_id, n.is_pinned, 
+            "SELECT DISTINCT n.id, n.title, n.content, n.category_id, n.selector_id, n.is_pinned, 
                     n.created_at, n.updated_at
              FROM notes n"
         );
@@ -150,12 +153,13 @@ impl NoteRepository {
                 title: row.get(1)?,
                 content: row.get(2)?,
                 category_id: row.get(3)?,
-                is_pinned: row.get::<_, i32>(4)? != 0,
+                selector_id: row.get(4)?,
+                is_pinned: row.get::<_, i32>(5)? != 0,
                 tags: vec![],
-                created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(5)?)
+                created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
                     .unwrap()
                     .with_timezone(&Utc),
-                updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
+                updated_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(7)?)
                     .unwrap()
                     .with_timezone(&Utc),
             })
@@ -172,12 +176,13 @@ impl NoteRepository {
         let now = Utc::now();
         
         conn.execute(
-            "UPDATE notes SET title = ?1, content = ?2, category_id = ?3, is_pinned = ?4, updated_at = ?5 
-             WHERE id = ?6",
+            "UPDATE notes SET title = ?1, content = ?2, category_id = ?3, selector_id = ?4, is_pinned = ?5, updated_at = ?6 
+             WHERE id = ?7",
             params![
                 request.title,
                 request.content,
                 request.category_id,
+                request.selector_id,
                 if request.is_pinned { 1 } else { 0 },
                 now.to_rfc3339(),
                 request.id
@@ -190,6 +195,7 @@ impl NoteRepository {
             title: request.title.clone(),
             content: request.content.clone(),
             category_id: request.category_id,
+            selector_id: request.selector_id,
             is_pinned: request.is_pinned,
             tags: vec![], // On skip les tags pour l'instant
             created_at: now, // Pas idéal mais ok pour l'instant

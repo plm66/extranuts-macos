@@ -101,6 +101,14 @@ pub fn run() {
             features::categories::delete_category,
             features::categories::get_category_presets,
             features::categories::create_category_from_preset,
+            
+            // Selector commands
+            features::selectors::create_selector,
+            features::selectors::update_selector_name,
+            features::selectors::get_selector,
+            features::selectors::get_all_selectors,
+            features::selectors::delete_selector,
+            features::selectors::selector_exists,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

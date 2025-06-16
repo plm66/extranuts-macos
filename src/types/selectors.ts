@@ -30,6 +30,7 @@ export interface SelectorStore {
 export interface BilliardSelectorProps {
   selector: Selector
   onClick: (id: number) => void
+  onDoubleClick?: (id: number) => void
   isVisible: boolean
   size?: 'small' | 'medium' | 'large'
   articleCount?: number
@@ -38,6 +39,7 @@ export interface BilliardSelectorProps {
 export interface SelectorGridProps {
   selectors: Selector[]
   onSelectorClick: (id: number) => void
+  onSelectorDoubleClick?: (id: number) => void
   currentGroup: number
 }
 

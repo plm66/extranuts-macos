@@ -1,7 +1,7 @@
 import { Component, For, createMemo } from 'solid-js'
 import { SelectorGridProps, Selector } from '../types/selectors'
 import BilliardSelector from './BilliardSelector'
-import { articleCountsBySelector } from '../stores/selectorsStore'
+import { articleCountsBySelector, getArticleCountForSelector } from '../stores/selectorsStore'
 
 const SelectorGrid: Component<SelectorGridProps> = (props) => {
   const visibleSelectors = createMemo(() => 
@@ -46,13 +46,10 @@ const SelectorGrid: Component<SelectorGridProps> = (props) => {
               <BilliardSelector
                 selector={selector}
                 onClick={props.onSelectorClick}
+                onDoubleClick={props.onSelectorDoubleClick}
                 isVisible={true}
                 size="medium"
-                articleCount={(() => {
-                  const count = articleCountsBySelector().get(selector.id) || 0
-                  console.log(`🔸 SelectorGrid - Passage du count pour sélecteur ${selector.id}:`, count)
-                  return count
-                })()}
+                articleCount={getArticleCountForSelector(selector.id)}
               />
             </div>
           )}

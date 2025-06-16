@@ -91,6 +91,10 @@ const BilliardSelector: Component<BilliardSelectorProps> = (props) => {
         console.log(`🎱 BilliardSelector - Click sur sélecteur ID: ${props.selector.id}`)
         props.onClick(props.selector.id)
       }}
+      onDblClick={() => {
+        console.log(`🎱 BilliardSelector - Double-click sur sélecteur ID: ${props.selector.id}`)
+        props.onDoubleClick?.(props.selector.id)
+      }}
     >
       {/* Reflet brillant sur la boule */}
       <div class="absolute top-1 left-1 w-3 h-3 bg-white/40 rounded-full blur-sm"></div>

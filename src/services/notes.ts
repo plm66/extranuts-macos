@@ -11,6 +11,7 @@ function convertNote(backendNote: BackendNote): FrontendNote {
     createdAt: new Date(backendNote.created_at),
     updatedAt: new Date(backendNote.updated_at),
     categoryId: backendNote.category_id?.toString(),
+    selectorId: backendNote.selector_id,
     tags: backendNote.tags.map(t => t.name),
     isPinned: backendNote.is_pinned,
     isFloating: false, // Will be managed by frontend
@@ -18,11 +19,12 @@ function convertNote(backendNote: BackendNote): FrontendNote {
 }
 
 export const notesService = {
-  async createNote(title: string, content: string = ''): Promise<FrontendNote> {
+  async createNote(title: string, content: string = '', selectorId?: number): Promise<FrontendNote> {
     const request: CreateNoteRequest = {
       title,
       content,
       category_id: undefined,
+      selector_id: selectorId,
       tags: [],
     };
     const backendNote = await invoke<BackendNote>('create_note', { request });
@@ -67,9 +69,17 @@ export const notesService = {
       title: updates.title ?? currentNote.title,
       content: updates.content ?? currentNote.content,
       category_id: updates.categoryId ? parseInt(updates.categoryId) : undefined,
+      selector_id: updates.selectorId ?? currentNote.selectorId,
       tags: [], // Tags not implemented yet
       is_pinned: updates.isPinned ?? currentNote.isPinned,
     };
+    
+    console.log('🔧 notesService.updateNote - Request avec selector_id:', {
+      id: numericId,
+      selector_id: request.selector_id,
+      oldSelectorId: currentNote.selectorId,
+      newSelectorId: updates.selectorId
+    });
     
     await invoke('update_note', { request });
   },

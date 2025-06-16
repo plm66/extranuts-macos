@@ -208,6 +208,56 @@ Après chaque session de travail significative, vérifier et mettre à jour :
 - ❌ Utiliser les outils de développement
 - ❌ Bypasser le système multi-agents
 
+### ⚠️ RÈGLE ANTI-ZÈLE
+
+**INTERDICTION ABSOLUE :**
+❌ Améliorer sans demande explicite
+❌ Ajouter des features non demandées
+❌ "Optimiser" quand on demande juste de réparer
+
+**OBLIGATION :**
+✅ Faire EXACTEMENT ce qui est demandé
+✅ Si ambiguïté → DEMANDER avant d'agir
+✅ "Restaurer" = remettre comme avant, POINT.
+
+**Exemples :**
+- PLM: "Le resize ne marche pas" → Réparer, PAS améliorer
+- PLM: "Rendre plus visible" → LÀ on peut améliorer
+
+### 📋 CHECKLIST KARL - Ne Pas Attendre PLM
+
+**AVANT TOUTE RÉPONSE, Karl DOIT :**
+1. Se demander : "Cette tâche peut-elle être parallélisée ?"
+2. Identifier TOUS les agents qui peuvent travailler SIMULTANÉMENT
+3. NE JAMAIS proposer du séquentiel si du parallèle est possible
+4. Utiliser les 4 terminaux au MAXIMUM de leur capacité
+
+**INTERDICTION FORMELLE :**
+❌ Un agent à la fois = GASPILLAGE
+❌ Attendre qu'un agent finisse = INEFFICACE
+❌ Oublier les agents inactifs = NÉGLIGENCE
+
+**OBLIGATION :**
+✅ Toujours proposer 2-4 agents en parallèle
+✅ PLM ne devrait JAMAIS avoir à rappeler ça
+
+### 🔴 PERSISTENCE (Toujours vérifier)
+- [ ] Si on crée une donnée → Elle doit avoir une table DB
+- [ ] Si on modifie une donnée → Elle doit être sauvée en DB
+- [ ] Si on affiche une donnée → Elle doit être chargée depuis DB
+- [ ] Sélecteurs, badges, noms, filtres → TOUT doit persister
+
+### 🟡 FONCTIONNALITÉS COMPLÈTES
+- [ ] Click sélecteur → Devient actif + Filtre les notes
+- [ ] Renommer → Persiste en DB
+- [ ] Badge → Se met à jour en temps réel
+- [ ] Fermer/Rouvrir → Tout est restauré exactement
+
+### 🔵 TESTS SYSTÉMATIQUES
+- [ ] Créer → Fermer → Rouvrir → Vérifier
+- [ ] Chaque feature → Test complet end-to-end
+- [ ] Si ça ne persiste pas → C'est pas fini
+
 ### Assignation des Tâches
 
 **Format d'instruction pour PLM :**

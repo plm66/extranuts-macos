@@ -22,6 +22,7 @@ pub fn run_migrations(db: &Database) -> Result<()> {
             title TEXT NOT NULL,
             content TEXT,
             category_id INTEGER,
+            selector_id INTEGER,
             is_pinned INTEGER NOT NULL DEFAULT 0,
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -79,6 +80,25 @@ pub fn run_migrations(db: &Database) -> Result<()> {
         CREATE INDEX IF NOT EXISTS idx_note_tags_note ON note_tags(note_id);
         CREATE INDEX IF NOT EXISTS idx_note_tags_tag ON note_tags(tag_id);
     ")?;
+    
+    // Migration to add selector_id column to existing databases
+    // This will fail silently if the column already exists
+    let _ = conn.execute("ALTER TABLE notes ADD COLUMN selector_id INTEGER", []);
+    
+    // Create selectors table for custom names
+    conn.execute("
+        CREATE TABLE IF NOT EXISTS selectors (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    ", [])?;
+    
+    // Create index for selector lookups
+    conn.execute("
+        CREATE INDEX IF NOT EXISTS idx_notes_selector ON notes(selector_id)
+    ", [])?;
     
     Ok(())
 }

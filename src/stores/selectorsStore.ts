@@ -1,6 +1,7 @@
 import { createSignal, createMemo } from 'solid-js'
 import type { Selector, SelectorGroup, SelectorStore, SelectorFilterResult } from '../types/selectors'
 import { notes } from './noteStore'
+import { updateSelectorName } from '../services/selectors'
 
 const SELECTOR_NAMES = [
   'Trading', 'Extranut', '', '', '', '', '', '', '', '',
@@ -75,6 +76,8 @@ const [selectors, setSelectors] = createSignal<Selector[]>(initializeSelectors()
 const [activeSelector, setActiveSelector] = createSignal<Selector | null>(null)
 const [currentGroup, setCurrentGroup] = createSignal<number>(0)
 
+// Le chargement des sélecteurs depuis la DB est maintenant géré par useLoadSelectors() dans App.tsx
+
 const totalGroups = createMemo(() => Math.ceil(selectors().length / 10))
 
 // Computed memo pour compter les articles par sélecteur
@@ -142,15 +145,28 @@ const setActiveSelectorFn = (id: number) => {
   }
 }
 
-const renameSelectorFn = (id: number, newName: string) => {
+const renameSelectorFn = async (id: number, newName: string) => {
+  const trimmedName = newName.trim()
+  
+  // Mettre à jour l'UI immédiatement (optimistic update)
   setSelectors(prev => prev.map(s => 
-    s.id === id ? { ...s, name: newName.trim() } : s
+    s.id === id ? { ...s, name: trimmedName } : s
   ))
   
   // Mettre à jour activeSelector si c'est celui qui est renommé
   const updatedSelector = selectors().find(s => s.id === id)
   if (activeSelector()?.id === id && updatedSelector) {
     setActiveSelector(updatedSelector)
+  }
+  
+  // Sauvegarder vers le backend
+  try {
+    await updateSelectorName(id, trimmedName)
+    console.log(`✅ Sélecteur ${id} renommé en "${trimmedName}" et sauvegardé`)
+  } catch (error) {
+    console.error(`❌ Erreur lors de la sauvegarde du nom du sélecteur ${id}:`, error)
+    // En cas d'erreur, on pourrait remettre l'ancien nom mais ici on garde le nouveau
+    // car c'est moins perturbant pour l'utilisateur
   }
 }
 

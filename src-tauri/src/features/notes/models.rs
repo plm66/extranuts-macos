@@ -7,6 +7,7 @@ pub struct Note {
     pub title: String,
     pub content: String,
     pub category_id: Option<i64>,
+    pub selector_id: Option<i64>,
     pub is_pinned: bool,
     pub tags: Vec<Tag>,
     pub created_at: DateTime<Utc>,
@@ -33,6 +34,7 @@ pub struct CreateNoteRequest {
     pub title: String,
     pub content: String,
     pub category_id: Option<i64>,
+    pub selector_id: Option<i64>,
     pub tags: Vec<String>,
 }
 
@@ -42,6 +44,7 @@ pub struct UpdateNoteRequest {
     pub title: String,
     pub content: String,
     pub category_id: Option<i64>,
+    pub selector_id: Option<i64>,
     pub tags: Vec<String>,
     pub is_pinned: bool,
 }

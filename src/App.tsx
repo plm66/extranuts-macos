@@ -47,9 +47,12 @@ import { themeStore } from "./stores/themeStore";
 import { selectorsStore } from "./stores/selectorsStore";
 import SelectorGrid from "./components/SelectorGrid";
 import NoteSelectorColumn from "./components/NoteSelectorColumn";
+import ResizeHandle from "./components/ResizeHandle";
+import { useLoadSelectors } from "./hooks/useLoadSelectors";
 
 // Import du debug des sélecteurs (à retirer en production)
 import "./debugSelectors";
+import "./testSelectors";
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -139,6 +142,16 @@ const App: Component = () => {
   const [titleColumnWidth, setTitleColumnWidth] = createSignal(200); // pixels
   const [isRenamingSelector, setIsRenamingSelector] = createSignal(false);
   const [renameValue, setRenameValue] = createSignal("");
+
+  // Charger les sélecteurs personnalisés depuis le backend
+  useLoadSelectors();
+
+  // DAVE DEBUG: Effet pour surveiller les changements du signal notes
+  createEffect(() => {
+    console.log('🔥 DAVE DEBUG: Signal notes() a changé!');
+    console.log('🔥 DAVE DEBUG: Nombre de notes:', notes().length);
+    console.log('🔥 DAVE DEBUG: Liste des notes:', notes().map(n => ({ id: n.id, title: n.title })));
+  });
 
   onMount(async () => {
     console.log("App mounted, starting initialization...");
@@ -270,8 +283,18 @@ const App: Component = () => {
   };
 
   const createRegularNote = async () => {
+    console.log('🚀 DAVE DEBUG: createRegularNote appelée');
+    console.log('🚀 DAVE DEBUG: Notes AVANT création:', notes().length);
+    
     const note = await createNote("New Note");
-    if (!note) return;
+    if (!note) {
+      console.log('❌ DAVE DEBUG: createNote a retourné null');
+      return;
+    }
+    
+    console.log('✅ DAVE DEBUG: Note créée:', { id: note.id, title: note.title });
+    console.log('🚀 DAVE DEBUG: Notes APRÈS création:', notes().length);
+    console.log('🚀 DAVE DEBUG: Toutes les notes:', notes().map(n => ({ id: n.id, title: n.title })));
 
     setSelectedNote(note);
     setNoteTitle(note.title);
@@ -316,34 +339,6 @@ const App: Component = () => {
     }
   };
 
-  const handleResizeStart = (e: MouseEvent) => {
-    e.preventDefault();
-    const startY = e.clientY;
-    const startHeight = editorHeight();
-
-    const handleResize = (e: MouseEvent) => {
-      const deltaY = e.clientY - startY;
-      const containerHeight = window.innerHeight - 64; // minus header height
-      const deltaPercentage = (deltaY / containerHeight) * 100;
-      const newHeight = Math.max(
-        20,
-        Math.min(80, startHeight + deltaPercentage)
-      );
-      setEditorHeight(newHeight);
-    };
-
-    const handleResizeEnd = () => {
-      document.removeEventListener("mousemove", handleResize);
-      document.removeEventListener("mouseup", handleResizeEnd);
-      document.body.style.cursor = "default";
-      document.body.style.userSelect = "auto";
-    };
-
-    document.addEventListener("mousemove", handleResize);
-    document.addEventListener("mouseup", handleResizeEnd);
-    document.body.style.cursor = "ns-resize";
-    document.body.style.userSelect = "none";
-  };
 
   const handleTitleColumnResize = (e: MouseEvent) => {
     e.preventDefault();
@@ -445,6 +440,20 @@ const App: Component = () => {
     }
   };
 
+  const handleSelectorDoubleClick = (selectorId: number) => {
+    console.log('🔥 handleSelectorDoubleClick appelé avec selectorId:', selectorId);
+    const note = selectedNote();
+    console.log('🔥 selectedNote():', note ? { id: note.id, title: note.title } : 'NULL');
+    
+    if (note) {
+      console.log('🔥 Avant assignSelectorToNote - noteId:', note.id, 'selectorId:', selectorId);
+      assignSelectorToNote(note.id, selectorId);
+      console.log(`🔥 Sélecteur ${selectorId} assigné à la note courante: ${note.title}`);
+    } else {
+      console.log("🔥 ERREUR: Aucune note sélectionnée pour l'assignation");
+    }
+  };
+
   const getCategoryInfo = (categoryId?: string) => {
     if (!categoryId) return null;
     return availableCategories().find(
@@ -477,14 +486,38 @@ const App: Component = () => {
   };
 
   const filteredNotesForDisplay = () => {
+    console.log('🔍 DAVE DEBUG: filteredNotesForDisplay appelée');
+    console.log('🔍 DAVE DEBUG: Notes totales:', notes().length);
+    console.log('🔍 DAVE DEBUG: searchQuery:', searchQuery());
+    console.log('🔍 DAVE DEBUG: activeSelector:', selectorsStore.activeSelector);
+    
+    // TEMPORAIRE: Retourner toutes les notes sans filtre pour debug
+    const allNotes = notes();
+    console.log('🔍 DAVE DEBUG: Retour de toutes les notes:', allNotes.map(n => ({ id: n.id, title: n.title })));
+    return allNotes;
+    
+    /* Code original commenté pour debug
     const query = searchQuery().toLowerCase();
-    if (!query) return notes();
-
-    return notes().filter(
-      (note) =>
-        note.title.toLowerCase().includes(query) ||
-        note.content.toLowerCase().includes(query)
-    );
+    let result = notes();
+    
+    // Filtre par searchQuery si présent
+    if (query) {
+      result = result.filter(
+        (note) =>
+          note.title.toLowerCase().includes(query) ||
+          note.content.toLowerCase().includes(query)
+      );
+    }
+    
+    // Filtre par sélecteur actif si présent
+    if (selectorsStore.activeSelector) {
+      result = result.filter(
+        (note) => note.selectorId === selectorsStore.activeSelector.id
+      );
+    }
+    
+    return result;
+    */
   };
 
   const insertAutoComplete = (noteTitle: string) => {
@@ -574,6 +607,21 @@ const App: Component = () => {
         <h1 class="text-xl font-semibold">Extranuts</h1>
 
         <div class="flex items-center space-x-2">
+          {/* DAVE DEBUG: Bouton de test */}
+          <button
+            onClick={() => {
+              console.log('🧪 DAVE TEST: Création directe d\'une note');
+              console.log('🧪 DAVE TEST: notes() AVANT:', notes().length);
+              createNote("Test Note " + Date.now()).then(note => {
+                console.log('🧪 DAVE TEST: Note créée:', note);
+                console.log('🧪 DAVE TEST: notes() APRÈS:', notes().length);
+                console.log('🧪 DAVE TEST: notes() contenu:', notes());
+              });
+            }}
+            class="px-4 py-2 bg-red-500 text-white rounded-lg text-sm no-drag"
+          >
+            DEBUG TEST
+          </button>
           <button
             onClick={createRegularNote}
             class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag"
@@ -727,6 +775,7 @@ const App: Component = () => {
             <SelectorGrid
               selectors={selectorsStore.getCurrentGroupSelectors()}
               onSelectorClick={(id) => selectorsStore.setActiveSelector(id)}
+              onSelectorDoubleClick={handleSelectorDoubleClick}
               currentGroup={selectorsStore.currentGroup}
             />
             
@@ -986,10 +1035,9 @@ const App: Component = () => {
       </Show>
 
       {/* Resize Handle */}
-      <div
-        class="h-1 bg-macos-border hover:bg-blue-500/50 cursor-ns-resize transition-colors no-drag"
-        onMouseDown={handleResizeStart}
-        title="Drag to resize editor"
+      <ResizeHandle
+        onResize={setEditorHeight}
+        currentHeight={editorHeight()}
       />
 
       {/* Bottom Notes List - nvALT Style */}
@@ -1005,11 +1053,19 @@ const App: Component = () => {
             />
           </div>
 
-          <div class="space-y-1 max-h-36 overflow-y-auto native-scrollbar">
+          <div class="space-y-1 max-h-96 overflow-y-auto native-scrollbar">
+            {(() => {
+              console.log('🎯 DAVE DEBUG: Rendu de la liste des notes');
+              const notesToDisplay = filteredNotesForDisplay();
+              console.log('🎯 DAVE DEBUG: filteredNotesForDisplay() =', notesToDisplay);
+              console.log('🎯 DAVE DEBUG: notesToDisplay.length =', notesToDisplay.length);
+              return null;
+            })()}
             <For
               each={filteredNotesForDisplay()}
               fallback={
                 <p class="text-macos-text-secondary text-sm italic py-4">
+                  {console.log('🎯 DAVE DEBUG: Fallback affiché - searchQuery:', searchQuery())}
                   {searchQuery() ? "No matching notes" : "No notes yet"}
                 </p>
               }
@@ -1022,6 +1078,7 @@ const App: Component = () => {
                       : "hover-highlight"
                   }`}
                   onClick={() => {
+                    console.log('🔍 Note clicked:', { noteId: note.id, selectedNoteId: selectedNote()?.id, isSelected: selectedNote()?.id === note.id });
                     setSelectedNote(note);
                     setNoteTitle(note.title);
                     setNoteContent(note.content);
