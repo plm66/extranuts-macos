@@ -23,6 +23,8 @@ const animationStates: SelectorAnimationStates = {
 }
 
 const BilliardSelector: Component<BilliardSelectorProps> = (props) => {
+  console.log(`🎱 BilliardSelector ${props.selector.id} - articleCount reçu:`, props.articleCount)
+  
   const sizeClasses = createMemo(() => {
     switch (props.size || 'medium') {
       case 'small': return 'w-12 h-12 text-xs'
@@ -98,7 +100,11 @@ const BilliardSelector: Component<BilliardSelectorProps> = (props) => {
       </div>
       
       {/* Badge compteur rouge - specs Alice */}
-      <Show when={props.articleCount && props.articleCount > 0}>
+      <Show when={(() => {
+        const shouldShow = props.articleCount && props.articleCount > 0
+        console.log(`🎱 Badge sélecteur ${props.selector.id} - shouldShow:`, shouldShow, 'count:', props.articleCount)
+        return shouldShow
+      })()}>
         <div 
           class="absolute rounded-full flex items-center justify-center font-bold shadow-sm border border-white/30"
           style={{

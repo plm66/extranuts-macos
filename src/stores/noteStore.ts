@@ -68,12 +68,25 @@ export async function createNote(title: string, content: string = ''): Promise<N
 // Update note locally (until backend has update command)
 export function updateNote(id: string, updates: Partial<Note>) {
   console.log('🔄 updateNote appelé:', { id, updates })
+  console.log('🔄 Mise à jour de selectorId?', 'selectorId' in updates, updates.selectorId)
   
-  setNotes(prev => prev.map(note => 
-    note.id === id 
-      ? { ...note, ...updates, updatedAt: new Date() }
-      : note
-  ))
+  // Debug: État avant update
+  const noteBefore = notes().find(n => n.id === id)
+  console.log('🔄 Note AVANT update:', { id: noteBefore?.id, title: noteBefore?.title, selectorId: noteBefore?.selectorId })
+  
+  setNotes(prev => {
+    const newNotes = prev.map(note => 
+      note.id === id 
+        ? { ...note, ...updates, updatedAt: new Date() }
+        : note
+    )
+    
+    // Debug: État après update
+    const noteAfter = newNotes.find(n => n.id === id)
+    console.log('🔄 Note APRÈS update dans setNotes:', { id: noteAfter?.id, title: noteAfter?.title, selectorId: noteAfter?.selectorId })
+    
+    return newNotes
+  })
   
   // TODO: Sync with backend when update command is available
   notesService.updateNote(id, updates)

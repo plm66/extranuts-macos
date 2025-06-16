@@ -48,7 +48,11 @@ const SelectorGrid: Component<SelectorGridProps> = (props) => {
                 onClick={props.onSelectorClick}
                 isVisible={true}
                 size="medium"
-                articleCount={articleCountsBySelector().get(selector.id) || 0}
+                articleCount={(() => {
+                  const count = articleCountsBySelector().get(selector.id) || 0
+                  console.log(`🔸 SelectorGrid - Passage du count pour sélecteur ${selector.id}:`, count)
+                  return count
+                })()}
               />
             </div>
           )}

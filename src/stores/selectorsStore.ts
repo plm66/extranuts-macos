@@ -79,7 +79,10 @@ const totalGroups = createMemo(() => Math.ceil(selectors().length / 10))
 
 // Computed memo pour compter les articles par sélecteur
 const articleCountsBySelector = createMemo(() => {
-  console.log('📊 articleCountsBySelector - Recalcul des comptages')
+  console.log('📊 articleCountsBySelector - DÉBUT du recalcul des comptages')
+  console.log('📊 Notes totales:', notes().length)
+  console.log('📊 Notes avec selectorId:', notes().filter(n => n.selectorId).map(n => ({ id: n.id, title: n.title, selectorId: n.selectorId })))
+  
   const counts = new Map<number, number>()
   
   // Initialiser tous les sélecteurs à 0
@@ -90,12 +93,15 @@ const articleCountsBySelector = createMemo(() => {
   // Compter les notes assignées à chaque sélecteur
   notes().forEach(note => {
     if (note.selectorId) {
+      console.log(`📊 Note "${note.title}" assignée au sélecteur ${note.selectorId}`)
       const currentCount = counts.get(note.selectorId) || 0
       counts.set(note.selectorId, currentCount + 1)
     }
   })
   
-  console.log('📊 articleCountsBySelector - Comptages:', Array.from(counts.entries()).filter(([_, count]) => count > 0))
+  console.log('📊 articleCountsBySelector - FIN du recalcul')
+  console.log('📊 Résultat complet:', Array.from(counts.entries()))
+  console.log('📊 Sélecteurs avec comptage > 0:', Array.from(counts.entries()).filter(([_, count]) => count > 0))
   return counts
 })
 

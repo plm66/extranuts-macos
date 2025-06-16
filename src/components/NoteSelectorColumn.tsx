@@ -110,7 +110,7 @@ const NoteSelectorColumn: Component<NoteSelectorColumnProps> = (props) => {
         >
           {isAssigned() ? (
             <span class="text-xs font-bold text-white drop-shadow-sm">
-              {selectorNumber()}
+              {props.selectorId}
             </span>
           ) : (
             <Icon 
