@@ -3,6 +3,7 @@ import { render } from 'solid-js/web'
 import { parseMarkdown, renderMarkdownToHtml } from '../utils/markdown'
 import { parseWikiLinks } from '../utils/wikilinks'
 import CodeBlock from './CodeBlock'
+import { themeStore } from '../stores/themeStore'
 import type { Note } from '../types'
 
 interface MarkdownPreviewProps {
@@ -105,7 +106,7 @@ const MarkdownPreview: Component<MarkdownPreviewProps> = (props) => {
   return (
     <div 
       ref={containerRef}
-      class="markdown-preview prose prose-invert max-w-none"
+      class={`markdown-preview prose ${themeStore.isDark() ? 'prose-invert' : 'prose-slate'} max-w-none`}
       innerHTML={processedContent()}
       onClick={handleClick}
     />

@@ -2,6 +2,7 @@ import { Component, createSignal, For, Show } from 'solid-js'
 import { Icon } from '@iconify-icon/solid'
 import { preferences, updatePreferences } from '../stores/preferencesStore'
 import { exportService } from '../services/export'
+import { themeStore } from '../stores/themeStore'
 
 interface SettingSection {
   id: string
@@ -229,6 +230,62 @@ export const SettingsPanel: Component<{
                     </select>
                   </SettingItem>
                   
+                  <SettingItem
+                    title="Editor Font Family"
+                    description="Choose the font family for the note editor. Monospace fonts are great for coding notes."
+                  >
+                    <select
+                      value={preferences().editor.font_family}
+                      onChange={async (e) => {
+                        await updatePreferences({
+                          editor: {
+                            ...preferences().editor,
+                            font_family: e.target.value
+                          }
+                        })
+                      }}
+                      class="px-3 py-1 bg-macos-hover border border-macos-border rounded text-sm w-48"
+                    >
+                      <option value="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">System Font (San Francisco)</option>
+                      <option value="Monaco, 'Cascadia Code', 'SF Mono', Consolas, monospace">Monaco (Monospace)</option>
+                      <option value="Menlo, Monaco, 'Lucida Console', monospace">Menlo (Monospace)</option>
+                      <option value="'SF Mono', Monaco, 'Cascadia Code', monospace">'SF Mono' (Monospace)</option>
+                      <option value="Consolas, 'Courier New', monospace">Consolas (Monospace)</option>
+                      <option value="'Courier New', Courier, monospace">Courier New (Monospace)</option>
+                      <option value="Helvetica, Arial, sans-serif">Helvetica (Sans-serif)</option>
+                      <option value="Arial, sans-serif">Arial (Sans-serif)</option>
+                      <option value="Georgia, 'Times New Roman', serif">Georgia (Serif)</option>
+                      <option value="'Times New Roman', Times, serif">Times New Roman (Serif)</option>
+                    </select>
+                  </SettingItem>
+                  
+                  <SettingItem
+                    title="Editor Font Size"
+                    description="Adjust the font size for the note editor. Larger sizes are easier to read, smaller sizes show more content."
+                  >
+                    <div class="flex items-center gap-3">
+                      <input
+                        type="range"
+                        min="8"
+                        max="24"
+                        step="1"
+                        value={preferences().editor.font_size}
+                        onInput={async (e) => {
+                          await updatePreferences({
+                            editor: {
+                              ...preferences().editor,
+                              font_size: parseInt(e.target.value)
+                            }
+                          })
+                        }}
+                        class="w-24"
+                      />
+                      <span class="text-xs text-macos-text-secondary w-10">
+                        {preferences().editor.font_size}px
+                      </span>
+                    </div>
+                  </SettingItem>
+                  
                   {/* WikiLinks Documentation */}
                   <div class="glass-morphism rounded-lg bg-blue-500/10 border border-blue-500/30">
                     <button
@@ -335,6 +392,59 @@ export const SettingsPanel: Component<{
                 {/* Appearance Settings */}
                 <Show when={selectedSection() === 'appearance'}>
                   <SettingItem
+                    title="Theme"
+                    description="Choose your preferred theme. Auto mode follows your system preference."
+                  >
+                    <div class="flex flex-col gap-2">
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          id="theme-dark"
+                          name="theme"
+                          value="dark"
+                          checked={themeStore.theme() === 'dark'}
+                          onChange={async () => await themeStore.setTheme('dark')}
+                          class="w-4 h-4 text-blue-600"
+                        />
+                        <label for="theme-dark" class="text-sm flex items-center gap-2">
+                          <Icon icon="material-symbols:dark-mode" class="w-4 h-4" />
+                          Dark Theme
+                        </label>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          id="theme-light"
+                          name="theme"
+                          value="light"
+                          checked={themeStore.theme() === 'light'}
+                          onChange={async () => await themeStore.setTheme('light')}
+                          class="w-4 h-4 text-blue-600"
+                        />
+                        <label for="theme-light" class="text-sm flex items-center gap-2">
+                          <Icon icon="material-symbols:light-mode" class="w-4 h-4" />
+                          Light Theme
+                        </label>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          id="theme-auto"
+                          name="theme"
+                          value="auto"
+                          checked={themeStore.theme() === 'auto'}
+                          onChange={async () => await themeStore.setTheme('auto')}
+                          class="w-4 h-4 text-blue-600"
+                        />
+                        <label for="theme-auto" class="text-sm flex items-center gap-2">
+                          <Icon icon="material-symbols:brightness-auto" class="w-4 h-4" />
+                          Auto (System)
+                        </label>
+                      </div>
+                    </div>
+                  </SettingItem>
+                  
+                  <SettingItem
                     title="Window Transparency"
                     description="Adjust the transparency level of the application window for a more integrated desktop experience."
                   >
@@ -361,14 +471,19 @@ export const SettingsPanel: Component<{
                     </div>
                   </SettingItem>
                   
-                  <div class="glass-morphism rounded-lg p-4 text-center">
-                    <Icon icon="material-symbols:palette-outline" class="w-12 h-12 mx-auto mb-2 text-macos-text-secondary" />
-                    <p class="text-sm text-macos-text-secondary">
-                      More appearance options coming soon
-                    </p>
-                    <p class="text-xs text-macos-text-secondary mt-1">
-                      Including themes, font sizes, and color schemes
-                    </p>
+                  <div class="glass-morphism rounded-lg bg-blue-500/10 border border-blue-500/30 p-4">
+                    <div class="flex items-start gap-3">
+                      <Icon icon="material-symbols:info" class="w-5 h-5 mt-0.5 text-blue-400" />
+                      <div>
+                        <h4 class="text-sm font-medium text-blue-400 mb-1">Theme Information</h4>
+                        <ul class="text-xs text-blue-300 space-y-1">
+                          <li>• <strong>Dark Theme:</strong> Low-light environment, easier on the eyes</li>
+                          <li>• <strong>Light Theme:</strong> Bright environment, high contrast</li>
+                          <li>• <strong>Auto Mode:</strong> Follows macOS system preference automatically</li>
+                          <li>• <strong>Theme changes:</strong> Applied instantly and saved to preferences</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </Show>
                 

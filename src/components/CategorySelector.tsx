@@ -57,16 +57,16 @@ export const CategorySelector: Component<CategorySelectorProps> = (props) => {
     return (
       <>
         <div
-          class={`flex items-center gap-2 p-2 hover:bg-macos-hover cursor-pointer ${indentClass}`}
+          class={`flex items-center gap-2 p-2 hover:bg-[var(--theme-bg-hover)] cursor-pointer ${indentClass}`}
           onClick={() => handleCategorySelect(category.id)}
         >
           <div 
-            class="w-3 h-3 rounded-full border border-white/20"
+            class="w-3 h-3 rounded-full border border-[var(--theme-category-border)]"
             style={{ backgroundColor: category.color }}
           />
           <span class="text-sm">{category.name}</span>
           {hasSubcategories && (
-            <span class="text-xs text-macos-text-secondary">
+            <span class="text-xs text-[var(--theme-text-secondary)]">
               ({category.subcategories!.length})
             </span>
           )}
@@ -88,19 +88,19 @@ export const CategorySelector: Component<CategorySelectorProps> = (props) => {
           props.compact 
             ? 'p-1.5 text-xs' 
             : 'p-2 text-sm'
-        } border border-macos-border bg-macos-hover`}
+        } border border-[var(--theme-border-primary)] bg-[var(--theme-bg-hover)]`}
       >
         <Show 
           when={selectedCategory()} 
           fallback={
             <>
-              <Icon icon="material-symbols:category-outline" class="w-4 h-4 text-macos-text-secondary" />
-              <span class="text-macos-text-secondary">No category</span>
+              <Icon icon="material-symbols:category-outline" class="w-4 h-4 text-[var(--theme-text-secondary)]" />
+              <span class="text-[var(--theme-text-secondary)]">No category</span>
             </>
           }
         >
           <div 
-            class="w-3 h-3 rounded-full border border-white/20"
+            class="w-3 h-3 rounded-full border border-[var(--theme-category-border)]"
             style={{ backgroundColor: selectedCategory()!.color }}
           />
           <span>{selectedCategory()!.name}</span>
@@ -112,14 +112,14 @@ export const CategorySelector: Component<CategorySelectorProps> = (props) => {
       </button>
 
       <Show when={isOpen()}>
-        <div class="absolute z-50 mt-1 bg-macos-bg border border-macos-border rounded-lg shadow-xl min-w-48 max-h-64 overflow-y-auto">
+        <div class="absolute z-50 mt-1 bg-[var(--theme-bg-primary)] border border-[var(--theme-border-primary)] rounded-lg shadow-xl min-w-48 max-h-64 overflow-y-auto">
           {/* No category option */}
           <div
-            class="flex items-center gap-2 p-2 hover:bg-macos-hover cursor-pointer border-b border-macos-border"
+            class="flex items-center gap-2 p-2 hover:bg-[var(--theme-bg-hover)] cursor-pointer border-b border-[var(--theme-border-primary)]"
             onClick={() => handleCategorySelect(undefined)}
           >
-            <Icon icon="material-symbols:category-outline" class="w-3 h-3 text-macos-text-secondary" />
-            <span class="text-sm text-macos-text-secondary">No category</span>
+            <Icon icon="material-symbols:category-outline" class="w-3 h-3 text-[var(--theme-text-secondary)]" />
+            <span class="text-sm text-[var(--theme-text-secondary)]">No category</span>
           </div>
 
           <Show when={isLoading()}>
@@ -130,7 +130,7 @@ export const CategorySelector: Component<CategorySelectorProps> = (props) => {
 
           <Show when={!isLoading()}>
             <For each={categories()} fallback={
-              <div class="p-4 text-center text-macos-text-secondary text-xs">
+              <div class="p-4 text-center text-[var(--theme-text-secondary)] text-xs">
                 No categories available
               </div>
             }>
@@ -139,9 +139,9 @@ export const CategorySelector: Component<CategorySelectorProps> = (props) => {
             
             {/* Create new category button */}
             <Show when={props.onCreateCategory}>
-              <div class="border-t border-macos-border mt-1 pt-1">
+              <div class="border-t border-[var(--theme-border-primary)] mt-1 pt-1">
                 <button
-                  class="w-full flex items-center gap-2 p-2 hover:bg-macos-hover text-left text-sm text-blue-400"
+                  class="w-full flex items-center gap-2 p-2 hover:bg-[var(--theme-bg-hover)] text-left text-sm text-blue-400"
                   onClick={() => {
                     props.onCreateCategory?.()
                     setIsOpen(false)

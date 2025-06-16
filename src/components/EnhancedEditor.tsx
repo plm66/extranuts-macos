@@ -1,5 +1,6 @@
 import { Component, createSignal, onMount } from 'solid-js'
 import { Icon } from '@iconify-icon/solid'
+import { preferences } from '../stores/preferencesStore'
 
 interface EnhancedEditorProps {
   value: string
@@ -96,15 +97,16 @@ const EnhancedEditor: Component<EnhancedEditorProps> = (props) => {
         onBlur={props.onBlur}
         onKeyDown={handleKeyDown}
         placeholder={props.placeholder}
-        class="flex-1 bg-transparent border-none outline-none text-macos-text resize-none no-drag native-scrollbar leading-relaxed p-4"
+        class="flex-1 bg-transparent border-none outline-none text-[var(--theme-text-primary)] resize-none no-drag native-scrollbar leading-relaxed px-4 pt-1 pb-4"
         style={{
-          "font-family": "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          "font-family": preferences().editor.font_family,
+          "font-size": `${preferences().editor.font_size}px`,
           "line-height": "1.6"
         }}
       />
       
       {/* Vertical Formatting Toolbar - Right Side */}
-      <div class="flex flex-col gap-1 p-2 border-l border-macos-border bg-black/20 min-w-[44px]">
+      <div class="flex flex-col gap-1 p-2 border-l border-[var(--theme-border-primary)] bg-[var(--theme-toolbar-bg)] min-w-[44px]">
         <button
           onClick={() => insertFormatting('**')}
           class="p-1.5 hover-highlight rounded text-sm"

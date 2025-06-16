@@ -222,6 +222,7 @@ impl NoteRepository {
         Ok(())
     }
     
+    #[allow(dead_code)]
     fn get_or_create_tag(&self, tx: &rusqlite::Transaction, name: &str) -> AppResult<i64> {
         let existing: Option<i64> = tx.query_row(
             "SELECT id FROM tags WHERE name = ?1",
@@ -241,6 +242,7 @@ impl NoteRepository {
         }
     }
     
+    #[allow(dead_code)]
     fn get_note_tags(&self, note_id: i64) -> AppResult<Vec<Tag>> {
         let db = self.db.lock().unwrap();
         let conn = db.connection();

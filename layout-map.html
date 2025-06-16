@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extranuts Layout Map</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .layout-grid {
+            display: grid;
+            gap: 2px;
+            background: #333;
+            padding: 2px;
+            border-radius: 8px;
+            height: 600px;
+        }
+        .section {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #4a9eff;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        .section-specs {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.6;
+        }
+        .section-specs code {
+            background: #1a1a1a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #4ade80;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+        .header {
+            grid-area: header;
+            background: #2d3748;
+        }
+        .editor-container {
+            grid-area: editor;
+            background: #1e293b;
+        }
+        .resize-bar {
+            grid-area: resize;
+            background: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: ns-resize;
+        }
+        .notes-list {
+            grid-area: notes;
+            background: #2d3748;
+        }
+        .status-bar {
+            grid-area: status;
+            background: #1e293b;
+        }
+        .layout-grid {
+            grid-template-areas:
+                "header"
+                "editor"
+                "resize"
+                "notes"
+                "status";
+            grid-template-rows: 64px 1fr 4px 1fr 24px;
+        }
+        .subsection {
+            background: #1a1a1a;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #3a3a3a;
+        }
+        .highlight {
+            background: #ef4444;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        h1 {
+            color: #4a9eff;
+            margin-bottom: 20px;
+        }
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: #2a2a2a;
+            border-radius: 6px;
+            border: 1px solid #444;
+        }
+        .legend h3 {
+            color: #4a9eff;
+            margin-top: 0;
+        }
+        .editor-internal {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .editor-part {
+            background: #0f172a;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ Extranuts Layout Map</h1>
+        
+        <div class="layout-grid">
+            <!-- Header -->
+            <div class="section header">
+                <div class="section-title">TOP HEADER</div>
+                <div class="section-specs">
+                    Height: <code>h-16</code> (64px)<br>
+                    Padding: <code>px-6</code> (24px horizontal)<br>
+                    Contains: Logo, New Note buttons, Settings
+                </div>
+            </div>
+
+            <!-- Editor Container -->
+            <div class="section editor-container">
+                <div class="section-title">EDITOR AREA (60% default)</div>
+                <div class="section-specs">
+                    Dynamic height: <code>editorHeight()%</code><br>
+                    <span class="highlight">Container Padding: p-6 (24px all sides)</span>
+                </div>
+                
+                <div class="editor-internal">
+                    <div class="editor-part">
+                        <strong>Title Section</strong><br>
+                        <span class="highlight">Bottom margin: mb-4 (16px)</span><br>
+                        Contains: Title input, category/preview/delete buttons
+                    </div>
+                    
+                    <div class="editor-part">
+                        <strong>Content Editor</strong><br>
+                        Height: <code>flex-1</code> (fills remaining space)<br>
+                        The actual textarea for note content
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resize Bar -->
+            <div class="section resize-bar">
+                <div class="section-specs">
+                    Height: <code>h-1</code> (4px) | Draggable divider
+                </div>
+            </div>
+
+            <!-- Notes List -->
+            <div class="section notes-list">
+                <div class="section-title">NOTES LIST (Bottom Section)</div>
+                <div class="section-specs">
+                    Padding: <code>p-4</code> (16px)<br>
+                    Search bar: <code>mb-3</code> (12px bottom)<br>
+                    List height: <code>max-h-36</code> (144px) with scroll
+                </div>
+                
+                <div class="subsection">
+                    <strong>Each Note Row:</strong><br>
+                    Padding: <code>p-2</code> (8px)<br>
+                    4 columns: Category ID | Title (resizable) | Content | Timestamp
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="section status-bar">
+                <div class="section-title">STATUS BAR</div>
+                <div class="section-specs">
+                    Height: <code>h-6</code> (24px)<br>
+                    Padding: <code>px-4</code> (16px horizontal)<br>
+                    Shows: Note count, editing status, time
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>📏 Spacing Reference</h3>
+            <ul>
+                <li><code>p-1</code> = 4px</li>
+                <li><code>p-2</code> = 8px</li>
+                <li><code>p-3</code> = 12px</li>
+                <li><code>p-4</code> = 16px</li>
+                <li><code>p-6</code> = 24px</li>
+                <li><code>mb-1</code> = 4px bottom margin</li>
+                <li><code>mb-2</code> = 8px bottom margin</li>
+                <li><code>mb-3</code> = 12px bottom margin</li>
+                <li><code>mb-4</code> = 16px bottom margin</li>
+            </ul>
+            
+            <h3>🎯 Your Issue</h3>
+            <p>The space between the Title input and Content editor is currently <code>mb-4</code> (16px).<br>
+            This is the gap inside the Editor Container between the title section and the content textarea.</p>
+        </div>
+    </div>
+</body>
+</html>

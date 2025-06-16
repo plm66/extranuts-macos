@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extranuts Font Size Reference</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 20px;
+            background: #1a1a1a;
+            color: #e5e5e5;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #2a2a2a;
+            border: 1px solid #444;
+        }
+        th, td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #444;
+            vertical-align: top;
+        }
+        th {
+            background: #333;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        .ui-zone {
+            background: #1e3a5f;
+            color: #fff;
+            font-weight: bold;
+        }
+        .element-name {
+            font-family: monospace;
+            background: #2d4a2e;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .css-class {
+            font-family: monospace;
+            background: #4a2d2d;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #ff9999;
+        }
+        .pixel-size {
+            font-weight: bold;
+            color: #9fff9f;
+        }
+        .line-number {
+            font-family: monospace;
+            color: #888;
+        }
+        .note {
+            font-size: 12px;
+            color: #aaa;
+            font-style: italic;
+        }
+        h1 {
+            color: #fff;
+            margin-bottom: 10px;
+        }
+        .info {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Extranuts UI Font Size Reference</h1>
+    <div class="info">
+        <p><strong>Base Font Size:</strong> 11px (defined in index.css line 11)</p>
+        <p><strong>Font Family:</strong> -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif</p>
+        <p>This table maps every visible text element to its exact font size and location in the codebase.</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>UI Zone</th>
+                <th>Element Description</th>
+                <th>CSS Class/Style</th>
+                <th>Pixel Size</th>
+                <th>File Location</th>
+                <th>Line Number</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- TOP HEADER SECTION -->
+            <tr class="ui-zone">
+                <td colspan="7">TOP HEADER (Main Application Bar)</td>
+            </tr>
+            <tr>
+                <td>Top Header</td>
+                <td class="element-name">App title "Extranuts"</td>
+                <td class="css-class">text-xl font-semibold</td>
+                <td class="pixel-size">20px</td>
+                <td>App.tsx</td>
+                <td class="line-number">498</td>
+                <td class="note">Main application title</td>
+            </tr>
+            <tr>
+                <td>Top Header</td>
+                <td class="element-name">"+ New Note" button text</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">503</td>
+                <td class="note">Primary action button</td>
+            </tr>
+            <tr>
+                <td>Top Header</td>
+                <td class="element-name">"Export" button text</td>
+                <td class="css-class">text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">529</td>
+                <td class="note">Export action text</td>
+            </tr>
+            <tr>
+                <td>Top Header</td>
+                <td class="element-name">"Hide" button text</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">534</td>
+                <td class="note">Inherits from button default styling</td>
+            </tr>
+
+            <!-- LOADING STATE -->
+            <tr class="ui-zone">
+                <td colspan="7">LOADING & ERROR STATES</td>
+            </tr>
+            <tr>
+                <td>Loading Overlay</td>
+                <td class="element-name">"Loading notes..." text</td>
+                <td class="css-class">text-macos-text</td>
+                <td class="pixel-size">11px</td>
+                <td>App.tsx</td>
+                <td class="line-number">485</td>
+                <td class="note">Base font size, loading message</td>
+            </tr>
+            <tr>
+                <td>Error Display</td>
+                <td class="element-name">Error message text</td>
+                <td class="css-class">text-red-400</td>
+                <td class="pixel-size">11px</td>
+                <td>App.tsx</td>
+                <td class="line-number">493</td>
+                <td class="note">Base font size, error styling</td>
+            </tr>
+
+            <!-- EDITOR SECTION -->
+            <tr class="ui-zone">
+                <td colspan="7">EDITOR SECTION (Note Editing Area)</td>
+            </tr>
+            <tr>
+                <td>Editor Area</td>
+                <td class="element-name">Welcome message "Welcome to Extranuts"</td>
+                <td class="css-class">text-2xl</td>
+                <td class="pixel-size">24px</td>
+                <td>App.tsx</td>
+                <td class="line-number">557</td>
+                <td class="note">Welcome screen heading</td>
+            </tr>
+            <tr>
+                <td>Editor Area</td>
+                <td class="element-name">Welcome subtitle text</td>
+                <td class="css-class">text-macos-text-secondary</td>
+                <td class="pixel-size">11px</td>
+                <td>App.tsx</td>
+                <td class="line-number">558-559</td>
+                <td class="note">Base font size with secondary color</td>
+            </tr>
+            <tr>
+                <td>Editor Area</td>
+                <td class="element-name">"+ Create Your First Note" button</td>
+                <td class="css-class">No explicit text class</td>
+                <td class="pixel-size">11px</td>
+                <td>App.tsx</td>
+                <td class="line-number">565</td>
+                <td class="note">Inherits base font size</td>
+            </tr>
+            <tr>
+                <td>Editor Area</td>
+                <td class="element-name">Note title input field</td>
+                <td class="css-class">text-2xl font-semibold</td>
+                <td class="pixel-size">24px</td>
+                <td>App.tsx</td>
+                <td class="line-number">595</td>
+                <td class="note">Large title input, placeholder "Note title..."</td>
+            </tr>
+            <tr>
+                <td>Editor Area</td>
+                <td class="element-name">Enhanced Editor content</td>
+                <td class="css-class">text-macos-text + inline style</td>
+                <td class="pixel-size">11px</td>
+                <td>EnhancedEditor.tsx</td>
+                <td class="line-number">99, 101-102</td>
+                <td class="note">Base font with line-height 1.6, apple system font</td>
+            </tr>
+            <tr>
+                <td>Editor Area</td>
+                <td class="element-name">Editor placeholder text</td>
+                <td class="css-class">Placeholder attribute</td>
+                <td class="pixel-size">11px</td>
+                <td>EnhancedEditor.tsx</td>
+                <td class="line-number">98</td>
+                <td class="note">"Write your note with markdown support..."</td>
+            </tr>
+
+            <!-- ENHANCED EDITOR TOOLBAR -->
+            <tr class="ui-zone">
+                <td colspan="7">ENHANCED EDITOR TOOLBAR (Right Side Formatting Buttons)</td>
+            </tr>
+            <tr>
+                <td>Editor Toolbar</td>
+                <td class="element-name">All toolbar button icons</td>
+                <td class="css-class">w-4 h-4</td>
+                <td class="pixel-size">16px × 16px</td>
+                <td>EnhancedEditor.tsx</td>
+                <td class="line-number">113, 120, 127, etc.</td>
+                <td class="note">Bold, italic, heading, list, code buttons</td>
+            </tr>
+            <tr>
+                <td>Editor Toolbar</td>
+                <td class="element-name">Toolbar button tooltips</td>
+                <td class="css-class">title attribute</td>
+                <td class="pixel-size">System default</td>
+                <td>EnhancedEditor.tsx</td>
+                <td class="line-number">111, 118, 125, etc.</td>
+                <td class="note">Browser tooltip styling</td>
+            </tr>
+
+            <!-- AUTO-COMPLETE DROPDOWN -->
+            <tr class="ui-zone">
+                <td colspan="7">AUTO-COMPLETE DROPDOWN (WikiLink Suggestions)</td>
+            </tr>
+            <tr>
+                <td>Auto-complete</td>
+                <td class="element-name">"Link to note:" header</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">735</td>
+                <td class="note">Auto-complete dropdown header</td>
+            </tr>
+            <tr>
+                <td>Auto-complete</td>
+                <td class="element-name">Note title suggestions</td>
+                <td class="css-class">font-medium + text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">742, 745</td>
+                <td class="note">Clickable note suggestions</td>
+            </tr>
+            <tr>
+                <td>Auto-complete</td>
+                <td class="element-name">"No existing notes found"</td>
+                <td class="css-class">text-sm text-macos-text-secondary</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">750</td>
+                <td class="note">Empty state message</td>
+            </tr>
+
+            <!-- NOTES LIST SECTION -->
+            <tr class="ui-zone">
+                <td colspan="7">NOTES LIST SECTION (Bottom Panel)</td>
+            </tr>
+            <tr>
+                <td>Notes List</td>
+                <td class="element-name">Search input placeholder</td>
+                <td class="css-class">text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">774</td>
+                <td class="note">"Search X notes..." placeholder</td>
+            </tr>
+            <tr>
+                <td>Notes List</td>
+                <td class="element-name">Category ID column</td>
+                <td class="css-class">text-xs font-mono text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">800</td>
+                <td class="note">Monospace category ID display</td>
+            </tr>
+            <tr>
+                <td>Notes List</td>
+                <td class="element-name">Note title in list</td>
+                <td class="css-class">text-sm font-semibold</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">808</td>
+                <td class="note">Note titles in the list view</td>
+            </tr>
+            <tr>
+                <td>Notes List</td>
+                <td class="element-name">Note content preview</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">831</td>
+                <td class="note">First line content preview</td>
+            </tr>
+            <tr>
+                <td>Notes List</td>
+                <td class="element-name">Category badge text</td>
+                <td class="css-class">text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">834</td>
+                <td class="note">Category name in colored badge</td>
+            </tr>
+            <tr>
+                <td>Notes List</td>
+                <td class="element-name">Note timestamp</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">846</td>
+                <td class="note">Time/date of last modification</td>
+            </tr>
+            <tr>
+                <td>Notes List</td>
+                <td class="element-name">"No matching notes" / "No notes yet"</td>
+                <td class="css-class">text-macos-text-secondary text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">780</td>
+                <td class="note">Empty state messages</td>
+            </tr>
+
+            <!-- STATUS BAR -->
+            <tr class="ui-zone">
+                <td colspan="7">STATUS BAR (Bottom Information Bar)</td>
+            </tr>
+            <tr>
+                <td>Status Bar</td>
+                <td class="element-name">Notes count "X notes"</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">863</td>
+                <td class="note">Total notes counter</td>
+            </tr>
+            <tr>
+                <td>Status Bar</td>
+                <td class="element-name">"Editing: [note title]"</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">868</td>
+                <td class="note">Currently edited note indicator</td>
+            </tr>
+            <tr>
+                <td>Status Bar</td>
+                <td class="element-name">"Saved: [timestamp]"</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">874</td>
+                <td class="note">Last save time indicator</td>
+            </tr>
+            <tr>
+                <td>Status Bar</td>
+                <td class="element-name">Current time</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">881</td>
+                <td class="note">Live clock display</td>
+            </tr>
+            <tr>
+                <td>Status Bar</td>
+                <td class="element-name">Current date</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>App.tsx</td>
+                <td class="line-number">885</td>
+                <td class="note">Today's date display</td>
+            </tr>
+
+            <!-- DELETE CONFIRMATION MODAL -->
+            <tr class="ui-zone">
+                <td colspan="7">DELETE CONFIRMATION MODAL</td>
+            </tr>
+            <tr>
+                <td>Modal</td>
+                <td class="element-name">"Delete Note?" title</td>
+                <td class="css-class">text-lg font-semibold</td>
+                <td class="pixel-size">18px</td>
+                <td>App.tsx</td>
+                <td class="line-number">894</td>
+                <td class="note">Modal dialog title</td>
+            </tr>
+            <tr>
+                <td>Modal</td>
+                <td class="element-name">Confirmation message</td>
+                <td class="css-class">text-macos-text-secondary</td>
+                <td class="pixel-size">11px</td>
+                <td>App.tsx</td>
+                <td class="line-number">895</td>
+                <td class="note">Deletion warning text</td>
+            </tr>
+            <tr>
+                <td>Modal</td>
+                <td class="element-name">"Cancel" button</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">904</td>
+                <td class="note">Cancel action button</td>
+            </tr>
+            <tr>
+                <td>Modal</td>
+                <td class="element-name">"Delete" button</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>App.tsx</td>
+                <td class="line-number">923</td>
+                <td class="note">Destructive action button</td>
+            </tr>
+
+            <!-- SETTINGS PANEL -->
+            <tr class="ui-zone">
+                <td colspan="7">SETTINGS PANEL MODAL</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">"Settings" main title</td>
+                <td class="css-class">text-lg font-semibold</td>
+                <td class="pixel-size">18px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">107</td>
+                <td class="note">Settings modal header</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Section titles in sidebar</td>
+                <td class="css-class">font-medium text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">140</td>
+                <td class="note">Editor, Appearance, Sync, etc.</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Breadcrumb "Settings"</td>
+                <td class="css-class">text-sm text-macos-text-secondary</td>
+                <td class="pixel-size">14px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">159</td>
+                <td class="note">Navigation breadcrumb</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Current section title</td>
+                <td class="css-class">text-xl font-semibold</td>
+                <td class="pixel-size">20px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">164</td>
+                <td class="note">Large section header</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Section descriptions</td>
+                <td class="css-class">text-sm text-macos-text-secondary</td>
+                <td class="pixel-size">14px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">165</td>
+                <td class="note">Section subtitle text</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Setting item titles</td>
+                <td class="css-class">text-sm font-medium</td>
+                <td class="pixel-size">14px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">89</td>
+                <td class="note">Individual setting titles</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Setting descriptions</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">90</td>
+                <td class="note">Setting explanation text</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Dropdown option text</td>
+                <td class="css-class">text-sm (select styling)</td>
+                <td class="pixel-size">14px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">222</td>
+                <td class="note">Auto-save interval options</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Documentation section titles</td>
+                <td class="css-class">text-sm font-medium</td>
+                <td class="pixel-size">14px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">241, 287</td>
+                <td class="note">WikiLinks, Categories documentation</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Documentation descriptions</td>
+                <td class="css-class">text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">242, 288</td>
+                <td class="note">Feature descriptions in expandable sections</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Documentation subheadings</td>
+                <td class="css-class">text-xs font-medium</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">257, 265, 303, etc.</td>
+                <td class="note">"How to Create Links:", "Features:", etc.</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Documentation list items</td>
+                <td class="css-class">text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">258, 266, 304, etc.</td>
+                <td class="note">Bullet point explanations</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Code examples in documentation</td>
+                <td class="css-class">bg-blue-900/30 (inline code)</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">259, 260, 261</td>
+                <td class="note">[[Note Title]] syntax examples</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Keyboard shortcut labels</td>
+                <td class="css-class">text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">510, 514, 518, etc.</td>
+                <td class="note">Shortcut descriptions like "New Note"</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Keyboard shortcut keys</td>
+                <td class="css-class">text-xs font-mono (kbd)</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">511, 515, 519, etc.</td>
+                <td class="note">⌘N, ⌘S, ⌘W key combinations</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Footer version text</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">629</td>
+                <td class="note">"Extranuts v1.0.0 • Settings are saved automatically"</td>
+            </tr>
+            <tr>
+                <td>Settings Panel</td>
+                <td class="element-name">Footer links</td>
+                <td class="css-class">text-xs text-blue-400</td>
+                <td class="pixel-size">12px</td>
+                <td>SettingsPanel.tsx</td>
+                <td class="line-number">635, 642</td>
+                <td class="note">"Report Issue", "Documentation" links</td>
+            </tr>
+
+            <!-- EXPORT MODAL -->
+            <tr class="ui-zone">
+                <td colspan="7">EXPORT MODAL</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">"Export to Obsidian" title</td>
+                <td class="css-class">text-lg font-semibold</td>
+                <td class="pixel-size">18px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">66</td>
+                <td class="note">Modal header title</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">"Export Successful!" message</td>
+                <td class="css-class">text-lg font-semibold</td>
+                <td class="pixel-size">18px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">91</td>
+                <td class="note">Success confirmation heading</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Export statistics labels</td>
+                <td class="css-class">text-sm text-macos-text-secondary</td>
+                <td class="pixel-size">14px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">96, 100, 105</td>
+                <td class="note">"Total Notes:", "Successfully Exported:", etc.</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Export statistics values</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">97, 101, 106</td>
+                <td class="note">Numbers and status values</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Export path label</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">112</td>
+                <td class="note">"Exported to:" label</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Export path value</td>
+                <td class="css-class">text-xs font-mono</td>
+                <td class="pixel-size">12px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">113</td>
+                <td class="note">File system path in monospace</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">"What to Export" heading</td>
+                <td class="css-class">text-sm font-medium</td>
+                <td class="pixel-size">14px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">161</td>
+                <td class="note">Section heading</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Radio button labels</td>
+                <td class="css-class">text-sm font-medium</td>
+                <td class="pixel-size">14px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">172, 189</td>
+                <td class="note">"All Notes", "Current Note Only"</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Radio button descriptions</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">173, 190</td>
+                <td class="note">Option descriptions</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Input field labels</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">204</td>
+                <td class="note">"Folder within vault (optional)"</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Input field placeholder</td>
+                <td class="css-class">text-sm placeholder</td>
+                <td class="pixel-size">14px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">211</td>
+                <td class="note">"e.g., Imports, Notes, Daily Notes"</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Help text</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">214</td>
+                <td class="note">Instruction text below inputs</td>
+            </tr>
+            <tr>
+                <td>Export Modal</td>
+                <td class="element-name">Button text</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>ExportModal.tsx</td>
+                <td class="line-number">263, 270, 272</td>
+                <td class="note">"Cancel", "Export Now", "Exporting..."</td>
+            </tr>
+
+            <!-- CATEGORY MANAGER -->
+            <tr class="ui-zone">
+                <td colspan="7">CATEGORY MANAGER MODAL</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">"Category Manager" title</td>
+                <td class="css-class">text-lg font-semibold</td>
+                <td class="pixel-size">18px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">295</td>
+                <td class="note">Modal header title</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">"Your Categories" heading</td>
+                <td class="css-class">font-medium</td>
+                <td class="pixel-size">11px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">312</td>
+                <td class="note">Section header, inherits base size</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">"New Category" button</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">315</td>
+                <td class="note">Primary action button</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Error messages</td>
+                <td class="css-class">text-sm text-red-400</td>
+                <td class="pixel-size">14px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">325</td>
+                <td class="note">Error display text</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Empty state message</td>
+                <td class="css-class">text-center text-macos-text-secondary</td>
+                <td class="pixel-size">11px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">340</td>
+                <td class="note">"No categories yet. Create one or use a preset below."</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Category names in list</td>
+                <td class="css-class">text-sm font-medium</td>
+                <td class="pixel-size">14px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">204, 208</td>
+                <td class="note">Category display names</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Subcategory count badges</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">231</td>
+                <td class="note">"X sub" indicators</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Inline edit input</td>
+                <td class="css-class">text-sm font-medium</td>
+                <td class="pixel-size">14px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">224</td>
+                <td class="note">Temporary edit field for category names</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Form section headings</td>
+                <td class="css-class">font-medium</td>
+                <td class="pixel-size">11px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">355, 432</td>
+                <td class="note">"Edit Category", "Quick Start Presets"</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Form field labels</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">362, 374, 394</td>
+                <td class="note">"Name", "Color", "Parent Category"</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Form input fields</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">368, 387, 398</td>
+                <td class="note">Text inputs and select dropdown</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Form buttons</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">415, 421</td>
+                <td class="note">"Update", "Create", "Cancel" buttons</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Preset descriptions</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">433, 449</td>
+                <td class="note">Color psychology explanations</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">Preset category names</td>
+                <td class="css-class">text-sm font-medium</td>
+                <td class="pixel-size">14px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">447</td>
+                <td class="note">Projects, Ideas, Research, etc.</td>
+            </tr>
+            <tr>
+                <td>Category Manager</td>
+                <td class="element-name">"Add Category" preset buttons</td>
+                <td class="css-class">text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>CategoryManager.tsx</td>
+                <td class="line-number">454</td>
+                <td class="note">Small action buttons</td>
+            </tr>
+
+            <!-- CATEGORY SELECTOR -->
+            <tr class="ui-zone">
+                <td colspan="7">CATEGORY SELECTOR DROPDOWN</td>
+            </tr>
+            <tr>
+                <td>Category Selector</td>
+                <td class="element-name">"No category" button text</td>
+                <td class="css-class">text-macos-text-secondary</td>
+                <td class="pixel-size">11px</td>
+                <td>CategorySelector.tsx</td>
+                <td class="line-number">98, 122</td>
+                <td class="note">Default state and dropdown option</td>
+            </tr>
+            <tr>
+                <td>Category Selector</td>
+                <td class="element-name">Selected category name</td>
+                <td class="css-class">No explicit class</td>
+                <td class="pixel-size">11px</td>
+                <td>CategorySelector.tsx</td>
+                <td class="line-number">106</td>
+                <td class="note">Inherits base font size</td>
+            </tr>
+            <tr>
+                <td>Category Selector</td>
+                <td class="element-name">Dropdown category names</td>
+                <td class="css-class">text-sm</td>
+                <td class="pixel-size">14px</td>
+                <td>CategorySelector.tsx</td>
+                <td class="line-number">67, 122</td>
+                <td class="note">Category options in dropdown</td>
+            </tr>
+            <tr>
+                <td>Category Selector</td>
+                <td class="element-name">Subcategory counts</td>
+                <td class="css-class">text-xs text-macos-text-secondary</td>
+                <td class="pixel-size">12px</td>
+                <td>CategorySelector.tsx</td>
+                <td class="line-number">69</td>
+                <td class="note">"(X)" subcategory indicators</td>
+            </tr>
+            <tr>
+                <td>Category Selector</td>
+                <td class="element-name">"No categories available"</td>
+                <td class="css-class">text-center text-macos-text-secondary text-xs</td>
+                <td class="pixel-size">12px</td>
+                <td>CategorySelector.tsx</td>
+                <td class="line-number">133</td>
+                <td class="note">Empty state message</td>
+            </tr>
+            <tr>
+                <td>Category Selector</td>
+                <td class="element-name">"Create new category" button</td>
+                <td class="css-class">text-left text-sm text-blue-400</td>
+                <td class="pixel-size">14px</td>
+                <td>CategorySelector.tsx</td>
+                <td class="line-number">144</td>
+                <td class="note">Action button in dropdown</td>
+            </tr>
+
+            <!-- MARKDOWN PREVIEW -->
+            <tr class="ui-zone">
+                <td colspan="7">MARKDOWN PREVIEW MODE</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">H1 headings</td>
+                <td class="css-class">markdown-h1</td>
+                <td class="pixel-size">20px</td>
+                <td>index.css</td>
+                <td class="line-number">78</td>
+                <td class="note">text-xl font-bold</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">H2 headings</td>
+                <td class="css-class">markdown-h2</td>
+                <td class="pixel-size">18px</td>
+                <td>index.css</td>
+                <td class="line-number">82</td>
+                <td class="note">text-lg font-semibold</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">H3 headings</td>
+                <td class="css-class">markdown-h3</td>
+                <td class="pixel-size">16px</td>
+                <td>index.css</td>
+                <td class="line-number">86</td>
+                <td class="note">text-base font-semibold</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">H4 headings</td>
+                <td class="css-class">markdown-h4</td>
+                <td class="pixel-size">14px</td>
+                <td>index.css</td>
+                <td class="line-number">90</td>
+                <td class="note">text-sm font-medium</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">H5 headings</td>
+                <td class="css-class">markdown-h5</td>
+                <td class="pixel-size">12px</td>
+                <td>index.css</td>
+                <td class="line-number">94</td>
+                <td class="note">text-xs font-medium</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">H6 headings</td>
+                <td class="css-class">markdown-h6</td>
+                <td class="pixel-size">12px</td>
+                <td>index.css</td>
+                <td class="line-number">98</td>
+                <td class="note">text-xs font-medium (secondary color)</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">Paragraph text</td>
+                <td class="css-class">markdown-paragraph</td>
+                <td class="pixel-size">11px</td>
+                <td>index.css</td>
+                <td class="line-number">102</td>
+                <td class="note">Base font size</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">Code blocks</td>
+                <td class="css-class">markdown-code-block code</td>
+                <td class="pixel-size">12px</td>
+                <td>index.css</td>
+                <td class="line-number">110, 180</td>
+                <td class="note">text-xs font-mono</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">Inline code</td>
+                <td class="css-class">inline-code</td>
+                <td class="pixel-size">12px</td>
+                <td>index.css</td>
+                <td class="line-number">114</td>
+                <td class="note">text-xs font-mono</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">List items</td>
+                <td class="css-class">markdown-preview li</td>
+                <td class="pixel-size">11px</td>
+                <td>index.css</td>
+                <td class="line-number">126</td>
+                <td class="note">Base font size</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">Links</td>
+                <td class="css-class">markdown-link</td>
+                <td class="pixel-size">11px</td>
+                <td>index.css</td>
+                <td class="line-number">130</td>
+                <td class="note">Base font size with blue color</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">WikiLinks (existing)</td>
+                <td class="css-class">wikilink-exists</td>
+                <td class="pixel-size">11px</td>
+                <td>index.css</td>
+                <td class="line-number">65</td>
+                <td class="note">Base font size with blue styling</td>
+            </tr>
+            <tr>
+                <td>Markdown Preview</td>
+                <td class="element-name">WikiLinks (missing)</td>
+                <td class="css-class">wikilink-missing</td>
+                <td class="pixel-size">11px</td>
+                <td>index.css</td>
+                <td class="line-number">69</td>
+                <td class="note">Base font size with orange styling</td>
+            </tr>
+
+            <!-- WIKILINK RENDERER -->
+            <tr class="ui-zone">
+                <td colspan="7">WIKILINK RENDERER (Edit Mode)</td>
+            </tr>
+            <tr>
+                <td>WikiLink Renderer</td>
+                <td class="element-name">Plain text content</td>
+                <td class="css-class">font-sans text-macos-text</td>
+                <td class="pixel-size">11px</td>
+                <td>App.tsx</td>
+                <td class="line-number">40, 76</td>
+                <td class="note">Content without links in pre tags</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="info" style="margin-top: 20px;">
+        <h3>Tailwind CSS Font Size Reference:</h3>
+        <ul>
+            <li><strong>text-xs:</strong> 12px</li>
+            <li><strong>text-sm:</strong> 14px</li>
+            <li><strong>text-base:</strong> 16px</li>
+            <li><strong>text-lg:</strong> 18px</li>
+            <li><strong>text-xl:</strong> 20px</li>
+            <li><strong>text-2xl:</strong> 24px</li>
+            <li><strong>Base (no class):</strong> 11px (defined in index.css)</li>
+        </ul>
+        
+        <h3>Icon Sizes:</h3>
+        <ul>
+            <li><strong>w-3 h-3:</strong> 12px × 12px (small indicators)</li>
+            <li><strong>w-4 h-4:</strong> 16px × 16px (standard buttons)</li>
+            <li><strong>w-5 h-5:</strong> 20px × 20px (larger buttons)</li>
+            <li><strong>w-6 h-6:</strong> 24px × 24px (large icons)</li>
+            <li><strong>w-8 h-8:</strong> 32px × 32px (loading spinner)</li>
+            <li><strong>w-12 h-12:</strong> 48px × 48px (large displays)</li>
+            <li><strong>w-16 h-16:</strong> 64px × 64px (success checkmarks)</li>
+        </ul>
+    </div>
+</body>
+</html>

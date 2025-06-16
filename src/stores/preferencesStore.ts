@@ -14,10 +14,15 @@ const defaultPreferences: Preferences = {
   editor: {
     confirm_delete: true,
     auto_save: true,
-    auto_save_interval: 30
+    auto_save_interval: 30,
+    font_family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    font_size: 11
   },
   export: {
     obsidian_vault_path: null
+  },
+  appearance: {
+    theme: 'dark'
   }
 }
 
@@ -38,7 +43,8 @@ export async function updatePreferences(updates: Partial<Preferences>) {
     sync: { ...current.sync, ...(updates.sync || {}) },
     window: { ...current.window, ...(updates.window || {}) },
     editor: { ...current.editor, ...(updates.editor || {}) },
-    export: { ...current.export, ...(updates.export || {}) }
+    export: { ...current.export, ...(updates.export || {}) },
+    appearance: { ...current.appearance, ...(updates.appearance || {}) }
   }
   
   try {
@@ -55,6 +61,14 @@ export async function toggleDeleteConfirmation() {
     editor: {
       ...current.editor,
       confirm_delete: !current.editor.confirm_delete
+    }
+  })
+}
+
+export async function updateTheme(theme: 'dark' | 'light' | 'auto') {
+  await updatePreferences({
+    appearance: {
+      theme
     }
   })
 }

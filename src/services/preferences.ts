@@ -4,6 +4,12 @@ export interface EditorPreferences {
   confirm_delete: boolean
   auto_save: boolean
   auto_save_interval: number
+  font_family: string
+  font_size: number
+}
+
+export interface AppearancePreferences {
+  theme: 'dark' | 'light' | 'auto'
 }
 
 export interface WindowPreferences {
@@ -25,6 +31,7 @@ export interface Preferences {
   window: WindowPreferences
   editor: EditorPreferences
   export: ExportPreferences
+  appearance: AppearancePreferences
 }
 
 export const preferencesService = {
@@ -43,6 +50,18 @@ export const preferencesService = {
       editor: {
         ...current.editor,
         ...editor
+      }
+    }
+    await this.updatePreferences(updated)
+  },
+
+  async updateAppearancePreferences(appearance: Partial<AppearancePreferences>): Promise<void> {
+    const current = await this.getPreferences()
+    const updated = {
+      ...current,
+      appearance: {
+        ...current.appearance,
+        ...appearance
       }
     }
     await this.updatePreferences(updated)

@@ -1,0 +1,124 @@
+/* Theme Variables CSS */
+
+/* Dark Theme Variables */
+:root {
+  /* Colors - Dark Theme */
+  --theme-bg-primary: rgba(30, 30, 30, 0.85);
+  --theme-bg-secondary: rgba(40, 40, 40, 0.95);
+  --theme-bg-tertiary: rgba(25, 25, 25, 0.9);
+  --theme-bg-hover: rgba(60, 60, 60, 0.9);
+  
+  /* Text Colors - Dark Theme */
+  --theme-text-primary: rgba(255, 255, 255, 0.9);
+  --theme-text-secondary: rgba(255, 255, 255, 0.6);
+  --theme-text-tertiary: rgba(255, 255, 255, 0.4);
+  
+  /* Border Colors - Dark Theme */
+  --theme-border-primary: rgba(255, 255, 255, 0.1);
+  --theme-border-secondary: rgba(255, 255, 255, 0.05);
+  
+  /* Glassmorphism - Dark Theme */
+  --theme-glass-bg: rgba(30, 30, 30, 0.7);
+  --theme-glass-border: rgba(255, 255, 255, 0.1);
+  --theme-glass-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Interactive Elements - Dark Theme */
+  --theme-accent-primary: rgba(74, 144, 226, 1);
+  --theme-accent-hover: rgba(74, 144, 226, 0.8);
+  --theme-success: rgba(52, 199, 89, 1);
+  --theme-warning: rgba(255, 159, 10, 1);
+  --theme-error: rgba(255, 69, 58, 1);
+  
+  /* Component-specific - Dark Theme */
+  --theme-toolbar-bg: rgba(0, 0, 0, 0.2);
+  --theme-category-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Light Theme Variables */
+.theme-light {
+  /* Colors - Light Theme */
+  --theme-bg-primary: rgba(245, 245, 247, 0.95);
+  --theme-bg-secondary: rgba(255, 255, 255, 0.95);
+  --theme-bg-tertiary: rgba(250, 250, 252, 0.9);
+  --theme-bg-hover: rgba(235, 235, 235, 0.9);
+  
+  /* Text Colors - Light Theme */
+  --theme-text-primary: rgba(28, 28, 30, 0.9);
+  --theme-text-secondary: rgba(28, 28, 30, 0.6);
+  --theme-text-tertiary: rgba(28, 28, 30, 0.4);
+  
+  /* Border Colors - Light Theme */
+  --theme-border-primary: rgba(28, 28, 30, 0.1);
+  --theme-border-secondary: rgba(28, 28, 30, 0.05);
+  
+  /* Glassmorphism - Light Theme */
+  --theme-glass-bg: rgba(248, 249, 250, 0.85);
+  --theme-glass-border: rgba(28, 28, 30, 0.12);
+  --theme-glass-shadow: rgba(0, 0, 0, 0.08);
+  
+  /* Interactive Elements - Light Theme */
+  --theme-accent-primary: rgba(0, 122, 255, 1);
+  --theme-accent-hover: rgba(0, 122, 255, 0.8);
+  --theme-success: rgba(52, 199, 89, 1);
+  --theme-warning: rgba(255, 149, 0, 1);
+  --theme-error: rgba(255, 59, 48, 1);
+  
+  /* Component-specific - Light Theme */
+  --theme-toolbar-bg: rgba(0, 0, 0, 0.05);
+  --theme-category-border: rgba(28, 28, 30, 0.1);
+}
+
+/* Utility Classes for Theme Application */
+.theme-bg-primary {
+  background-color: var(--theme-bg-primary);
+}
+
+.theme-bg-secondary {
+  background-color: var(--theme-bg-secondary);
+}
+
+.theme-text-primary {
+  color: var(--theme-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.theme-border {
+  border-color: var(--theme-border-primary);
+}
+
+.theme-glass {
+  background: var(--theme-glass-bg);
+  border: 1px solid var(--theme-glass-border);
+  box-shadow: 0 8px 32px var(--theme-glass-shadow);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  will-change: backdrop-filter;
+}
+
+/* Enhanced Glassmorphism Utilities for Light Theme */
+.theme-light .theme-glass-soft {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(28, 28, 30, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.theme-light .theme-glass-medium {
+  background: var(--theme-glass-bg);
+  border: 1px solid var(--theme-glass-border);
+  box-shadow: 0 6px 24px var(--theme-glass-shadow);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.theme-light .theme-glass-strong {
+  background: rgba(245, 246, 247, 0.9);
+  border: 1px solid rgba(28, 28, 30, 0.15);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}

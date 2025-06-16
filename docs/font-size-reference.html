@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Extranuts Font Size Reference</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .zone { background-color: #e8f4fd; font-weight: bold; }
+        .size-24 { color: #d63384; }
+        .size-20 { color: #dc3545; }
+        .size-18 { color: #fd7e14; }
+        .size-16 { color: #ffc107; }
+        .size-14 { color: #198754; }
+        .size-12 { color: #0dcaf0; }
+        .size-11 { color: #6f42c1; }
+    </style>
+</head>
+<body>
+    <h1>Extranuts Font Size Reference</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>UI Zone</th>
+                <th>Element</th>
+                <th>CSS Class</th>
+                <th>Pixel Size</th>
+                <th>File:Line</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- TOP HEADER ZONE -->
+            <tr class="zone">
+                <td colspan="5">🔝 TOP HEADER</td>
+            </tr>
+            <tr>
+                <td>App Title</td>
+                <td>"Extranuts" main title</td>
+                <td>text-xl font-bold</td>
+                <td class="size-20">20px</td>
+                <td>App.tsx:489</td>
+            </tr>
+            <tr>
+                <td>Header Buttons</td>
+                <td>Pin, Settings, Export buttons</td>
+                <td>p-2 (no text size class)</td>
+                <td class="size-11">11px (base)</td>
+                <td>App.tsx:495-520</td>
+            </tr>
+            
+            <!-- EDITOR SECTION -->
+            <tr class="zone">
+                <td colspan="5">✏️ EDITOR SECTION</td>
+            </tr>
+            <tr>
+                <td>Note Title Input</td>
+                <td>Main note title field</td>
+                <td>text-2xl font-semibold</td>
+                <td class="size-24">24px</td>
+                <td>App.tsx:575</td>
+            </tr>
+            <tr>
+                <td>Note Content</td>
+                <td>Main editor textarea</td>
+                <td>No size class (inherits base)</td>
+                <td class="size-11">11px</td>
+                <td>EnhancedEditor.tsx:92</td>
+            </tr>
+            <tr>
+                <td>Welcome Screen</td>
+                <td>"Welcome to Extranuts" heading</td>
+                <td>text-2xl font-bold</td>
+                <td class="size-24">24px</td>
+                <td>App.tsx:652</td>
+            </tr>
+            <tr>
+                <td>Welcome Text</td>
+                <td>Welcome description paragraphs</td>
+                <td>text-base</td>
+                <td class="size-16">16px</td>
+                <td>App.tsx:654-664</td>
+            </tr>
+            
+            <!-- ENHANCED EDITOR TOOLBAR -->
+            <tr class="zone">
+                <td colspan="5">🔧 FORMATTING TOOLBAR (Right Side)</td>
+            </tr>
+            <tr>
+                <td>Format Buttons</td>
+                <td>Bold, Italic, Heading, etc.</td>
+                <td>p-1.5 text-sm</td>
+                <td class="size-14">14px</td>
+                <td>EnhancedEditor.tsx:108-198</td>
+            </tr>
+            <tr>
+                <td>Button Tooltips</td>
+                <td>"Bold (⌘B)", "Italic (⌘I)", etc.</td>
+                <td>title attribute</td>
+                <td class="size-11">11px (browser default)</td>
+                <td>EnhancedEditor.tsx:111-189</td>
+            </tr>
+            
+            <!-- AUTO-COMPLETE -->
+            <tr class="zone">
+                <td colspan="5">💭 AUTO-COMPLETE DROPDOWN</td>
+            </tr>
+            <tr>
+                <td>WikiLink Suggestions</td>
+                <td>Note title suggestions</td>
+                <td>text-sm</td>
+                <td class="size-14">14px</td>
+                <td>App.tsx:704</td>
+            </tr>
+            
+            <!-- NOTES LIST -->
+            <tr class="zone">
+                <td colspan="5">📝 NOTES LIST (Left Sidebar)</td>
+            </tr>
+            <tr>
+                <td>Search Input</td>
+                <td>Search notes field</td>
+                <td>text-sm</td>
+                <td class="size-14">14px</td>
+                <td>App.tsx:425</td>
+            </tr>
+            <tr>
+                <td>Note Title (List)</td>
+                <td>Note titles in sidebar</td>
+                <td>text-sm font-medium</td>
+                <td class="size-14">14px</td>
+                <td>App.tsx:456</td>
+            </tr>
+            <tr>
+                <td>Note Preview</td>
+                <td>Content preview under title</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>App.tsx:460</td>
+            </tr>
+            <tr>
+                <td>Note Timestamp</td>
+                <td>Last modified time</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>App.tsx:467</td>
+            </tr>
+            <tr>
+                <td>Category Badge</td>
+                <td>Category name in note list</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>App.tsx:472</td>
+            </tr>
+            
+            <!-- STATUS BAR -->
+            <tr class="zone">
+                <td colspan="5">📊 STATUS BAR (Bottom)</td>
+            </tr>
+            <tr>
+                <td>Note Count</td>
+                <td>"X notes" counter</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>App.tsx:778</td>
+            </tr>
+            <tr>
+                <td>Word Count</td>
+                <td>"X words" counter</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>App.tsx:780</td>
+            </tr>
+            <tr>
+                <td>Current Time</td>
+                <td>Live clock display</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>App.tsx:782</td>
+            </tr>
+            <tr>
+                <td>Save Status</td>
+                <td>"Last saved" timestamp</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>App.tsx:784</td>
+            </tr>
+            
+            <!-- MODALS -->
+            <tr class="zone">
+                <td colspan="5">🪟 MODALS & DIALOGS</td>
+            </tr>
+            <tr>
+                <td>Modal Titles</td>
+                <td>Delete, Settings, Export titles</td>
+                <td>text-lg font-semibold</td>
+                <td class="size-18">18px</td>
+                <td>App.tsx:812, 847, 915</td>
+            </tr>
+            <tr>
+                <td>Modal Body Text</td>
+                <td>Confirmation messages, descriptions</td>
+                <td>text-sm</td>
+                <td class="size-14">14px</td>
+                <td>App.tsx:816, various modals</td>
+            </tr>
+            <tr>
+                <td>Modal Buttons</td>
+                <td>Cancel, Delete, Save buttons</td>
+                <td>text-sm</td>
+                <td class="size-14">14px</td>
+                <td>App.tsx:820-835</td>
+            </tr>
+            <tr>
+                <td>Settings Labels</td>
+                <td>Setting option labels</td>
+                <td>text-sm</td>
+                <td class="size-14">14px</td>
+                <td>SettingsPanel component</td>
+            </tr>
+            
+            <!-- CATEGORY MANAGER -->
+            <tr class="zone">
+                <td colspan="5">🏷️ CATEGORY MANAGER</td>
+            </tr>
+            <tr>
+                <td>Manager Title</td>
+                <td>"Category Manager" heading</td>
+                <td>text-lg font-semibold</td>
+                <td class="size-18">18px</td>
+                <td>CategoryManager.tsx:295</td>
+            </tr>
+            <tr>
+                <td>Section Headings</td>
+                <td>"Your Categories", "Quick Start Presets"</td>
+                <td>font-medium</td>
+                <td class="size-11">11px (base)</td>
+                <td>CategoryManager.tsx:312, 432</td>
+            </tr>
+            <tr>
+                <td>Category Names</td>
+                <td>Category titles in list</td>
+                <td>text-sm font-medium</td>
+                <td class="size-14">14px</td>
+                <td>CategoryManager.tsx:204</td>
+            </tr>
+            <tr>
+                <td>Form Labels</td>
+                <td>"Name", "Color", "Parent Category"</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>CategoryManager.tsx:362, 374, 394</td>
+            </tr>
+            <tr>
+                <td>Form Inputs</td>
+                <td>Name input, color input, select</td>
+                <td>text-sm</td>
+                <td class="size-14">14px</td>
+                <td>CategoryManager.tsx:368, 387, 398</td>
+            </tr>
+            <tr>
+                <td>Preset Descriptions</td>
+                <td>Preset help text</td>
+                <td>text-xs</td>
+                <td class="size-12">12px</td>
+                <td>CategoryManager.tsx:449</td>
+            </tr>
+            
+            <!-- MARKDOWN PREVIEW -->
+            <tr class="zone">
+                <td colspan="5">👁️ MARKDOWN PREVIEW</td>
+            </tr>
+            <tr>
+                <td>H1 Headings</td>
+                <td>Largest markdown headings</td>
+                <td>markdown-h1 (text-xl)</td>
+                <td class="size-20">20px</td>
+                <td>index.css:78</td>
+            </tr>
+            <tr>
+                <td>H2 Headings</td>
+                <td>Second level headings</td>
+                <td>markdown-h2 (text-lg)</td>
+                <td class="size-18">18px</td>
+                <td>index.css:82</td>
+            </tr>
+            <tr>
+                <td>H3 Headings</td>
+                <td>Third level headings</td>
+                <td>markdown-h3 (text-base)</td>
+                <td class="size-16">16px</td>
+                <td>index.css:86</td>
+            </tr>
+            <tr>
+                <td>H4 Headings</td>
+                <td>Fourth level headings</td>
+                <td>markdown-h4 (text-sm)</td>
+                <td class="size-14">14px</td>
+                <td>index.css:90</td>
+            </tr>
+            <tr>
+                <td>H5/H6 Headings</td>
+                <td>Smallest headings</td>
+                <td>markdown-h5/h6 (text-xs)</td>
+                <td class="size-12">12px</td>
+                <td>index.css:94, 98</td>
+            </tr>
+            <tr>
+                <td>Paragraph Text</td>
+                <td>Body content</td>
+                <td>markdown-paragraph</td>
+                <td class="size-11">11px (base)</td>
+                <td>index.css:102</td>
+            </tr>
+            <tr>
+                <td>Code Blocks</td>
+                <td>```code``` blocks</td>
+                <td>text-xs font-mono</td>
+                <td class="size-12">12px</td>
+                <td>index.css:110</td>
+            </tr>
+            <tr>
+                <td>Inline Code</td>
+                <td>`inline code`</td>
+                <td>text-xs font-mono</td>
+                <td class="size-12">12px</td>
+                <td>index.css:114</td>
+            </tr>
+            <tr>
+                <td>WikiLinks (Existing)</td>
+                <td>[[existing note]] links</td>
+                <td>wikilink-exists</td>
+                <td class="size-11">11px (base)</td>
+                <td>index.css:65</td>
+            </tr>
+            <tr>
+                <td>WikiLinks (Missing)</td>
+                <td>[[missing note]] links</td>
+                <td>wikilink-missing</td>
+                <td class="size-11">11px (base)</td>
+                <td>index.css:69</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <p><strong>Base Font:</strong> -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif</p>
+    <p><strong>Base Size:</strong> 11px (defined in index.css:11)</p>
+</body>
+</html>

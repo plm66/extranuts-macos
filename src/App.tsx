@@ -26,6 +26,8 @@ import CategoryManager from './components/CategoryManager'
 import { categoriesService } from './services/categories'
 import MarkdownPreview from './components/MarkdownPreview'
 import EnhancedEditor from './components/EnhancedEditor'
+import ThemeToggle from './components/ThemeToggle'
+import { themeStore } from './stores/themeStore'
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -97,6 +99,7 @@ const App: Component = () => {
   const [availableCategories, setAvailableCategories] = createSignal<Array<{id: number, name: string, color: string}>>([])
   const [searchQuery, setSearchQuery] = createSignal('')
   const [showCategoryManager, setShowCategoryManager] = createSignal(false)
+  const [titleColumnWidth, setTitleColumnWidth] = createSignal(200) // pixels
   
   
   onMount(async () => {
@@ -294,6 +297,30 @@ const App: Component = () => {
     document.body.style.userSelect = 'none'
   }
 
+  const handleTitleColumnResize = (e: MouseEvent) => {
+    e.preventDefault()
+    const startX = e.clientX
+    const startWidth = titleColumnWidth()
+    
+    const handleResize = (e: MouseEvent) => {
+      const deltaX = e.clientX - startX
+      const newWidth = Math.max(100, Math.min(400, startWidth + deltaX))
+      setTitleColumnWidth(newWidth)
+    }
+    
+    const handleResizeEnd = () => {
+      document.removeEventListener('mousemove', handleResize)
+      document.removeEventListener('mouseup', handleResizeEnd)
+      document.body.style.cursor = 'default'
+      document.body.style.userSelect = 'auto'
+    }
+    
+    document.addEventListener('mousemove', handleResize)
+    document.addEventListener('mouseup', handleResizeEnd)
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+  }
+
   const showVersionHistory = () => {
     const note = selectedNote()
     if (!note) return
@@ -451,7 +478,7 @@ const App: Component = () => {
 
   
   return (
-    <div class="flex flex-col h-screen bg-macos-bg">
+    <div class={`flex flex-col h-screen bg-macos-bg ${themeStore.theme() === 'light' ? 'theme-light' : ''}`}>
       {/* Loading State */}
       <Show when={isLoading()}>
         <div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
@@ -504,6 +531,7 @@ const App: Component = () => {
             <span class="text-xs">Export</span>
             <Icon icon="material-symbols:keyboard-arrow-right" class="w-3 h-3 opacity-60" />
           </button>
+          <ThemeToggle />
           <button
             onClick={hideToMenuBar}
             class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
@@ -545,7 +573,7 @@ const App: Component = () => {
           >
             <div class="flex-1 flex flex-col p-6">
               {/* Title Field */}
-              <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center justify-between mb-1">
                 <div class="flex-1 flex items-center gap-3">
                   <input
                     type="text"
@@ -769,22 +797,41 @@ const App: Component = () => {
                     setNoteContent(note.content)
                   }}
                 >
-                  <div class="flex items-center justify-between">
-                    <div class="flex-1 min-w-0">
-                      <div class="text-sm font-semibold truncate flex items-center gap-1">
-                        {note.isPinned && (
-                          <Icon icon="material-symbols:push-pin" class="w-3 h-3 text-blue-400" />
-                        )}
-                        {getCategoryInfo(note.categoryId) && (
-                          <div 
-                            class="w-2 h-2 rounded-full border border-white/20" 
-                            style={{ backgroundColor: getCategoryInfo(note.categoryId)!.color }}
-                            title={getCategoryInfo(note.categoryId)!.name}
-                          />
-                        )}
-                        {note.title}
+                  <div class="flex items-center">
+                    {/* Category ID Column */}
+                    <div class="w-12 flex-shrink-0 text-center">
+                      <span class="text-xs font-mono text-macos-text-secondary">
+                        {note.categoryId || '-'}
+                      </span>
+                    </div>
+                    
+                    {/* Title Column with resize */}
+                    <div class="flex items-center" style={{ width: `${titleColumnWidth()}px` }}>
+                      <div class="flex-1 min-w-0 px-1">
+                        <div class="text-sm font-semibold truncate flex items-center gap-1">
+                          {note.isPinned && (
+                            <Icon icon="material-symbols:push-pin" class="w-3 h-3 text-blue-400" />
+                          )}
+                          {getCategoryInfo(note.categoryId) && (
+                            <div 
+                              class="w-2 h-2 rounded-full border border-white/20" 
+                              style={{ backgroundColor: getCategoryInfo(note.categoryId)!.color }}
+                              title={getCategoryInfo(note.categoryId)!.name}
+                            />
+                          )}
+                          <span title={note.title}>{note.title}</span>
+                        </div>
                       </div>
-                      <div class="text-xs text-macos-text-secondary truncate mt-1 flex items-center gap-2">
+                      {/* Resize handle */}
+                      <div 
+                        class="w-1 h-full cursor-col-resize hover:bg-blue-500/50 transition-colors"
+                        onMouseDown={handleTitleColumnResize}
+                      />
+                    </div>
+                    
+                    {/* Content Preview Column */}
+                    <div class="flex-1 min-w-0 px-1.5">
+                      <div class="text-xs text-macos-text-secondary truncate flex items-center gap-2">
                         <span>{note.content.split('\n')[0] || 'Empty note'}</span>
                         {getCategoryInfo(note.categoryId) && (
                           <span class="text-xs px-1.5 py-0.5 rounded" style={{ 
@@ -796,7 +843,9 @@ const App: Component = () => {
                         )}
                       </div>
                     </div>
-                    <div class="flex items-center space-x-2 ml-2">
+                    
+                    {/* Timestamp Column */}
+                    <div class="flex-shrink-0 px-2">
                       <span class="text-xs text-macos-text-secondary">
                         {formatNoteDate(note.updatedAt)}
                       </span>
