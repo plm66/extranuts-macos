@@ -43,6 +43,8 @@ import MarkdownPreview from "./components/MarkdownPreview";
 import EnhancedEditor from "./components/EnhancedEditor";
 import ThemeToggle from "./components/ThemeToggle";
 import { themeStore } from "./stores/themeStore";
+import { selectorsStore } from "./stores/selectorsStore";
+import SelectorGrid from "./components/SelectorGrid";
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -606,6 +608,72 @@ const App: Component = () => {
               class="w-3 h-3 opacity-60"
             />
           </button>
+        </div>
+      </div>
+
+      {/* Selectors Section - Boules de Billard */}
+      <div class="sidebar-glass border-b border-macos-border px-6 py-2">
+        <div class="flex flex-col gap-2">
+          {/* Nom du sélecteur centré */}
+          <div class="text-center">
+            <Show when={selectorsStore.activeSelector} fallback={
+              <div class="text-lg font-medium text-macos-text-secondary">
+                Groupe {selectorsStore.currentGroup + 1}/10
+              </div>
+            }>
+              <div class="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-lg animate-pulse">
+                {selectorsStore.activeSelector?.name}
+              </div>
+            </Show>
+          </div>
+          
+          {/* Flèches + Grille des sélecteurs sur la même ligne */}
+          <div class="flex items-center justify-center gap-4" style="align-items: center">
+            {/* Flèche gauche - SVG custom GROS */}
+            <Show when={selectorsStore.currentGroup > 0}>
+              <button
+                class="w-16 h-16 flex items-center justify-center hover:bg-macos-hover/20 rounded-full transition-all duration-200 hover:scale-110"
+                onClick={() => selectorsStore.navigateToGroup(selectorsStore.currentGroup - 1)}
+                title="Groupe précédent"
+              >
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="text-macos-text">
+                  <path 
+                    d="M30 36L18 24L30 12" 
+                    stroke="currentColor" 
+                    stroke-width="4" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </Show>
+            
+            {/* Grille des sélecteurs */}
+            <SelectorGrid
+              selectors={selectorsStore.getCurrentGroupSelectors()}
+              onSelectorClick={(id) => selectorsStore.setActiveSelector(id)}
+              currentGroup={selectorsStore.currentGroup}
+            />
+            
+            {/* Flèche droite - SVG custom GROS */}
+            <Show when={selectorsStore.currentGroup < selectorsStore.totalGroups - 1}>
+              <button
+                class="w-16 h-16 flex items-center justify-center hover:bg-macos-hover/20 rounded-full transition-all duration-200 hover:scale-110"
+                onClick={() => selectorsStore.navigateToGroup(selectorsStore.currentGroup + 1)}
+                title="Groupe suivant"
+              >
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" class="text-macos-text">
+                  <path 
+                    d="M18 12L30 24L18 36" 
+                    stroke="currentColor" 
+                    stroke-width="4" 
+                    stroke-linecap="round" 
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </button>
+            </Show>
+          </div>
         </div>
       </div>
 
