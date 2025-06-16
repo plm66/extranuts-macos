@@ -1,22 +1,24 @@
 import { Component } from "solid-js";
 import { Icon } from "@iconify-icon/solid";
+import ThemeToggle from "../../components/ThemeToggle";
 
 interface HeaderActionsProps {
   onNewNote: () => void;
-  onFloat: () => void;
-  onPin: () => void;
-  onThemeToggle: () => void;
-  isPinned?: boolean;
-  theme?: "light" | "dark";
+  onNewFloatingNote: () => void;
+  isAlwaysOnTop: boolean;
+  onToggleAlwaysOnTop: () => void;
+  onShowExport: () => void;
+  onHideToMenuBar: () => void;
+  onShowSettings: () => void;
 }
 
 /**
- * HeaderActions - Boutons d'actions du header
- * New Note, Float, Pin, Theme toggle
+ * HeaderActions - Header action buttons
+ * Includes: New Note, Floating Note, Pin, Export, Theme, Hide, Settings
  */
 export const HeaderActions: Component<HeaderActionsProps> = (props) => {
   return (
-    <div class="flex items-center gap-2">
+    <div class="flex items-center space-x-2">
       <button
         onClick={props.onNewNote}
         class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag"
@@ -24,20 +26,53 @@ export const HeaderActions: Component<HeaderActionsProps> = (props) => {
         + New Note
       </button>
       <button
-        onClick={props.onFloat}
+        onClick={props.onNewFloatingNote}
         class="px-4 py-2 glass-morphism hover-highlight rounded-lg text-sm no-drag flex items-center gap-2"
-        title="Create floating window"
       >
         <Icon icon="material-symbols:dynamic-feed" class="w-4 h-4" />
       </button>
       <button
-        onClick={props.onPin}
+        onClick={props.onToggleAlwaysOnTop}
         class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
-        title={props.isPinned ? "Unpin from top" : "Pin to top"}
+        title={props.isAlwaysOnTop ? "Unpin from top" : "Pin to top"}
       >
         <Icon
-          icon={props.isPinned ? "material-symbols:push-pin" : "material-symbols:push-pin-outline"}
+          icon={
+            props.isAlwaysOnTop
+              ? "material-symbols:push-pin"
+              : "material-symbols:push-pin-outline"
+          }
           class="w-4 h-4"
+        />
+      </button>
+      <button
+        onClick={props.onShowExport}
+        class="px-3 py-1.5 text-sm hover-highlight rounded no-drag flex items-center gap-1"
+        title="Export to Obsidian"
+      >
+        <Icon icon="simple-icons:obsidian" class="w-4 h-4" />
+        <span class="text-xs">Export</span>
+        <Icon
+          icon="material-symbols:keyboard-arrow-right"
+          class="w-3 h-3 opacity-60"
+        />
+      </button>
+      <ThemeToggle />
+      <button
+        onClick={props.onHideToMenuBar}
+        class="px-3 py-1.5 text-sm hover-highlight rounded no-drag"
+      >
+        Hide
+      </button>
+      <button
+        onClick={props.onShowSettings}
+        class="px-3 py-1.5 text-sm hover-highlight rounded no-drag flex items-center gap-1"
+        title="Settings"
+      >
+        <Icon icon="material-symbols:settings" class="w-4 h-4" />
+        <Icon
+          icon="material-symbols:keyboard-arrow-right"
+          class="w-3 h-3 opacity-60"
         />
       </button>
     </div>

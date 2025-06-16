@@ -41,6 +41,7 @@ import CategorySelector from "./components/CategorySelector";
 import CategoryManager from "./components/CategoryManager";
 import { categoriesService } from "./services/categories";
 import MarkdownPreview from "./components/MarkdownPreview";
+import EnhancedEditor from "./components/EnhancedEditor";
 import ThemeToggle from "./components/ThemeToggle";
 import { themeStore } from "./stores/themeStore";
 import { selectorsStore } from "./stores/selectorsStore";
@@ -901,46 +902,48 @@ const App: Component = () => {
                 }
               >
                 <div class="flex-1 flex flex-col">
-                  <textarea
+                  <EnhancedEditor
                     value={noteContent()}
-                    onInput={(e) => {
-                      const value = e.target.value;
+                    onInput={(value) => {
                       setNoteContent(value);
                       // Check for WikiLink auto-completion
-                      const textarea = e.target as HTMLTextAreaElement;
-                      const cursorPos = textarea.selectionStart || 0;
-                      const wikiLinkInfo = findWikiLinkAtCursor(
-                        value,
-                        cursorPos
-                      );
-
-                      if (
-                        wikiLinkInfo.isInWikiLink &&
-                        wikiLinkInfo.linkText !== undefined
-                      ) {
-                        const matches = getAutoCompleteMatches(
-                          wikiLinkInfo.linkText,
-                          notes()
+                      const textarea = document.querySelector(
+                        "textarea"
+                      ) as HTMLTextAreaElement;
+                      if (textarea) {
+                        const cursorPos = textarea.selectionStart || 0;
+                        const wikiLinkInfo = findWikiLinkAtCursor(
+                          value,
+                          cursorPos
                         );
-                        setAutoCompleteResults(matches);
 
-                        if (matches.length > 0) {
-                          const rect = textarea.getBoundingClientRect();
-                          setAutoCompletePosition({
-                            top: rect.top + 20,
-                            left: rect.left + 10,
-                          });
-                          setShowAutoComplete(true);
+                        if (
+                          wikiLinkInfo.isInWikiLink &&
+                          wikiLinkInfo.linkText !== undefined
+                        ) {
+                          const matches = getAutoCompleteMatches(
+                            wikiLinkInfo.linkText,
+                            notes()
+                          );
+                          setAutoCompleteResults(matches);
+
+                          if (matches.length > 0) {
+                            const rect = textarea.getBoundingClientRect();
+                            setAutoCompletePosition({
+                              top: rect.top + 20,
+                              left: rect.left + 10,
+                            });
+                            setShowAutoComplete(true);
+                          } else {
+                            setShowAutoComplete(false);
+                          }
                         } else {
                           setShowAutoComplete(false);
                         }
-                      } else {
-                        setShowAutoComplete(false);
                       }
                     }}
                     onBlur={saveCurrentNote}
                     placeholder="Write your note with markdown support..."
-                    class="flex-1 w-full p-4 bg-transparent border-none outline-none resize-none text-macos-text font-mono text-sm leading-relaxed"
                   />
                 </div>
               </Show>
