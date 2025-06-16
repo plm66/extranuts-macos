@@ -172,7 +172,7 @@ const AppOrchestrator: Component = () => {
       const note = await createNote("New Floating Note")
       if (!note) return
 
-      updateNote(note.id, { isFloating: true })
+      await updateNote(note.id, { isFloating: true })
 
       await invoke("create_floating_window", {
         label: `note-${note.id}`,
@@ -291,7 +291,7 @@ const AppOrchestrator: Component = () => {
               setNoteToDelete(noteId)
               setShowDeleteConfirm(true)
             } else {
-              deleteNote(noteId)
+              deleteNote(noteId) // Fire and forget pour éviter de bloquer l'UI
               if (selectedNote()?.id === noteId) {
                 setSelectedNote(null)
               }
@@ -355,7 +355,7 @@ const AppOrchestrator: Component = () => {
                 onClick={() => {
                   const id = noteToDelete()
                   if (id) {
-                    deleteNote(id)
+                    deleteNote(id) // Fire and forget pour éviter de bloquer l'UI
                     if (selectedNote()?.id === id) {
                       setSelectedNote(null)
                     }

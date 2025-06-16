@@ -26,9 +26,9 @@ import { articleCountsBySelector, getArticleCountForSelector } from './stores/se
   },
   
   // Assigner une note à un sélecteur
-  assignNote: (noteId: string, selectorId: number) => {
+  assignNote: async (noteId: string, selectorId: number) => {
     console.log(`🔧 Assignation de la note ${noteId} au sélecteur ${selectorId}`)
-    assignSelectorToNote(noteId, selectorId)
+    await assignSelectorToNote(noteId, selectorId)
   },
   
   // Obtenir le premier ID de note disponible
@@ -43,10 +43,10 @@ import { articleCountsBySelector, getArticleCountForSelector } from './stores/se
   },
   
   // Test rapide : assigner la première note au sélecteur 1
-  testAssign: () => {
+  testAssign: async () => {
     const noteId = (window as any).debugBadges.getFirstNoteId()
     if (noteId) {
-      (window as any).debugBadges.assignNote(noteId, 1)
+      await (window as any).debugBadges.assignNote(noteId, 1)
       setTimeout(() => {
         console.log('⏱️ Après 1 seconde:')
         ;(window as any).debugBadges.showCounts()
@@ -68,7 +68,7 @@ import { articleCountsBySelector, getArticleCountForSelector } from './stores/se
   },
   
   // Test flow complet
-  testFlow: () => {
+  testFlow: async () => {
     console.log('🧪 TEST FLOW COMPLET')
     console.log('===================')
     
@@ -90,30 +90,27 @@ import { articleCountsBySelector, getArticleCountForSelector } from './stores/se
     const note2 = allNotes[1]
     
     console.log(`- Assignation de "${note1.title}" au sélecteur 1`)
-    assignSelectorToNote(note1.id, 1)
+    await assignSelectorToNote(note1.id, 1)
     
     console.log(`- Assignation de "${note2.title}" au sélecteur 2`)
-    assignSelectorToNote(note2.id, 2)
+    await assignSelectorToNote(note2.id, 2)
     
-    // 4. Vérifier après un délai
-    setTimeout(() => {
-      console.log('\n3️⃣ ÉTAT APRÈS ASSIGNATION:')
-      ;(window as any).debugBadges.showCounts()
-      ;(window as any).debugBadges.checkSelector(1)
-      ;(window as any).debugBadges.checkSelector(2)
-      
-      // 5. Réassigner une note
-      console.log(`\n4️⃣ RÉASSIGNATION de "${note1.title}" au sélecteur 2`)
-      assignSelectorToNote(note1.id, 2)
-      
-      setTimeout(() => {
-        console.log('\n5️⃣ ÉTAT FINAL:')
-        ;(window as any).debugBadges.showCounts()
-        ;(window as any).debugBadges.checkSelector(1)
-        ;(window as any).debugBadges.checkSelector(2)
-        console.log('\n✅ TEST FLOW TERMINÉ')
-      }, 1000)
-    }, 1000)
+    // 4. Vérifier immédiatement après assignation
+    console.log('\n3️⃣ ÉTAT APRÈS ASSIGNATION:')
+    ;(window as any).debugBadges.showCounts()
+    ;(window as any).debugBadges.checkSelector(1)
+    ;(window as any).debugBadges.checkSelector(2)
+    
+    // 5. Réassigner une note
+    console.log(`\n4️⃣ RÉASSIGNATION de "${note1.title}" au sélecteur 2`)
+    await assignSelectorToNote(note1.id, 2)
+    
+    // 6. Vérifier l'état final
+    console.log('\n5️⃣ ÉTAT FINAL:')
+    ;(window as any).debugBadges.showCounts()
+    ;(window as any).debugBadges.checkSelector(1)
+    ;(window as any).debugBadges.checkSelector(2)
+    console.log('\n✅ TEST FLOW TERMINÉ')
   }
 }
 

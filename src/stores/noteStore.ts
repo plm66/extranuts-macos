@@ -57,85 +57,90 @@ export async function loadNotes() {
 
 // Create a new note
 export async function createNote(title: string, content: string = ''): Promise<Note | null> {
-  console.log('🚀 DAVE DEBUG: createNote dans noteStore appelée');
-  console.log('🚀 DAVE DEBUG: Paramètres:', { title, content });
+  console.log('🚀 JOHN: createNote dans noteStore appelée');
+  console.log('🚀 JOHN: Paramètres:', { title, content });
   setError(null)
   
   try {
-    console.log('🚀 DAVE DEBUG: Appel de notesService.createNote...');
+    console.log('🚀 JOHN: Appel de notesService.createNote...');
     const note = await notesService.createNote(title, content)
-    console.log('🚀 DAVE DEBUG: Note créée par le service:', note);
+    console.log('🚀 JOHN: Note créée par le service:', note);
     
-    console.log('🚀 DAVE DEBUG: État notes AVANT ajout:', notes().length);
-    setNotes(prev => {
-      const newNotes = [note, ...prev];
-      console.log('🚀 DAVE DEBUG: État notes APRÈS ajout dans setNotes:', newNotes.length);
-      return newNotes;
-    })
+    // JOHN: Refresh automatique depuis la DB - pattern "action + refresh"
+    console.log('🔄 JOHN: Refresh automatique après createNote...');
+    await loadNotes()
+    console.log('✅ JOHN: Refresh terminé, notes():', notes().length);
     
-    console.log('🚀 DAVE DEBUG: Vérification finale - notes():', notes().length);
     return note
   } catch (err) {
-    console.error('❌ DAVE DEBUG: Failed to create note:', err)
+    console.error('❌ JOHN: Failed to create note:', err)
     setError('Failed to create note')
     return null
   }
 }
 
-// Update note locally (until backend has update command)
-export function updateNote(id: string, updates: Partial<Note>) {
-  console.log('🔄 updateNote appelé:', { id, updates })
-  console.log('🔄 Mise à jour de selectorId?', 'selectorId' in updates, updates.selectorId)
+// Update note with automatic refresh
+export async function updateNote(id: string, updates: Partial<Note>) {
+  console.log('🔄 JOHN: updateNote appelé:', { id, updates })
+  console.log('🔄 JOHN: Mise à jour de selectorId?', 'selectorId' in updates, updates.selectorId)
   
-  // Debug: État avant update
-  const noteBefore = notes().find(n => n.id === id)
-  console.log('🔄 Note AVANT update:', { id: noteBefore?.id, title: noteBefore?.title, selectorId: noteBefore?.selectorId })
+  setError(null)
   
-  setNotes(prev => {
-    const newNotes = prev.map(note => 
-      note.id === id 
-        ? { ...note, ...updates, updatedAt: new Date() }
-        : note
-    )
+  try {
+    // JOHN: D'abord synchroniser avec le backend
+    console.log('🔄 JOHN: Synchronisation avec le backend...')
+    await notesService.updateNote(id, updates)
+    console.log('✅ JOHN: Backend sync réussi pour note:', id)
     
-    // Debug: État après update
-    const noteAfter = newNotes.find(n => n.id === id)
-    console.log('🔄 Note APRÈS update dans setNotes:', { id: noteAfter?.id, title: noteAfter?.title, selectorId: noteAfter?.selectorId })
+    // JOHN: Refresh automatique depuis la DB - pattern "action + refresh"
+    console.log('🔄 JOHN: Refresh automatique après updateNote...')
+    await loadNotes()
+    console.log('✅ JOHN: Refresh terminé, vérification de la mise à jour')
     
-    return newNotes
-  })
-  
-  // TODO: Sync with backend when update command is available
-  notesService.updateNote(id, updates)
-    .then(() => {
-      console.log('✅ Backend sync réussi pour note:', id)
+    // Debug: Vérifier la mise à jour
+    const updatedNote = notes().find(n => n.id === id)
+    console.log('✅ JOHN: Note après refresh:', { 
+      id: updatedNote?.id, 
+      title: updatedNote?.title, 
+      selectorId: updatedNote?.selectorId 
     })
-    .catch(err => {
-      console.error('❌ Backend sync échoué pour note:', id, err)
-    })
+  } catch (err) {
+    console.error('❌ JOHN: Failed to update note:', err)
+    setError('Failed to update note')
+  }
 }
 
-// Delete note
-export function deleteNote(id: string) {
-  console.log('deleteNote called with id:', id)
+// Delete note with automatic refresh
+export async function deleteNote(id: string) {
+  console.log('🗑️ JOHN: deleteNote appelé avec id:', id)
+  setError(null)
   
-  // Delete from backend first
-  notesService.deleteNote(id)
-    .then(() => {
-      console.log('Note deleted from backend successfully')
-      // Then update local state
-      setNotes(prev => prev.filter(note => note.id !== id))
-      if (selectedNote()?.id === id) {
-        setSelectedNote(null)
-      }
-    })
-    .catch(err => {
-      console.error('Failed to delete note:', err)
-    })
+  try {
+    // JOHN: D'abord supprimer du backend
+    console.log('🗑️ JOHN: Suppression du backend...')
+    await notesService.deleteNote(id)
+    console.log('✅ JOHN: Note supprimée du backend avec succès')
+    
+    // JOHN: Si la note sélectionnée est supprimée, la désélectionner
+    if (selectedNote()?.id === id) {
+      setSelectedNote(null)
+    }
+    
+    // JOHN: Refresh automatique depuis la DB - pattern "action + refresh"
+    console.log('🔄 JOHN: Refresh automatique après deleteNote...')
+    await loadNotes()
+    console.log('✅ JOHN: Refresh terminé, notes():', notes().length)
+  } catch (err) {
+    console.error('❌ JOHN: Failed to delete note:', err)
+    setError('Failed to delete note')
+  }
 }
 
-export function togglePinNote(id: string) {
-  updateNote(id, { isPinned: !notes().find(n => n.id === id)?.isPinned })
+export async function togglePinNote(id: string) {
+  const note = notes().find(n => n.id === id)
+  if (note) {
+    await updateNote(id, { isPinned: !note.isPinned })
+  }
 }
 
 export function createCategory(name: string, color: string = '#6B7280'): Category {
@@ -165,10 +170,13 @@ export function createTag(name: string, color: string = '#6B7280'): Tag {
   return tag
 }
 
-export function addTagToNote(noteId: string, tagName: string) {
+export async function addTagToNote(noteId: string, tagName: string) {
   const tag = createTag(tagName)
-  updateNote(noteId, {
-    tags: [...(notes().find(n => n.id === noteId)?.tags || []), tag.name]
+  const note = notes().find(n => n.id === noteId)
+  if (!note) return
+  
+  await updateNote(noteId, {
+    tags: [...(note.tags || []), tag.name]
   })
   
   setTags(prev => prev.map(t => 
@@ -176,24 +184,28 @@ export function addTagToNote(noteId: string, tagName: string) {
   ))
 }
 
-// Assign selector to note
-export function assignSelectorToNote(noteId: string, selectorId: number) {
-  console.log('🔧 assignSelectorToNote appelé:', { noteId, selectorId })
+// Assign selector to note with automatic refresh
+export async function assignSelectorToNote(noteId: string, selectorId: number) {
+  console.log('🔧 JOHN: assignSelectorToNote appelé:', { noteId, selectorId })
   
-  // Vérifier que la note existe
+  // JOHN: Vérifier que la note existe
   const existingNote = notes().find(n => n.id === noteId)
   if (!existingNote) {
-    console.error('❌ Note introuvable:', noteId)
+    console.error('❌ JOHN: Note introuvable:', noteId)
     return
   }
   
-  console.log('📝 Note avant update:', { id: existingNote.id, title: existingNote.title, selectorId: existingNote.selectorId })
+  console.log('📝 JOHN: Note avant update:', { 
+    id: existingNote.id, 
+    title: existingNote.title, 
+    selectorId: existingNote.selectorId 
+  })
   
-  updateNote(noteId, { selectorId })
+  // JOHN: Utiliser la version asynchrone de updateNote qui fait le refresh automatique
+  await updateNote(noteId, { selectorId })
   
-  // Vérifier après update
-  const updatedNote = notes().find(n => n.id === noteId)
-  console.log('✅ Note après update:', { id: updatedNote?.id, title: updatedNote?.title, selectorId: updatedNote?.selectorId })
+  // JOHN: La vérification après update sera faite dans updateNote
+  console.log('✅ JOHN: assignSelectorToNote terminé')
 }
 
 // Filter notes by selector

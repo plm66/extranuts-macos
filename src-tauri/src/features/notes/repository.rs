@@ -19,6 +19,7 @@ impl NoteRepository {
         let conn = db.connection();
         let now = Utc::now();
         
+        
         let tx = conn.unchecked_transaction()
             .map_err(|e| AppError::new("TRANSACTION_ERROR", e.to_string()))?;
         
@@ -66,12 +67,13 @@ impl NoteRepository {
         )?;
         
         let note = stmt.query_row(params![id], |row| {
+            let selector_id: Option<i64> = row.get(4)?;
             Ok(Note {
                 id: Some(row.get(0)?),
                 title: row.get(1)?,
                 content: row.get(2)?,
                 category_id: row.get(3)?,
-                selector_id: row.get(4)?,
+                selector_id,
                 is_pinned: row.get::<_, i32>(5)? != 0,
                 tags: vec![],
                 created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
@@ -148,12 +150,13 @@ impl NoteRepository {
         let mut stmt = conn.prepare(&query)?;
         
         let notes = stmt.query_map(params_from_iter(params.iter()), |row| {
+            let selector_id: Option<i64> = row.get(4)?;
             Ok(Note {
                 id: Some(row.get(0)?),
                 title: row.get(1)?,
                 content: row.get(2)?,
                 category_id: row.get(3)?,
-                selector_id: row.get(4)?,
+                selector_id,
                 is_pinned: row.get::<_, i32>(5)? != 0,
                 tags: vec![],
                 created_at: DateTime::parse_from_rfc3339(&row.get::<_, String>(6)?)
@@ -174,6 +177,7 @@ impl NoteRepository {
         let db = self.db.lock().unwrap();
         let conn = db.connection();
         let now = Utc::now();
+        
         
         conn.execute(
             "UPDATE notes SET title = ?1, content = ?2, category_id = ?3, selector_id = ?4, is_pinned = ?5, updated_at = ?6 

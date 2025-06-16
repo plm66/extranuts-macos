@@ -39,10 +39,10 @@ export function useEditor() {
     }
   })
 
-  const saveCurrentNote = () => {
+  const saveCurrentNote = async () => {
     const note = selectedNote()
     if (note) {
-      updateNote(note.id, {
+      await updateNote(note.id, {
         title: noteTitle() || "Untitled Note",
         content: noteContent(),
       })
@@ -92,9 +92,9 @@ export function useEditor() {
     }
   }
 
-  const togglePreviewMode = () => {
+  const togglePreviewMode = async () => {
     setShowPreview(!showPreview())
-    saveCurrentNote() // Save before switching modes
+    await saveCurrentNote() // Save before switching modes
   }
 
   const handleDelete = () => {
@@ -104,7 +104,7 @@ export function useEditor() {
         setNoteToDelete(note.id)
         setShowDeleteConfirm(true)
       } else {
-        // Delete without confirmation
+        // Delete without confirmation (fire and forget)
         deleteNote(note.id)
         setSelectedNote(null)
         setNoteTitle("")
@@ -116,7 +116,7 @@ export function useEditor() {
   const confirmDelete = () => {
     const noteId = noteToDelete()
     if (noteId) {
-      deleteNote(noteId)
+      deleteNote(noteId) // Fire and forget pour ne pas bloquer l'UI
       setSelectedNote(null)
       setNoteTitle("")
       setNoteContent("")
@@ -180,10 +180,10 @@ export function useEditor() {
     alert("Version history will be available in a future update.")
   }
 
-  const handleTogglePin = () => {
+  const handleTogglePin = async () => {
     const note = selectedNote()
     if (note) {
-      togglePinNote(note.id)
+      await togglePinNote(note.id)
     }
   }
 

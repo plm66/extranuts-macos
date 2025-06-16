@@ -8,6 +8,7 @@ pub fn create_note(
     state: State<AppState>,
     request: CreateNoteRequest,
 ) -> Result<Note, String> {
+    println!("[DEBUG] create_note command - selector_id: {:?}", request.selector_id);
     let service = NoteService::new(state.db());
     service.create_note(request)
         .map_err(|e| e.message)

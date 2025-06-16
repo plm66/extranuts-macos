@@ -53,6 +53,7 @@ import { useLoadSelectors } from "./hooks/useLoadSelectors";
 // Import du debug des sélecteurs (à retirer en production)
 import "./debugSelectors";
 import "./testSelectors";
+import "./testRefreshAuto";
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{

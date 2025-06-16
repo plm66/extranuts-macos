@@ -57,7 +57,7 @@ const Editor: Component<EditorProps> = (props) => {
               <TitleInput
                 value={noteTitle()}
                 onInput={setNoteTitle}
-                onBlur={saveCurrentNote}
+                onBlur={() => saveCurrentNote()}
                 onEnterPress={handleTitleEnterPress}
                 autoFocus={true}
               />
