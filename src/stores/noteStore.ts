@@ -134,3 +134,8 @@ export function addTagToNote(noteId: string, tagName: string) {
     t.id === tag.id ? { ...t, usageCount: t.usageCount + 1 } : t
   ))
 }
+
+// Assign selector to note
+export function assignSelectorToNote(noteId: string, selectorId: number) {
+  updateNote(noteId, { selectorId })
+}

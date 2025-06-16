@@ -22,6 +22,7 @@ import {
   loadNotes,
   isLoading,
   error,
+  assignSelectorToNote,
 } from "./stores/noteStore";
 import {
   preferences,
@@ -45,6 +46,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import { themeStore } from "./stores/themeStore";
 import { selectorsStore } from "./stores/selectorsStore";
 import SelectorGrid from "./components/SelectorGrid";
+import NoteSelectorColumn from "./components/NoteSelectorColumn";
 
 // WikiLink Renderer Component
 const WikiLinkRenderer: Component<{
@@ -422,6 +424,21 @@ const App: Component = () => {
       }
     } else {
       setShowAutoComplete(false);
+    }
+  };
+
+  const handleSelectorClick = (noteId: string) => {
+    console.log('Selector clicked for note:', noteId);
+    // TODO: Implémenter l'ouverture du menu d'assignation
+  };
+
+  const handleAssignSelector = (noteId: string, selectorId: number) => {
+    if (selectorId === 0) {
+      // Supprimer l'assignation
+      assignSelectorToNote(noteId, undefined as any);
+    } else {
+      // Assigner le sélecteur
+      assignSelectorToNote(noteId, selectorId);
     }
   };
 
@@ -1017,11 +1034,14 @@ const App: Component = () => {
                   }}
                 >
                   <div class="flex items-center">
-                    {/* Category ID Column */}
-                    <div class="w-12 flex-shrink-0 text-center">
-                      <span class="text-xs font-mono text-macos-text-secondary">
-                        {note.categoryId || "-"}
-                      </span>
+                    {/* Selector Column */}
+                    <div class="w-12 flex-shrink-0 flex justify-center items-center">
+                      <NoteSelectorColumn
+                        selectorId={note.selectorId}
+                        noteId={note.id}
+                        onClick={handleSelectorClick}
+                        onAssign={handleAssignSelector}
+                      />
                     </div>
 
                     {/* Title Column with resize */}

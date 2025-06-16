@@ -1,10 +1,11 @@
-import { Component, createMemo } from 'solid-js'
+import { Component, createMemo, createSignal, Show } from 'solid-js'
 import { Icon } from '@iconify-icon/solid'
 
 interface NoteSelectorColumnProps {
   selectorId?: number
   onClick: (noteId: string) => void
   noteId: string
+  onAssign: (noteId: string, selectorId: number) => void
 }
 
 const billiardColors = {
@@ -21,6 +22,9 @@ const billiardColors = {
 }
 
 const NoteSelectorColumn: Component<NoteSelectorColumnProps> = (props) => {
+  const [isAssigning, setIsAssigning] = createSignal(false)
+  const [inputValue, setInputValue] = createSignal("")
+  
   const isAssigned = () => props.selectorId !== undefined
 
   const selectorNumber = createMemo(() => {
@@ -43,40 +47,80 @@ const NoteSelectorColumn: Component<NoteSelectorColumnProps> = (props) => {
   })
 
   const handleClick = () => {
-    props.onClick(props.noteId)
+    setInputValue("")
+    setIsAssigning(true)
+  }
+
+  const handleAssign = () => {
+    const num = parseInt(inputValue())
+    if (num >= 1 && num <= 100) {
+      props.onAssign(props.noteId, num)
+    }
+    setIsAssigning(false)
+    setInputValue("")
+  }
+
+  const handleCancel = () => {
+    setIsAssigning(false)
+    setInputValue("")
   }
 
   return (
-    <button
-      class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
-      style={{
-        'background-color': isAssigned() 
-          ? colorScheme()?.base || '#d4a5a5'
-          : '#6B7280',
-        'box-shadow': isAssigned() 
-          ? `0 2px 4px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1)`
-          : '0 1px 2px rgba(0,0,0,0.2)',
-        'border': isAssigned() 
-          ? '1px solid rgba(255,255,255,0.2)'
-          : '1px dashed rgba(255,255,255,0.3)'
-      }}
-      onClick={handleClick}
-      title={isAssigned() 
-        ? `Sélecteur ${props.selectorId} assigné` 
-        : 'Cliquer pour assigner un sélecteur'
-      }
-    >
-      {isAssigned() ? (
-        <span class="text-xs font-bold text-white drop-shadow-sm">
-          {selectorNumber()}
-        </span>
-      ) : (
-        <Icon 
-          icon="mdi:plus" 
-          class="w-4 h-4 text-macos-text-secondary opacity-60" 
+    <div class="relative">
+      <Show when={!isAssigning()} fallback={
+        <input
+          type="number"
+          min="1"
+          max="100"
+          placeholder="1-100"
+          value={inputValue()}
+          onInput={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              handleAssign()
+            } else if (e.key === 'Escape') {
+              e.preventDefault()
+              handleCancel()
+            }
+          }}
+          onBlur={handleCancel}
+          class="w-8 h-8 text-xs text-center bg-blue-500/20 border border-blue-400 rounded-full outline-none text-white font-bold"
+          ref={(el) => setTimeout(() => el?.focus(), 0)}
         />
-      )}
-    </button>
+      }>
+        <button
+          class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 cursor-pointer"
+          style={{
+            'background-color': isAssigned() 
+              ? colorScheme()?.base || '#d4a5a5'
+              : '#6B7280',
+            'box-shadow': isAssigned() 
+              ? `0 2px 4px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1)`
+              : '0 1px 2px rgba(0,0,0,0.2)',
+            'border': isAssigned() 
+              ? '1px solid rgba(255,255,255,0.2)'
+              : '1px dashed rgba(255,255,255,0.3)'
+          }}
+          onClick={handleClick}
+          title={isAssigned() 
+            ? `Sélecteur ${props.selectorId} assigné - Cliquer pour changer` 
+            : 'Cliquer pour assigner un sélecteur (1-100)'
+          }
+        >
+          {isAssigned() ? (
+            <span class="text-xs font-bold text-white drop-shadow-sm">
+              {selectorNumber()}
+            </span>
+          ) : (
+            <Icon 
+              icon="mdi:plus" 
+              class="w-4 h-4 text-macos-text-secondary opacity-60" 
+            />
+          )}
+        </button>
+      </Show>
+    </div>
   )
 }
 

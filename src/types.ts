@@ -5,6 +5,7 @@ export interface Note {
   createdAt: Date
   updatedAt: Date
   categoryId?: string
+  selectorId?: number
   tags: string[]
   isPinned: boolean
   isFloating: boolean
