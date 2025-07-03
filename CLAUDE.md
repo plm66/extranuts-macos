@@ -6,10 +6,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **AVANT TOUTE ACTION, vous DEVEZ lire dans cet ordre :**
 
-1. **[PRD.md](PRD.md)** - Vision produit et décisions verrouillées
-2. **[WORK_COMPLETED.md](WORK_COMPLETED.md)** - Travail déjà réalisé (NE PAS REFAIRE)
-3. **[TODO.md](TODO.md)** - Prochaines tâches à effectuer
-4. **[README.md](README.md)** - Vue d'ensemble du projet
+1. **[Documentation/RAPPORT_SUCCESSEUR_2025-01-17.md](Documentation/RAPPORT_SUCCESSEUR_2025-01-17.md)** - 🚨 NOUVEAU - Rapport de passation avec état critique et 7 bugs à corriger
+2. **[Documentation/Handover_phase_2.md](Documentation/Handover_phase_2.md)** - État détaillé du projet avec bugs critiques documentés
+3. **[Documentation/sécurité/SYNTHESE_UNIFIED_DEFENSE_STRATEGY.md](Documentation/sécurité/SYNTHESE_UNIFIED_DEFENSE_STRATEGY.md)** - Architecture cible pour éviter les régressions
+4. **[PRD.md](PRD.md)** - Vision produit et décisions verrouillées
+5. **[WORK_COMPLETED.md](WORK_COMPLETED.md)** - Travail déjà réalisé (NE PAS REFAIRE)
+6. **[TODO.md](TODO.md)** - Prochaines tâches à effectuer
+7. **[README.md](README.md)** - Vue d'ensemble du projet
 
 **DANGER** : Ne pas lire ces documents risque de détruire du travail existant ou de recréer des fonctionnalités déjà implémentées.
 
@@ -17,6 +20,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```
 CLAUDE.md (vous êtes ici)
+    ├── Documentation/
+    │   ├── RAPPORT_SUCCESSEUR_2025-01-17.md (🚨 PRIORITÉ - État critique)
+    │   ├── Handover_phase_2.md (Détails techniques + bugs)
+    │   └── sécurité/
+    │       └── SYNTHESE_UNIFIED_DEFENSE_STRATEGY.md (Architecture cible)
     ├── PRD.md (Vision - STABLE)
     ├── WORK_COMPLETED.md (Fait - À METTRE À JOUR) ←→ TODO.md
     ├── TODO.md (À faire - À METTRE À JOUR) ←→ WORK_COMPLETED.md
@@ -25,10 +33,13 @@ CLAUDE.md (vous êtes ici)
 
 ## 📋 Check-list de Démarrage de Session
 
+- [ ] J'ai lu le RAPPORT_SUCCESSEUR pour comprendre l'état critique actuel
+- [ ] J'ai identifié les 7 bugs critiques dans Handover_phase_2.md
+- [ ] J'ai compris l'architecture cible dans SYNTHESE_UNIFIED_DEFENSE_STRATEGY.md
 - [ ] J'ai lu le PRD.md et compris la vision produit
 - [ ] J'ai vérifié dans WORK_COMPLETED.md ce qui existe déjà
 - [ ] J'ai consulté TODO.md pour identifier la prochaine tâche
-- [ ] Je ne vais PAS refactorer l'architecture existante sans discussion explicite
+- [ ] Je ne vais PAS refactorer l'architecture existante sans avoir corrigé les bugs
 
 ## Commands
 
